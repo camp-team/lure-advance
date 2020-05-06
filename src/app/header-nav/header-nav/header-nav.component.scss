@@ -1,7 +1,28 @@
-.header-nav {
+.search {
+  display: flex;
+  align-items: center;
+  position: relative;
   &__input {
-    padding: 32px 0;
-    margin: 0 128px;
-    width: 100%;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    outline: none;
+    background: none;
+    border-radius: 16px;
+    box-sizing: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: rgb(0, 0, 0, 0.87);
+    line-height: 32px;
+    font-size: 16px;
+    padding-left: 16px;
+    padding-right: 32px;
   }
+  &__icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 8px;
+  }
+}
+.spacer {
+  flex: 1;
 }
