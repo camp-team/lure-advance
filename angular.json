@@ -123,6 +123,10 @@
               "devServerTarget": "lure-advance:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {}
         }
       }
     }
