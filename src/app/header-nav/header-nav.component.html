@@ -1,0 +1,50 @@
+<mat-toolbar>
+  <button mat-button routerLink="/" class="logo">LOGO</button>
+  <span class="spacer"></span>
+  <div class="search">
+    <input
+      class="search__input"
+      type="search"
+      autocomplete="off"
+      placeholder="Seach Lure Advance"
+    />
+    <mat-icon class="search__icon">search</mat-icon>
+  </div>
+  <button mat-icon-button class="">
+    <mat-icon>add</mat-icon>
+  </button>
+  <button mat-icon-button>
+    <mat-icon>notifications</mat-icon>
+  </button>
+
+  <button
+    *ngIf="user$ | async as user; else loginbtn"
+    class="avator"
+    [style.background-image]="'url(' + user.photoURL + ')'"
+    [matMenuTriggerFor]="menu"
+    mat-icon-button
+  ></button>
+  <mat-menu #menu>
+    <button mat-menu-item routerLink="/mypage">
+      <mat-icon>account_box</mat-icon>
+      <span>マイページ</span>
+    </button>
+
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>input</mat-icon>
+      <span>ログアウト</span>
+    </button>
+  </mat-menu>
+
+  <ng-template #loginbtn>
+    <button
+      [disabled]="isProccesing"
+      (click)="login()"
+      class="login"
+      mat-raised-button
+      color="primary"
+    >
+      {{ isProccesing ? 'ログイン中' : 'ログイン' }}
+    </button>
+  </ng-template>
+</mat-toolbar>

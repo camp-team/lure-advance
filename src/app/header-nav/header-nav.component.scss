@@ -26,3 +26,14 @@
 .spacer {
   flex: 1;
 }
+
+.avator {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: center/cover;
+}
+
+mat-icon {
+  color: #757575;
+}
