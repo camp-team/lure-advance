@@ -13,6 +13,7 @@
     {
       "public": "dist/lure-advance",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+
       "rewrites": [
         {
           "source": "**",
@@ -23,6 +24,7 @@
     {
       "target": "lure-advance",
       "public": "dist/lure-advance",
+
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [
         {

@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "lure-advance-1296d"
+  },
+  "targets": {
+    "lure-advance-1296d": {
+      "hosting": {
+        "lure-advance": [
+          "lure-advance-1296d"
+        ]
+      }
+    }
   }
 }
