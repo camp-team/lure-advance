@@ -16,6 +16,7 @@ export class HeaderNavComponent implements OnInit {
   ngOnInit(): void {}
 
   user$ = this.authService.afUser$;
+  uid: String = 'xxxx';
 
   isProccesing: boolean;
 

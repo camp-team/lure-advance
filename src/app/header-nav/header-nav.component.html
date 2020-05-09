@@ -25,7 +25,11 @@
     mat-icon-button
   ></button>
   <mat-menu #menu>
-    <button mat-menu-item routerLink="/mypage">
+    <button
+      routerLinkActive="router-link-active"
+      mat-menu-item
+      routerLink="/mypage/{{ uid }}"
+    >
       <mat-icon>account_box</mat-icon>
       <span>マイページ</span>
     </button>
