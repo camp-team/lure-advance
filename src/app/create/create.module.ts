@@ -9,9 +9,14 @@ import { DetailComponent } from './detail/detail.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { ScheduleComponent } from './schedule/schedule.component';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
-  declarations: [CreateComponent, DetailComponent],
+  declarations: [CreateComponent, DetailComponent, ScheduleComponent],
   imports: [
     CommonModule,
     CreateRoutingModule,
@@ -20,6 +25,10 @@ import { MatCardModule } from '@angular/material/card';
     MatChipsModule,
     MatIconModule,
     MatCardModule,
+    MatRadioModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSelectModule,
   ],
 })
 export class CreateModule {}
