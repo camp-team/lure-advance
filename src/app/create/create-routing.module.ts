@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { CreateComponent } from './create/create.component';
 import { ScheduleComponent } from './schedule/schedule.component';
+import { CreateComponent } from './create/create.component';
 
 const routes: Routes = [
   {

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { CreateRoutingModule } from './create-routing.module';
-import { CreateComponent } from './create/create.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { DetailComponent } from './detail/detail.component';
@@ -14,9 +13,20 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import { MatStepperModule } from '@angular/material/stepper';
+import { CreateComponent } from './create/create.component';
+import { MatButtonModule } from '@angular/material/button';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FileUploadComponent } from './file-upload/file-upload.component';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
-  declarations: [CreateComponent, DetailComponent, ScheduleComponent],
+  declarations: [
+    DetailComponent,
+    ScheduleComponent,
+    CreateComponent,
+    FileUploadComponent,
+  ],
   imports: [
     CommonModule,
     CreateRoutingModule,
@@ -29,6 +39,11 @@ import { MatSelectModule } from '@angular/material/select';
     MatDatepickerModule,
     MatNativeDateModule,
     MatSelectModule,
+    MatStepperModule,
+    MatButtonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatDividerModule,
   ],
 })
 export class CreateModule {}
