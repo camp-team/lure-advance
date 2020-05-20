@@ -11,8 +11,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AngularFireModule } from '@angular/fire';
+import { AngularFireFunctionsModule } from '@angular/fire/functions';
+import { AngularFireAnalyticsModule } from '@angular/fire/analytics';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import {
+  MatSnackBarModule,
+  MAT_SNACK_BAR_DEFAULT_OPTIONS,
+} from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 
@@ -23,6 +29,9 @@ import { MatDividerModule } from '@angular/material/divider';
     AppRoutingModule,
     BrowserAnimationsModule,
     AngularFireModule.initializeApp(environment.firebase),
+    AngularFireFunctionsModule,
+    AngularFireAnalyticsModule,
+    AngularFirestoreModule,
     MatToolbarModule,
     MatInputModule,
     MatFormFieldModule,
@@ -32,7 +41,9 @@ import { MatDividerModule } from '@angular/material/divider';
     MatMenuModule,
     MatDividerModule,
   ],
-  providers: [],
+  providers: [
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2000 } },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
