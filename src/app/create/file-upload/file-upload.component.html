@@ -1,0 +1,11 @@
+<form>
+  <input
+    (change)="selectFiles($event)"
+    type="file"
+    id="file"
+    name="file"
+    multiple
+    accept=".png, .jpg, .jpeg"
+  />
+  <button mat-flat-button color="primary">ファイルを選択</button>
+</form>
