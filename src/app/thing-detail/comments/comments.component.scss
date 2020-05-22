@@ -1,0 +1,38 @@
+mat-form-field {
+  width: 100%;
+}
+
+.comment {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  gap: 16px;
+  margin-bottom: 24px;
+  &__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: center/cover;
+  }
+  &__header {
+    display: flex;
+    align-items: center;
+    margin: 0 0 8px;
+    font-size: 13px;
+  }
+  &__body {
+    margin: 0;
+  }
+  &__name {
+    line-height: 1;
+    font-weight: 500;
+    margin: 0 8px 0 0;
+  }
+  &__updateAt {
+    line-height: 1;
+    color: rgba(black, 0.6);
+    margin: 0;
+  }
+}
+.edit-actions {
+  text-align: right;
+}
