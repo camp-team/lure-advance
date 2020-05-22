@@ -13,20 +13,22 @@ import { ScheduleComponent } from '../schedule/schedule.component';
   styleUrls: ['./create.component.scss'],
 })
 export class CreateComponent implements OnInit {
-  // @ViewChild(DetailComponent)
-  // @ViewChild(ScheduleComponent)
-  // private detailComponent: DetailComponent;
-  // private scheduleComponent: ScheduleComponent;
+  @ViewChild(DetailComponent) detailComponent: DetailComponent;
 
   isEditable = false;
   detailFormGroup: FormGroup;
   scheduleFormGroup: FormGroup;
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private thingService: ThingService,
+    private snackBar: MatSnackBar
+  ) {
     this.detailFormGroup = this.fb.group({
       title: ['', [Validators.required, Validators.maxLength(100)]],
       description: ['', [Validators.maxLength(5000)]],
-      tags: [''],
+      tags: [this.detailComponent?.tags],
     });
     this.scheduleFormGroup = this.fb.group({
       setting: ['1', [Validators.required]],
@@ -36,17 +38,18 @@ export class CreateComponent implements OnInit {
 
   create() {
     const detailValue = this.detailFormGroup.value;
+    const userId = this.authService.uid;
     const thing: Omit<Thing, 'id' | 'designerId' | 'likeCount' | 'updateAt'> = {
       title: detailValue.title,
       description: detailValue.description,
       tags: detailValue.tags,
-      filesUrls: ['https://placehold.jp/500x500.png'],
+      filesUrls: ['https://placehold.jp/700x525.png'],
     };
 
     console.log(thing);
-    // this.thingServeice.createThing(thing, userId).then(() => {
-    //   this.snackBar.open('アップロードに成功しました');
-    // });
+    this.thingService.createThing(thing, userId).then(() => {
+      this.snackBar.open('アップロードに成功しました');
+    });
   }
   ngOnInit() {}
 }

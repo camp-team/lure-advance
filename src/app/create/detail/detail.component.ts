@@ -2,12 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Tag } from 'src/app/interfaces/tag';
 import { MatChipInputEvent } from '@angular/material/chips';
-import {
-  FormBuilder,
-  Validators,
-  FormGroup,
-  FormControl,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-detail',
