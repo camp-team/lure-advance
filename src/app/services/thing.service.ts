@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Thing } from '../interfaces/thing';
+import { firestore } from 'firebase';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +28,7 @@ export class ThingService {
       id,
       designerId: userId,
       likeCount: 0,
-      updateAt: new Date(),
+      updateAt: firestore.Timestamp.now(),
     };
     return this.db.doc<Thing>(`things/${id}`).set(value);
   }

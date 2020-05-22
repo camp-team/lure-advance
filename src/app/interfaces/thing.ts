@@ -1,3 +1,5 @@
+import { firestore } from 'firebase';
+
 export interface Thing {
   id: string;
   designerId: string;
@@ -6,5 +8,5 @@ export interface Thing {
   tags: string[];
   filesUrls: string[];
   likeCount: number;
-  updateAt: Date;
+  updateAt: firestore.Timestamp;
 }
