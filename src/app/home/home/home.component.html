@@ -1,0 +1,29 @@
+<div class="grid">
+  <mat-card class="thing" *ngFor="let thing of things$ | async">
+    <mat-card-header class="thing__header">
+      <div
+        mat-card-avatar
+        [style.background-image]="'url(https://placehold.jp/40x40.png)'"
+        class="thing__avator"
+      ></div>
+      <mat-card-title class="thing__title">{{ thing.title }}</mat-card-title>
+      <mat-card-subtitle class="thing__user-name">{{
+        thing.title
+      }}</mat-card-subtitle>
+      <mat-card-subtitle class="thing__updateAt">{{
+        thing.updateAt.toDate() | date: 'yyyy/MM/dd'
+      }}</mat-card-subtitle>
+    </mat-card-header>
+    <img
+      mat-card-image
+      class="thing__thumbnail"
+      [src]="thing.filesUrls[0]"
+      routerLink="{{ thing.id }}"
+      alt=""
+    />
+    <mat-card-actions>
+      <button mat-icon-button><mat-icon>favorite_border</mat-icon></button>
+      <button mat-icon-button><mat-icon>mode_comment</mat-icon></button>
+    </mat-card-actions>
+  </mat-card>
+</div>
