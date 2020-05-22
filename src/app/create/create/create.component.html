@@ -1,0 +1,28 @@
+<mat-horizontal-stepper linear #stepper>
+  <mat-step>
+    <ng-template matStepLabel>ファイルをアップロード</ng-template>
+    <app-file-upload></app-file-upload>
+    <button mat-flat-button color="primary" matStepperNext>Next</button>
+  </mat-step>
+  <mat-step [stepControl]="detailFormGroup" [editable]="true">
+    <ng-template matStepLabel>詳細</ng-template>
+    <app-detail [form]="detailFormGroup"></app-detail>
+    <button mat-flat-button matStepperPrevious>Prev</button>
+    <button
+      mat-flat-button
+      [disabled]="detailFormGroup.invalid"
+      color="primary"
+      matStepperNext
+    >
+      Next
+    </button>
+  </mat-step>
+  <mat-step [editable]="true">
+    <ng-template matStepLabel>公開設定</ng-template>
+    <app-schedule [form]="scheduleFormGroup"></app-schedule>
+    <button mat-flat-button matStepperPrevious>Prev</button>
+    <button (click)="create()" mat-flat-button color="primary" matStepperNext>
+      OK
+    </button>
+  </mat-step>
+</mat-horizontal-stepper>

@@ -10,13 +10,12 @@
     />
     <mat-icon class="search__icon">search</mat-icon>
   </div>
-  <button mat-icon-button class="">
+  <button routerLink="/create" mat-icon-button class="">
     <mat-icon>add</mat-icon>
   </button>
   <button mat-icon-button>
     <mat-icon>notifications</mat-icon>
   </button>
-
   <button
     *ngIf="user$ | async as user; else loginbtn"
     class="avator"

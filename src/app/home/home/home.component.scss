@@ -1,0 +1,24 @@
+:host {
+  display: block;
+  padding: 24px 160px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 24px;
+}
+
+.thing {
+  max-width: 400px;
+  &__header {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(black, 0.38);
+  }
+  &__thumbnail:hover {
+    cursor: pointer;
+  }
+  &__avator {
+    background: center/cover;
+  }
+}

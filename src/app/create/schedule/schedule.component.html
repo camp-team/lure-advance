@@ -1,0 +1,61 @@
+<h1>公開設定</h1>
+<form [formGroup]="form">
+  <mat-radio-group formControlName="setting" class="setting">
+    <mat-card class="setting__public">
+      <mat-radio-button value="1">保存または公開</mat-radio-button>
+      <p>投稿は公開、限定公開、非公開のいずれかにします。</p>
+      <mat-radio-group formControlName="public">
+        <div *ngIf="!schedule.checked" class="setting__buttons">
+          <mat-radio-button value="1_1">非公開</mat-radio-button>
+          <p>投稿は公開されません。他の人が投稿を見ることはありません。</p>
+          <mat-radio-button value="1_2">限定公開</mat-radio-button>
+          <p>
+            動画のリンクを知っているユーザがのみ投稿を閲覧することができます。
+          </p>
+          <mat-radio-button value="1_3">公開</mat-radio-button>
+          <p>すべての人が投稿を閲覧することができます。</p>
+        </div>
+      </mat-radio-group>
+    </mat-card>
+    <mat-card class="setting__schedule">
+      <mat-radio-button #schedule value="2">スケジュール設定</mat-radio-button>
+      <p>動画を公開する日付を選択します</p>
+      <div *ngIf="schedule.checked" class="buttons">
+        <mat-form-field
+          class="setting__schedule-picker setting__schedule-picker--date"
+          appearance="outline"
+        >
+          <input
+            matInput
+            [max]="untilDate"
+            [min]="toDay"
+            [value]="startDate"
+            [matDatepicker]="picker"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field
+          class="setting__schedule-picker setting__schedule-picker--time"
+          appearance="outline"
+        >
+          <mat-select [value]="selectedTime">
+            <mat-option *ngFor="let time of times" [value]="time">
+              {{ time | date: 'HH:mm' }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-card>
+    <div class="guidline">
+      <h2>公開する前に、以下の点をご確認ください。</h2>
+      <p>
+        サイトポリシーに従い、危害、搾取、いじめ、暴力、性的な描写が含まれていませんか？<BR />
+        これらの内容が発覚した場合はアカウントがBANされる可能性があります。
+      </p>
+    </div>
+  </mat-radio-group>
+</form>

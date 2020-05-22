@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  padding: 48px 0;
+}
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+}
+.thing {
+  padding-bottom: 0;
+  overflow: hidden;
+  max-width: 700px;
+  :hover {
+    cursor: pointer;
+  }
+  &__header {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(black, 0.38);
+  }
+  .spacer {
+    flex: 1;
+  }
+  &__thumbnail {
+    display: block;
+  }
+  &__avatar {
+    background: center/cover;
+  }
+}

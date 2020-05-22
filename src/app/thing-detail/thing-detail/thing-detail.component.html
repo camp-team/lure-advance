@@ -1,0 +1,43 @@
+<div class="container">
+  <mat-card class="thing" *ngIf="thing$ | async as thing">
+    <mat-card-header class="thing__header">
+      <div
+        mat-card-avatar
+        [style.background-image]="'url(https://placehold.jp/40x40.png)'"
+        class="thing__avatar"
+      ></div>
+      <mat-card-title class="thing__title">{{ thing.title }}</mat-card-title>
+      <mat-card-subtitle class="thing__user-name">{{
+        thing.title
+      }}</mat-card-subtitle>
+      <mat-card-subtitle class="thing__updateAt">{{
+        thing.updateAt.toDate() | date: 'yyyy/MM/dd'
+      }}</mat-card-subtitle>
+      <span class="spacer"></span>
+      <button mat-icon-button>
+        <mat-icon> more_horiz</mat-icon>
+      </button>
+      <mat-menu></mat-menu>
+    </mat-card-header>
+    <img
+      mat-card-image
+      class="thing__thumbnail"
+      [src]="thing.filesUrls[0]"
+      alt=""
+    />
+  </mat-card>
+  <nav mat-tab-nav-bar>
+    <a
+      mat-tab-link
+      *ngFor="let link of navLinks"
+      [routerLink]="link.path"
+      routerLinkActive
+      #rla="routerLinkActive"
+      [active]="rla.isActive"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      {{ link.label }}
+    </a>
+  </nav>
+  <router-outlet></router-outlet>
+</div>
