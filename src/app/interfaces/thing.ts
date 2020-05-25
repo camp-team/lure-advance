@@ -6,7 +6,7 @@ export interface Thing {
   title: string;
   description: string;
   tags: string[];
-  filesUrls: string[];
+  fileUrls: string[];
   likeCount: number;
   updateAt: firestore.Timestamp;
 }

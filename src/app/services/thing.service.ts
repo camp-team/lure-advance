@@ -3,12 +3,16 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Thing } from '../interfaces/thing';
 import { firestore } from 'firebase';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ThingService {
-  constructor(private db: AngularFirestore) {}
+  constructor(
+    private db: AngularFirestore,
+    private storage: AngularFireStorage
+  ) {}
 
   getAllThings(): Observable<Thing[]> {
     return this.db.collection<Thing>('things').valueChanges();
@@ -18,19 +22,13 @@ export class ThingService {
     return this.db.doc<Thing>(`things/${thingId}`).valueChanges();
   }
 
-  createThing(
-    thing: Omit<Thing, 'id' | 'designerId' | 'likeCount' | 'updateAt'>,
-    userId: string
-  ): Promise<void> {
-    const id = this.db.createId();
+  createThing(thing: Omit<Thing, 'updateAt' | 'fileUrls'>): Promise<void> {
     const value: Thing = {
       ...thing,
-      id,
-      designerId: userId,
-      likeCount: 0,
+      fileUrls: ['https://placehold.jp/700x525.png'], //TODO
       updateAt: firestore.Timestamp.now(),
     };
-    return this.db.doc<Thing>(`things/${id}`).set(value);
+    return this.db.doc<Thing>(`things/${thing.id}`).set(value);
   }
 
   updateThing(thing: Thing): Promise<void> {
@@ -38,6 +36,16 @@ export class ThingService {
   }
 
   delteThing(thing: Thing): Promise<void> {
-    return this.db.doc<Thing>(`things/${thing.designerId}`).delete();
+    return this.db.doc<Thing>(`things/${thing.id}`).delete();
+  }
+
+  uploadThings(id: string, files: File[]): Promise<any> {
+    return Promise.all(
+      files.map(async (file, index) => {
+        const path: string = `things/${id}/files/${id}-${index}`;
+        await this.storage.upload(path, file);
+        return this.storage.ref(path).getDownloadURL().toPromise();
+      })
+    );
   }
 }
