@@ -14,15 +14,29 @@
         thing.updateAt.toDate() | date: 'yyyy/MM/dd'
       }}</mat-card-subtitle>
       <span class="spacer"></span>
-      <button mat-icon-button>
-        <mat-icon> more_horiz</mat-icon>
+      <button [mat-menu-trigger-for]="menu" mat-icon-button>
+        <mat-icon> more_vert</mat-icon>
       </button>
-      <mat-menu></mat-menu>
+      <mat-chip-list aria-label="tag">
+        <mat-chip *ngFor="let tag of thing.tags">
+          {{ tag }}
+        </mat-chip>
+      </mat-chip-list>
+      <mat-menu #menu>
+        <button mat-menu-item>
+          <mat-icon>edit</mat-icon>
+          <span>編集</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>delete</mat-icon>
+          <span>削除</span>
+        </button>
+      </mat-menu>
     </mat-card-header>
     <img
       mat-card-image
       class="thing__thumbnail"
-      [src]="thing.filesUrls[0]"
+      [src]="thing.fileUrls[0]"
       alt=""
     />
   </mat-card>

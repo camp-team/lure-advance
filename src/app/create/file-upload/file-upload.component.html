@@ -8,4 +8,11 @@
     accept=".png, .jpg, .jpeg"
   />
   <button mat-flat-button color="primary">ファイルを選択</button>
+  <div class="task" *ngFor="let job of jobs">
+    <!-- <mat-progress-bar
+      *ngIf="job.percentage | async as pct"
+      mode="determinate"
+      [value]="pct"
+    ></mat-progress-bar> -->
+  </div>
 </form>

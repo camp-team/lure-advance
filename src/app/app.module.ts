@@ -14,6 +14,7 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireFunctionsModule } from '@angular/fire/functions';
 import { AngularFireAnalyticsModule } from '@angular/fire/analytics';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireStorageModule } from '@angular/fire/storage';
 import { environment } from '../environments/environment';
 import {
   MatSnackBarModule,
@@ -32,6 +33,7 @@ import { MatDividerModule } from '@angular/material/divider';
     AngularFireFunctionsModule,
     AngularFireAnalyticsModule,
     AngularFirestoreModule,
+    AngularFireStorageModule,
     MatToolbarModule,
     MatInputModule,
     MatFormFieldModule,
