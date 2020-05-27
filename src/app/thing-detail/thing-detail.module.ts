@@ -17,6 +17,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { SharedModule } from '../shared/shared.module';
 import { MatChipsModule } from '@angular/material/chips';
+import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,7 @@ import { MatChipsModule } from '@angular/material/chips';
     CommentsComponent,
     DescriptionComponent,
     FilesComponent,
+    DeleteDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -41,6 +44,7 @@ import { MatChipsModule } from '@angular/material/chips';
     MatInputModule,
     MatMenuModule,
     MatChipsModule,
+    MatDialogModule,
   ],
 })
 export class ThingDetailModule {}

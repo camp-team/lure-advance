@@ -12,11 +12,19 @@ const routes: Routes = [
     loadChildren: () =>
       import('./create/create.module').then((m) => m.CreateModule),
   },
+
   {
     path: ':thing',
     loadChildren: () =>
       import('./thing-detail/thing-detail.module').then(
         (m) => m.ThingDetailModule
+      ),
+  },
+  {
+    path: ':thing/edit',
+    loadChildren: () =>
+      import('./thing-editor/thing-editor.module').then(
+        (m) => m.ThingEditorModule
       ),
   },
   {
