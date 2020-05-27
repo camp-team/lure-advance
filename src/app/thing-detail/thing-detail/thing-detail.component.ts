@@ -1,8 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Thing } from 'src/app/interfaces/thing';
 import { ThingService } from 'src/app/services/thing.service';
 import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 
 @Component({
   selector: 'app-thing-detail',
@@ -10,7 +13,13 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./thing-detail.component.scss'],
 })
 export class ThingDetailComponent implements OnInit {
-  thing$: Observable<Thing>;
+  thing$: Observable<Thing> = this.route.paramMap.pipe(
+    switchMap((map) => {
+      const thingId = map.get('thing');
+      return this.thingService.getThingByID(thingId);
+    })
+  );
+
   navLinks = [
     {
       path: 'description',
@@ -28,11 +37,14 @@ export class ThingDetailComponent implements OnInit {
 
   constructor(
     private thingService: ThingService,
-    private route: ActivatedRoute
-  ) {
-    this.route.paramMap.subscribe((map) => {
-      const thingId = map.get('thing');
-      this.thing$ = this.thingService.getThingByID(thingId);
+    private route: ActivatedRoute,
+    private dialog: MatDialog
+  ) {}
+
+  delete(thing: Thing) {
+    this.dialog.open(DeleteDialogComponent, {
+      data: thing,
+      restoreFocus: false,
     });
   }
 

@@ -23,11 +23,11 @@
         </mat-chip>
       </mat-chip-list>
       <mat-menu #menu>
-        <button mat-menu-item>
+        <button mat-menu-item routerLink="/{{ thing.id }}/edit">
           <mat-icon>edit</mat-icon>
           <span>編集</span>
         </button>
-        <button mat-menu-item>
+        <button (click)="delete(thing)" mat-menu-item>
           <mat-icon>delete</mat-icon>
           <span>削除</span>
         </button>
