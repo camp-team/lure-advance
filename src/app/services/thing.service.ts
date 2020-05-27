@@ -35,7 +35,7 @@ export class ThingService {
     return this.db.doc<Thing>(`things/${thing.id}`).update(thing);
   }
 
-  delteThing(thing: Thing): Promise<void> {
+  deleteThing(thing: Thing): Promise<void> {
     return this.db.doc<Thing>(`things/${thing.id}`).delete();
   }
 
