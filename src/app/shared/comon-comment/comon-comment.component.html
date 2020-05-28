@@ -1,12 +1,12 @@
 <div class="comment">
   <div
     class="comment__avatar"
-    [style.background-image]="'url(' + comment.avatarURL + ')'"
+    [style.background-image]="'url(' + comment.user.avatarURL + ')'"
   ></div>
   <div class="comment__body">
     <ng-template #view>
       <div class="comment__header">
-        <p class="comment__name">{{ comment.name }}</p>
+        <p class="comment__name">{{ comment.user.name }}</p>
         <p class="comment__updateAt">
           {{ comment.updateAt.toDate() | date: 'yyyy年MM月dd日' }}
         </p>
@@ -17,18 +17,24 @@
       <mat-form-field appearance="outline">
         <mat-label>コメント</mat-label>
         <textarea
+          #commentInput
           matInput
           matTextareaAutosize
           required
           autofocus
-          [value]="comment.body"
+          [formControl]="inputComment"
         ></textarea>
+        <mat-error *ngIf="inputComment.hasError('maxlength')"
+          >文字が多過ぎます</mat-error
+        >
       </mat-form-field>
       <div class="edit-actions">
         <button (click)="isEditing = false" mat-flat-button>
           キャンセル
         </button>
-        <button mat-flat-button color="primary">保存</button>
+        <button (click)="saveComment()" mat-flat-button color="primary">
+          保存
+        </button>
       </div>
     </ng-container>
   </div>
@@ -37,11 +43,11 @@
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #commentEditor="matMenu">
-      <button (click)="saveComment()" mat-menu-item>
+      <button (click)="alterEditMode()" mat-menu-item>
         <mat-icon>edit</mat-icon>
         <span>編集</span>
       </button>
-      <button (click)="delteComment()" mat-menu-item>
+      <button (click)="deleteComment()" mat-menu-item>
         <mat-icon>delete</mat-icon>
         <span>削除</span>
       </button>

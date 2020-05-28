@@ -1,29 +1,46 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore/firestore';
-import { AngularFireStorage } from '@angular/fire/storage/storage';
-import { Observable } from 'rxjs';
+import { AngularFirestore } from '@angular/fire/firestore/';
+import { Observable, combineLatest } from 'rxjs';
 import { Thing } from '../interfaces/thing';
 import { firestore } from 'firebase';
-import { Comment } from '../interfaces/comment';
+import { Comment, CommentWithUser } from '../interfaces/comment';
+import { switchMap, map } from 'rxjs/operators';
+import { User } from '../interfaces/user';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CommentService {
-  constructor(private db: AngularFirestore) {}
+  constructor(private db: AngularFirestore, private userService: UserService) {}
 
-  getAllComments(thing: Thing): Observable<Comment[]> {
+  getAllComments(thingId: string): Observable<CommentWithUser[]> {
+    let tmpComments: Comment[];
     return this.db
-      .collection<Comment>(`things/${thing.id}/comments`)
-      .valueChanges();
-  }
-
-  getThingByID(thingId: string): Observable<Thing> {
-    return this.db.doc<Thing>(`things/${thingId}`).valueChanges();
+      .collection<Comment>(`things/${thingId}/comments`)
+      .valueChanges()
+      .pipe(
+        switchMap((comments) => {
+          tmpComments = comments;
+          return combineLatest(
+            comments.map((comment) => {
+              return this.userService.getUserByID(comment.uid);
+            })
+          );
+        }),
+        map((users) => {
+          return tmpComments.map((comment) => {
+            return {
+              ...comment,
+              user: users.find((user) => comment.uid === user.uid),
+            };
+          });
+        })
+      );
   }
 
   addComment(
-    thing: Thing,
+    thingId: string,
     comment: Omit<Comment, 'id' | 'updateAt'>
   ): Promise<void> {
     const id: string = this.db.createId();
@@ -33,19 +50,22 @@ export class CommentService {
       updateAt: firestore.Timestamp.now(),
     };
     return this.db
-      .doc<Comment>(`things/${thing.id}/comments/${newValue.id}`)
+      .doc<Comment>(`things/${thingId}/comments/${newValue.id}`)
       .set(newValue);
   }
 
-  updateThing(comment: Comment, thing: Thing): Promise<void> {
+  updateComment(comment: Comment, thingId: string): Promise<void> {
     return this.db
-      .doc<Comment>(`things/${thing.id}/comments/${comment.id}`)
-      .update(comment);
+      .doc<Comment>(`things/${thingId}/comments/${comment.id}`)
+      .update({
+        ...comment,
+        updateAt: firestore.Timestamp.now(),
+      });
   }
 
-  deleteThing(comment: Comment, thing: Thing): Promise<void> {
+  deleteComment(comment: Comment, thingId: string): Promise<void> {
     return this.db
-      .doc<Thing>(`things/${thing.id}/comments/${comment.id}`)
+      .doc<Thing>(`things/${thingId}/comments/${comment.id}`)
       .delete();
   }
 }
