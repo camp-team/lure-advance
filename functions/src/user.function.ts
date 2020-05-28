@@ -1,0 +1,22 @@
+import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
+import { shouldEventRun, markEventTried } from './util';
+
+const db = admin.firestore();
+
+export const createUser = functions.auth
+  .user()
+  .onCreate(async (user, context) => {
+    const eventId = context.eventId;
+    const should = await shouldEventRun(eventId);
+    if (should) {
+      await db.doc(`users/${user.uid}`).set({
+        email: user.email,
+        avatarURL: user.photoURL,
+        name: user.displayName,
+      });
+      return markEventTried(eventId);
+    } else {
+      return true;
+    }
+  });
