@@ -17,15 +17,15 @@ export class CommentService {
   getAllComments(thingId: string): Observable<CommentWithUser[]> {
     let tmpComments: Comment[];
     return this.db
-      .collection<Comment>(`things/${thingId}/comments`)
+      .collection<Comment>(`things/${thingId}/comments`, (ref) =>
+        ref.orderBy('updateAt', 'desc')
+      )
       .valueChanges()
       .pipe(
         switchMap((comments) => {
           tmpComments = comments;
           return combineLatest(
-            comments.map((comment) => {
-              return this.userService.getUserByID(comment.uid);
-            })
+            comments.map((comment) => this.userService.getUserByID(comment.uid))
           );
         }),
         map((users) => {
