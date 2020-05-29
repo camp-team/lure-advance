@@ -26,8 +26,9 @@
       </mat-form-field>
     </form>
     <app-comon-comment
-      *ngFor="let comment of comments"
+      *ngFor="let comment of comments$ | async"
       [comment]="comment"
+      [thingId]="id"
     ></app-comon-comment>
   </mat-card>
 </div>
