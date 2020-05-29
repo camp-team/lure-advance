@@ -22,7 +22,24 @@
       alt=""
     />
     <mat-card-actions>
-      <button mat-icon-button><mat-icon>favorite_border</mat-icon></button>
+      <button
+        *ngIf="isUnlike(thing.id)"
+        (click)="likeThing(thing)"
+        mat-icon-button
+      >
+        <mat-icon>favorite_border</mat-icon>
+      </button>
+      <button
+        *ngIf="isLike(thing.id)"
+        (click)="likeThing(thing)"
+        mat-icon-button
+      >
+        <mat-icon>favorite</mat-icon>
+      </button>
+      <button (click)="likeThing(thing)" mat-icon-button>
+        <mat-icon>favorite_border</mat-icon>
+      </button>
+
       <button mat-icon-button><mat-icon>mode_comment</mat-icon></button>
     </mat-card-actions>
   </mat-card>

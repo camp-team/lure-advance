@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Thing } from '../interfaces/thing';
 import { firestore } from 'firebase';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { map, take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -58,5 +59,19 @@ export class ThingService {
 
   unLikeThing(thingId: string, uid: string): Promise<void> {
     return this.db.doc(`things/${thingId}/likeUsers/${uid}`).delete();
+  }
+
+  getlikedThingIds(uid: string): Promise<string[]> {
+    return this.db
+      .collectionGroup<{
+        uid: string;
+        thingId: string;
+      }>('likeUser', (ref) => ref.where('uid', '==', uid))
+      .valueChanges()
+      .pipe(
+        map((res) => res.map((item) => item.thingId)),
+        take(1)
+      )
+      .toPromise();
   }
 }
