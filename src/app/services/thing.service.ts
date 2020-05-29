@@ -48,4 +48,15 @@ export class ThingService {
       })
     );
   }
+
+  likeThing(thingId: string, uid: string): Promise<void> {
+    return this.db.doc(`things/${thingId}/likeUsers/${uid}`).set({
+      uid,
+      thingId,
+    });
+  }
+
+  unLikeThing(thingId: string, uid: string): Promise<void> {
+    return this.db.doc(`things/${thingId}/likeUsers/${uid}`).delete();
+  }
 }
