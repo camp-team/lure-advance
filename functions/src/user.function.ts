@@ -16,6 +16,7 @@ export const createUser = functions
         email: user.email,
         avatarURL: user.photoURL,
         name: user.displayName,
+        notificationCount: 0,
       });
       return markEventTried(eventId);
     } else {
