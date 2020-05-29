@@ -45,10 +45,11 @@ export class CommentsComponent implements OnInit {
     private route: ActivatedRoute
   ) {
     this.userService.user$.subscribe((user) => (this.user = user));
-    this.route.parent.paramMap.subscribe((map) => (this.id = map.get('thing')));
+    this.route.parent.paramMap.subscribe((map) => {
+      this.id = map.get('thing');
+      this.comments$ = this.commentService.getAllComments(this.id);
+    });
   }
 
-  ngOnInit(): void {
-    this.comments$ = this.commentService.getAllComments(this.id);
-  }
+  ngOnInit(): void {}
 }
