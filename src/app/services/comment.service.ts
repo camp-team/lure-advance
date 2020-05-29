@@ -15,7 +15,7 @@ export class CommentService {
   constructor(private db: AngularFirestore, private userService: UserService) {}
 
   getAllComments(thingId: string): Observable<CommentWithUser[]> {
-    let tmpComments: Comment[];
+    let allComments: Comment[];
     return this.db
       .collection<Comment>(`things/${thingId}/comments`, (ref) =>
         ref.orderBy('updateAt', 'desc')
@@ -23,13 +23,16 @@ export class CommentService {
       .valueChanges()
       .pipe(
         switchMap((comments) => {
-          tmpComments = comments;
+          allComments = comments;
+          const distinctUids: string[] = [
+            ...new Set(comments.map((comment) => comment.uid)),
+          ];
           return combineLatest(
-            comments.map((comment) => this.userService.getUserByID(comment.uid))
+            distinctUids.map((uid) => this.userService.getUserByID(uid))
           );
         }),
         map((users) => {
-          return tmpComments.map((comment) => {
+          return allComments.map((comment) => {
             return {
               ...comment,
               user: users.find((user) => comment.uid === user.uid),
