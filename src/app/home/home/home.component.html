@@ -1,5 +1,5 @@
 <div class="grid">
-  <mat-card class="thing" *ngFor="let thing of things$ | async">
+  <mat-card class="thing" *ngFor="let thing of things">
     <mat-card-header class="thing__header">
       <div
         mat-card-avatar
@@ -24,20 +24,19 @@
     <mat-card-actions>
       <button
         *ngIf="isUnlike(thing.id)"
-        (click)="likeThing(thing)"
+        (click)="likeThing(thing.id)"
         mat-icon-button
       >
         <mat-icon>favorite_border</mat-icon>
+        <span>{{ thing.likeCount }}</span>
       </button>
       <button
         *ngIf="isLike(thing.id)"
-        (click)="likeThing(thing)"
+        (click)="unLikeThing(thing.id)"
         mat-icon-button
       >
         <mat-icon>favorite</mat-icon>
-      </button>
-      <button (click)="likeThing(thing)" mat-icon-button>
-        <mat-icon>favorite_border</mat-icon>
+        <span>{{ thing.likeCount }}</span>
       </button>
 
       <button mat-icon-button><mat-icon>mode_comment</mat-icon></button>
