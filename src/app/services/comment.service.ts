@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore/';
-import { Observable, combineLatest, of } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
 import { Thing } from '../interfaces/thing';
 import { firestore } from 'firebase';
 import { Comment, CommentWithUser } from '../interfaces/comment';
-import { switchMap, map, take } from 'rxjs/operators';
+import { switchMap, map } from 'rxjs/operators';
 import { UserService } from './user.service';
 
 @Injectable({
@@ -41,10 +41,7 @@ export class CommentService {
       );
   }
 
-  addComment(
-    thingId: string,
-    comment: Omit<Comment, 'id' | 'updateAt'>
-  ): Promise<void> {
+  addComment(comment: Omit<Comment, 'id' | 'updateAt'>): Promise<void> {
     const id: string = this.db.createId();
     const newValue: Comment = {
       ...comment,
@@ -52,15 +49,11 @@ export class CommentService {
       updateAt: firestore.Timestamp.now(),
     };
     return this.db
-      .doc<Comment>(`things/${thingId}/comments/${newValue.id}`)
+      .doc<Comment>(`things/${comment.thingId}/comments/${newValue.id}`)
       .set(newValue);
   }
 
-  replyComment(
-    thingId: string,
-    rootCommentId: string,
-    reply: Omit<Comment, 'id' | 'updateAt'>
-  ) {
+  replyComment(rootCommentId: string, reply: Omit<Comment, 'id' | 'updateAt'>) {
     const id: string = this.db.createId();
     const newValue: Comment = {
       ...reply,
@@ -70,7 +63,7 @@ export class CommentService {
     };
     return this.db
       .doc<Comment>(
-        `things/${thingId}/comments/${rootCommentId}/replies/${newValue.id}`
+        `things/${reply.thingId}/comments/${rootCommentId}/replies/${newValue.id}`
       )
       .set(newValue);
   }
@@ -107,23 +100,19 @@ export class CommentService {
       );
   }
 
-  updateComment(comment: Comment, thingId: string): Promise<void> {
+  updateComment(comment: Comment): Promise<void> {
     return this.db
-      .doc<Comment>(`things/${thingId}/comments/${comment.id}`)
+      .doc<Comment>(`things/${comment.thingId}/comments/${comment.id}`)
       .update({
         ...comment,
         updateAt: firestore.Timestamp.now(),
       });
   }
 
-  updateReply(
-    rootCommentId: string,
-    reply: Comment,
-    thingId: string
-  ): Promise<void> {
+  updateReply(rootCommentId: string, reply: Comment): Promise<void> {
     return this.db
       .doc<Comment>(
-        `things/${thingId}/comments/${rootCommentId}/replies/${reply.id}`
+        `things/${reply.thingId}/comments/${rootCommentId}/replies/${reply.id}`
       )
       .update({
         ...reply,
@@ -131,20 +120,16 @@ export class CommentService {
       });
   }
 
-  deleteComment(comment: Comment, thingId: string): Promise<void> {
+  deleteComment(comment: Comment): Promise<void> {
     return this.db
-      .doc<Thing>(`things/${thingId}/comments/${comment.id}`)
+      .doc<Thing>(`things/${comment.thingId}/comments/${comment.id}`)
       .delete();
   }
 
-  deleteReply(
-    rootCommentId: string,
-    reply: Comment,
-    thingId: string
-  ): Promise<void> {
+  deleteReply(rootCommentId: string, reply: Comment): Promise<void> {
     return this.db
       .doc<Thing>(
-        `things/${thingId}/comments/${rootCommentId}/replies/${reply.id}`
+        `things/${reply.thingId}/comments/${rootCommentId}/replies/${reply.id}`
       )
       .delete();
   }

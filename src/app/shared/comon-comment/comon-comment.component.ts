@@ -44,13 +44,14 @@ export class ComonCommentComponent implements OnInit {
 
   replyComment(): void {
     const replyComment: Omit<Comment, 'id' | 'updateAt'> = {
+      thingId: this.thingId,
       fromUid: this.user.uid,
       toUid: this.comment.fromUid,
       body: this.replyCommentForm.value,
       replyCount: 0,
     };
     this.commentService
-      .replyComment(this.thingId, this.rootCommentId, replyComment)
+      .replyComment(this.rootCommentId, replyComment)
       .then(() => this.snackBar.open('コメントに返信しました。'))
       .finally(() => this.replyCommentForm.setValue(''));
   }
@@ -67,17 +68,18 @@ export class ComonCommentComponent implements OnInit {
     this.isEditing = true;
     const newValue: Comment = {
       ...this.comment,
+      thingId: this.thingId,
       body: this.inputComment.value,
     };
     //コメント
     if (this.rootCommentId === this.comment.id) {
       this.commentService
-        .updateComment(newValue, this.thingId)
+        .updateComment(newValue)
         .then(() => this.snackBar.open('コメントを編集しました。'));
       //返信
     } else {
       this.commentService
-        .updateReply(this.rootCommentId, newValue, this.thingId)
+        .updateReply(this.rootCommentId, newValue)
         .then(() => this.snackBar.open('コメントを編集しました。'));
     }
   }
@@ -85,11 +87,11 @@ export class ComonCommentComponent implements OnInit {
   deleteComment(): void {
     if (this.rootCommentId === this.comment.id) {
       this.commentService
-        .deleteComment(this.comment, this.thingId)
+        .deleteComment(this.comment)
         .then(() => this.snackBar.open('コメントを削除しました。'));
     } else {
       this.commentService
-        .deleteReply(this.rootCommentId, this.comment, this.thingId)
+        .deleteReply(this.rootCommentId, this.comment)
         .then(() => this.snackBar.open('コメントを削除しました。'));
     }
   }

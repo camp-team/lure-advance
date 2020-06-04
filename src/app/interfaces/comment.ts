@@ -4,6 +4,7 @@ import { User } from './user';
 export interface Comment {
   id: string;
   fromUid: string;
+  thingId: string;
   body: string;
   toUid: string;
   replyCount: number;

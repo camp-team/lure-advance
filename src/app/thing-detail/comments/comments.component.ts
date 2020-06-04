@@ -8,6 +8,7 @@ import { User } from 'src/app/interfaces/user';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
+import { Thing } from 'src/app/interfaces/thing';
 
 @Component({
   selector: 'app-comments',
@@ -30,13 +31,14 @@ export class CommentsComponent implements OnInit {
 
   addComment(): void {
     const comment: Omit<Comment, 'id' | 'updateAt'> = {
+      thingId: this.id,
       fromUid: this.user.uid,
       toUid: '',
       replyCount: 0,
       body: this.commentForm.value,
     };
     this.commentService
-      .addComment(this.id, comment)
+      .addComment(comment)
       .then(() => this.snackBar.open('コメントを追加しました。'))
       .finally(() => this.commentForm.setValue(''));
   }
