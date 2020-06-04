@@ -22,7 +22,10 @@ import {
 } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
-
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { SharedModule } from './shared/shared.module';
 @NgModule({
   declarations: [AppComponent, HeaderNavComponent],
   imports: [
@@ -42,6 +45,10 @@ import { MatDividerModule } from '@angular/material/divider';
     MatSnackBarModule,
     MatMenuModule,
     MatDividerModule,
+    MatBadgeModule,
+    MatSidenavModule,
+    MatListModule,
+    SharedModule,
   ],
   providers: [
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2000 } },

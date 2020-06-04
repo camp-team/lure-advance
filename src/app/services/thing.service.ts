@@ -5,6 +5,8 @@ import { Thing } from '../interfaces/thing';
 import { firestore } from 'firebase';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { map, take } from 'rxjs/operators';
+import { User } from '../interfaces/user';
+import { Notification } from '../interfaces/notification';
 
 @Injectable({
   providedIn: 'root',
@@ -50,11 +52,22 @@ export class ThingService {
     );
   }
 
-  likeThing(thingId: string, uid: string): Promise<void> {
-    return this.db.doc(`things/${thingId}/likeUsers/${uid}`).set({
-      uid,
-      thingId,
-    });
+  likeThing(thing: Thing, user: User): Promise<void> {
+    console.log(thing);
+    const notification: Notification = {
+      type: 'like',
+      designerId: thing.designerId,
+      fromUid: user.uid,
+      thingId: thing.id,
+      name: user.name,
+      thumbnailUrl: thing.fileUrls[0],
+      comment: '',
+      avatarUrl: user.avatarURL,
+      updateAt: firestore.Timestamp.now(),
+    };
+    return this.db
+      .doc(`things/${thing.id}/likeUsers/${user.uid}`)
+      .set(notification);
   }
 
   unLikeThing(thingId: string, uid: string): Promise<void> {
