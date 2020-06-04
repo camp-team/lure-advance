@@ -1,14 +1,14 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Notification } from '../interfaces/notification';
+import { NotificationWithUserAndThing } from '../interfaces/notification';
 
 @Pipe({
   name: 'notifymsg',
 })
 export class NotifymsgPipe implements PipeTransform {
-  transform(value: Notification): string {
+  transform(value: NotificationWithUserAndThing): string {
     const type = value.type;
     const comment = this.sliceComment(value.comment);
-    const fromName = value.name;
+    const fromName = value.user.name;
     if (type === 'like') {
       return `${fromName}さんがあなたの投稿にいいねをしました。`;
     } else if (type === 'follow') {

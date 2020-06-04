@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore/';
-import { Observable, combineLatest } from 'rxjs';
+import { Observable, combineLatest, of } from 'rxjs';
 import { Thing } from '../interfaces/thing';
 import { firestore } from 'firebase';
 import { Comment, CommentWithUser } from '../interfaces/comment';
 import { switchMap, map } from 'rxjs/operators';
 import { UserService } from './user.service';
+import { User } from '../interfaces/user';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,6 @@ export class CommentService {
   constructor(private db: AngularFirestore, private userService: UserService) {}
 
   getAllComments(thingId: string): Observable<CommentWithUser[]> {
-    let allComments: Comment[];
     return this.db
       .collection<Comment>(`things/${thingId}/comments`, (ref) =>
         ref.orderBy('updateAt', 'desc')
@@ -22,16 +22,17 @@ export class CommentService {
       .valueChanges()
       .pipe(
         switchMap((comments) => {
-          allComments = comments;
           const distinctUids: string[] = [
             ...new Set(comments.map((comment) => comment.fromUid)),
           ];
-          return combineLatest(
+
+          const users$: Observable<User[]> = combineLatest(
             distinctUids.map((uid) => this.userService.getUserByID(uid))
           );
+          return combineLatest([of(comments), users$]);
         }),
-        map((users) => {
-          return allComments.map((comment) => {
+        map(([comments, users]) => {
+          return comments.map((comment) => {
             return {
               ...comment,
               user: users.find((user) => comment.fromUid === user.uid),

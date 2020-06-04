@@ -82,8 +82,6 @@ export class ThingService {
       designerId: thing.designerId,
       fromUid: user.uid,
       thingId: thing.id,
-      name: user.name,
-      thumbnailUrl: thing.fileUrls[0],
       comment: '',
       updateAt: firestore.Timestamp.now(),
     };

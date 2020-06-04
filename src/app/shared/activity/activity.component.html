@@ -9,10 +9,9 @@
       {{ notification.updateAt.toDate() | date: 'yyyy年MM月dd日' }}
     </p>
   </div>
-  <div
-    class="activity__thumbnail"
-    [style.background-image]="'url(' + notification.thumbnailUrl + ')'"
-  ></div>
+  <div class="activity__thumbnail">
+    <img [src]="notification.thing.fileUrls[0]" alt="" />
+  </div>
   <div class="activity__action">
     <button mat-icon-button><mat-icon>more_vert</mat-icon></button>
   </div>
