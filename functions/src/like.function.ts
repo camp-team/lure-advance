@@ -17,28 +17,31 @@ export const likeThing = functions
         .update('likeCount', admin.firestore.FieldValue.increment(1));
 
       const value = snap.data();
-
       if (!value) {
         return;
       }
       const targetUid: string = value.designerId;
       const likerUid: string = context.params.uid;
 
-      await db
-        .doc(`users/${targetUid}`)
-        .update('notificationCount', admin.firestore.FieldValue.increment(1));
+      if (targetUid === likerUid) {
+        return;
+      }
 
-      await db.collection(`users/${targetUid}/notifications`).add({
+      const docRef = db.collection(`users/${targetUid}/notifications`).doc();
+
+      await docRef.set({
+        id: docRef.id,
         type: 'like',
         fromUid: likerUid,
         designerId: targetUid,
         thingId: thingId,
-        thumbnailUrl: value.thumbnailUrl,
         comment: '',
-        avatarUrl: value.avatarUrl,
-        name: value.name,
         updateAt: admin.firestore.Timestamp.now(),
       });
+
+      await db
+        .doc(`users/${targetUid}`)
+        .update('notificationCount', admin.firestore.FieldValue.increment(1));
 
       return markEventTried(eventId);
     } else {

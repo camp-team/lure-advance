@@ -26,15 +26,14 @@ export const addReply = functions
       const replierUid: string = value.fromUid;
       const comment: string = value.body;
 
-      await db
-        .doc(`users/${targetUid}`)
-        .update('notificationCount', admin.firestore.FieldValue.increment(1));
-
       if (targetUid === replierUid) {
-        return markEventTried(eventId);
+        return;
       }
 
-      await db.collection(`users/${targetUid}/notifications`).add({
+      const docRef = db.collection(`users/${targetUid}/notifications`).doc();
+
+      await docRef.set({
+        id: docRef.id,
         type: 'reply',
         fromUid: replierUid,
         designerId: targetUid,
@@ -42,6 +41,10 @@ export const addReply = functions
         comment: comment,
         updateAt: admin.firestore.Timestamp.now(),
       });
+
+      await db
+        .doc(`users/${targetUid}`)
+        .update('notificationCount', admin.firestore.FieldValue.increment(1));
 
       return markEventTried(eventId);
     } else {

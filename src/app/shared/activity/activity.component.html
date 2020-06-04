@@ -13,6 +13,14 @@
     <img [src]="notification.thing.fileUrls[0]" alt="" />
   </div>
   <div class="activity__action">
-    <button mat-icon-button><mat-icon>more_vert</mat-icon></button>
+    <button [mat-menu-trigger-for]="menu" mat-icon-button>
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu>
+      <button (click)="deleteItem(notification.id)" mat-menu-item>
+        <mat-icon>delete</mat-icon>
+        <span>削除</span>
+      </button>
+    </mat-menu>
   </div>
 </div>

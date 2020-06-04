@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable, combineLatest, of } from 'rxjs';
-import { firestore } from 'firebase';
 import { UserService } from './user.service';
 import { switchMap, map } from 'rxjs/operators';
 import { User } from '../interfaces/user';
@@ -26,6 +25,12 @@ export class NotificationService {
     return this.db.doc<User>(`users/${uid}`).update({
       notificationCount: 0,
     });
+  }
+
+  deleteNotification(id: string, uid: string): Promise<void> {
+    return this.db
+      .doc<Notification>(`users/${uid}/notifications/${id}`)
+      .delete();
   }
 
   getNotificationsByUid(

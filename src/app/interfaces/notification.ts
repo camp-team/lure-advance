@@ -3,6 +3,7 @@ import { User } from './user';
 import { Thing } from './thing';
 
 export interface Notification {
+  id: string;
   type: 'like' | 'reply' | 'follow';
   designerId: string;
   fromUid: string;

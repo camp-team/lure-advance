@@ -13,9 +13,20 @@
   <button routerLink="/create" mat-icon-button class="">
     <mat-icon>add</mat-icon>
   </button>
-  <button (click)="activity.emit()" mat-icon-button>
-    <mat-icon>notifications</mat-icon>
+  <button
+    *ngIf="user$ | async as user; else veiw"
+    (click)="activity.emit(); clearNotificationCount(user.uid)"
+    mat-icon-button
+  >
+    <mat-icon matBadge="{{ user.notificationCount || null }}"
+      >notifications</mat-icon
+    >
   </button>
+  <ng-template #veiw>
+    <button mat-icon-button>
+      <mat-icon>notifications</mat-icon>
+    </button>
+  </ng-template>
   <button
     *ngIf="user$ | async as user; else loginbtn"
     class="avator"
