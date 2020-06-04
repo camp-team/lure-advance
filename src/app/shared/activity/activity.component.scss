@@ -1,0 +1,28 @@
+.activity {
+  margin: 8px;
+  display: grid;
+  grid-template-columns: 40px 1fr 80px 16px;
+  gap: 16px;
+  &__avatar {
+    background: center/cover;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  &__message {
+    white-space: pre-line;
+    margin: 0;
+    font-size: 14px;
+  }
+  &__updateAt {
+    margin: 8px 0;
+    font-size: 13px;
+    color: rgba(black, 0.6);
+  }
+  &__thumbnail {
+    background: center/cover;
+  }
+  &__actions {
+    text-align: center;
+  }
+}
