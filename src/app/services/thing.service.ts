@@ -77,17 +77,10 @@ export class ThingService {
   }
 
   likeThing(thing: Thing, user: User): Promise<void> {
-    const notification: Notification = {
-      type: 'like',
+    return this.db.doc(`things/${thing.id}/likeUsers/${user.uid}`).set({
       designerId: thing.designerId,
       fromUid: user.uid,
-      thingId: thing.id,
-      comment: '',
-      updateAt: firestore.Timestamp.now(),
-    };
-    return this.db
-      .doc(`things/${thing.id}/likeUsers/${user.uid}`)
-      .set(notification);
+    });
   }
 
   unLikeThing(thingId: string, uid: string): Promise<void> {
