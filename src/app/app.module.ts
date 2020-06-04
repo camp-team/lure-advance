@@ -22,9 +22,18 @@ import {
 } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { LegalComponent } from './footer/legal/legal.component';
+import { PrivacypolicyComponent } from './footer/privacypolicy/privacypolicy.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
-  declarations: [AppComponent, HeaderNavComponent],
+  declarations: [
+    AppComponent,
+    HeaderNavComponent,
+    LegalComponent,
+    PrivacypolicyComponent,
+    FooterComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
