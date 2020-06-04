@@ -30,6 +30,10 @@ export const replyComment = functions
         .doc(`users/${targetUid}`)
         .update('notificationCount', admin.firestore.FieldValue.increment(1));
 
+      if (targetUid === replierUid) {
+        return markEventTried(eventId);
+      }
+
       await db.collection(`users/${targetUid}/notifications`).add({
         type: 'reply',
         fromUid: replierUid,

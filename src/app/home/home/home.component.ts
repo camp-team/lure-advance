@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ThingService } from 'src/app/services/thing.service';
-import { Thing } from 'src/app/interfaces/thing';
+import { Thing, ThingWithUser } from 'src/app/interfaces/thing';
 import { User } from 'src/app/interfaces/user';
 import { map, take } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth.service';
@@ -12,7 +12,7 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class HomeComponent implements OnInit {
   user: User;
-  things: Thing[];
+  things: ThingWithUser[];
   likedThingsIds: string[];
   likeState = {};
 
@@ -31,7 +31,7 @@ export class HomeComponent implements OnInit {
 
     //TODO アルゴリア連携
     this.thingService
-      .getAllThings()
+      .getThings()
       .pipe(
         map((res) => res.map((item) => item)),
         take(1)
