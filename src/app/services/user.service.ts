@@ -1,26 +1,24 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { AuthService } from './auth.service';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { User } from '../interfaces/user';
-import { switchMap } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  user$: Observable<User> = this.authService.afUser$.pipe(
-    switchMap((user) => {
-      if (user) {
-        return this.db.doc<User>(`users/${user.uid}`).valueChanges();
-      }
-      return of(null);
-    })
-  );
-
-  constructor(private db: AngularFirestore, private authService: AuthService) {}
+  constructor(private db: AngularFirestore) {}
 
   getUserByID(uid: string): Observable<User> {
     return this.db.doc<User>(`users/${uid}`).valueChanges();
+  }
+
+  getUserByIDonPromise(uid: string): Promise<User> {
+    return this.db
+      .doc<User>(`users/${uid}`)
+      .valueChanges()
+      .pipe(take(1))
+      .toPromise();
   }
 }

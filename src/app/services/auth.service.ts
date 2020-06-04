@@ -1,20 +1,32 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { auth, User } from 'firebase/app';
+import { auth } from 'firebase/app';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { UserService } from './user.service';
+import { User } from '../interfaces/user';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  afUser$: Observable<User> = this.afAuth.user;
-  uid: string;
+  user$: Observable<User> = this.afAuth.authState.pipe(
+    switchMap((user) => {
+      if (user) {
+        return this.userService.getUserByID(user.uid);
+      } else {
+        return of(null);
+      }
+    })
+  );
 
-  constructor(private afAuth: AngularFireAuth) {
-    this.afUser$.subscribe((user) => {
-      this.uid = user?.uid;
-    });
+  user: User;
+
+  constructor(
+    private afAuth: AngularFireAuth,
+    private userService: UserService
+  ) {
+    this.user$.subscribe((user) => (this.user = user));
   }
 
   login(): Promise<auth.UserCredential> {
