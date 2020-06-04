@@ -22,9 +22,10 @@ import {
 } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { LegalComponent } from './legal/legal.component';
 
 @NgModule({
-  declarations: [AppComponent, HeaderNavComponent],
+  declarations: [AppComponent, HeaderNavComponent, LegalComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
