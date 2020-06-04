@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NotificationService } from 'src/app/services/notification.service';
-import { Notification } from 'src/app/interfaces/notification';
+import { NotificationWithUser } from 'src/app/interfaces/notification';
 import { AuthService } from 'src/app/services/auth.service';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
@@ -11,9 +11,11 @@ import { switchMap } from 'rxjs/operators';
   styleUrls: ['./activity.component.scss'],
 })
 export class ActivityComponent implements OnInit {
-  notifications$: Observable<Notification[]> = this.authService.user$.pipe(
+  notifications$: Observable<
+    NotificationWithUser[]
+  > = this.authService.user$.pipe(
     switchMap((user) =>
-      this.notificationService.getAllNotificationsByUid(user.uid)
+      this.notificationService.getNotificationsByUid(user.uid)
     )
   );
   constructor(

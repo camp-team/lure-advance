@@ -53,7 +53,6 @@ export class ThingService {
   }
 
   likeThing(thing: Thing, user: User): Promise<void> {
-    console.log(thing);
     const notification: Notification = {
       type: 'like',
       designerId: thing.designerId,
@@ -62,7 +61,6 @@ export class ThingService {
       name: user.name,
       thumbnailUrl: thing.fileUrls[0],
       comment: '',
-      avatarUrl: user.avatarURL,
       updateAt: firestore.Timestamp.now(),
     };
     return this.db

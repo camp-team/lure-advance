@@ -1,7 +1,7 @@
 <div class="activity" *ngFor="let notification of notifications$ | async">
   <div
     class="activity__avatar"
-    [style.background-image]="'url(' + notification.avatarUrl + ')'"
+    [style.background-image]="'url(' + notification.user.avatarURL + ')'"
   ></div>
   <div class="activity__body">
     <p class="activity__message">{{ notification | notifymsg }}</p>
