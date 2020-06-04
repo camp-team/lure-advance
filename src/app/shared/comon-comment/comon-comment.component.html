@@ -12,6 +12,61 @@
         </p>
       </div>
       <p class="comment__body">{{ comment.body }}</p>
+      <div class="comment__actions">
+        <button (click)="isReplying = true" mat-icon-button>
+          <mat-icon>reply</mat-icon>
+        </button>
+      </div>
+      <ng-container *ngIf="comment?.replyCount">
+        <button
+          (click)="readReplyComments()"
+          *ngIf="!isShowReplies"
+          mat-icon-button
+        >
+          <mat-icon>keyboard_arrow_down</mat-icon>
+          <span>{{ comment.replyCount }}件の返信を表示</span>
+        </button>
+        <button
+          (click)="isShowReplies = false"
+          *ngIf="isShowReplies"
+          mat-icon-button
+        >
+          <mat-icon>keyboard_arrow_up</mat-icon>
+          <span>{{ comment.replyCount }}件の返信を非表示</span>
+        </button>
+        <ng-container *ngIf="isShowReplies">
+          <app-comon-comment
+            *ngFor="let reply of replyComments$ | async"
+            [comment]="reply"
+            [thingId]="thingId"
+            [rootCommentId]="rootCommentId"
+          ></app-comon-comment>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="isReplying">
+        <mat-form-field appearance="outline">
+          <mat-label>コメント</mat-label>
+          <textarea
+            #commentInput
+            matInput
+            matTextareaAutosize
+            required
+            autofocus
+            [formControl]="replyCommentForm"
+          ></textarea>
+          <mat-error *ngIf="replyCommentForm.hasError('maxlength')"
+            >文字が多過ぎます</mat-error
+          >
+        </mat-form-field>
+        <div class="edit-actions">
+          <button (click)="isReplying = false" mat-flat-button>
+            キャンセル
+          </button>
+          <button (click)="replyComment()" mat-flat-button color="primary">
+            返信
+          </button>
+        </div>
+      </ng-container>
     </ng-template>
     <ng-container *ngIf="isEditing; else view">
       <mat-form-field appearance="outline">
