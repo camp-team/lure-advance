@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { User } from '../interfaces/user';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-header-nav',
@@ -13,11 +15,13 @@ export class HeaderNavComponent implements OnInit {
     private snackBar: MatSnackBar
   ) {}
 
+  @Output() activity: EventEmitter<boolean> = new EventEmitter();
+
   ngOnInit(): void {}
 
-  user$ = this.authService.afUser$;
+  user$: Observable<User> = this.authService.user$;
   uid: String = 'xxxx';
-
+  // user: User;
   isProccesing: boolean;
 
   login() {

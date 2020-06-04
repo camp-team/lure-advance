@@ -13,13 +13,13 @@
   <button routerLink="/create" mat-icon-button class="">
     <mat-icon>add</mat-icon>
   </button>
-  <button mat-icon-button>
+  <button (click)="activity.emit()" mat-icon-button>
     <mat-icon>notifications</mat-icon>
   </button>
   <button
     *ngIf="user$ | async as user; else loginbtn"
     class="avator"
-    [style.background-image]="'url(' + user.photoURL + ')'"
+    [style.background-image]="'url(' + user.avatarURL + ')'"
     [matMenuTriggerFor]="menu"
     mat-icon-button
   ></button>
