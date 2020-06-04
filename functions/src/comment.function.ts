@@ -60,7 +60,16 @@ export const deleteReply = functions
     if (should) {
       await db
         .doc(`things/${thingId}/comments/${commentId}`)
-        .update('replyCount', admin.firestore.FieldValue.increment(-1));
+        .get()
+        .then(async (doc) => {
+          if (doc.exists) {
+            //親のコメントが削除されたときも走るのでドキュメントがある時だけ更新する
+            await doc.ref.update(
+              'replyCount',
+              admin.firestore.FieldValue.increment(-1)
+            );
+          }
+        });
       return markEventTried(eventId);
     } else {
       return true;
