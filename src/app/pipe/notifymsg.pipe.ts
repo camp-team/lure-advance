@@ -9,14 +9,15 @@ export class NotifymsgPipe implements PipeTransform {
     const type = value.type;
     const comment = this.sliceComment(value.comment);
     const fromName = value.user.name;
-    if (type === 'like') {
-      return `${fromName}さんがあなたの投稿にいいねをしました。`;
-    } else if (type === 'follow') {
-      return `${fromName}さんからフォローされました。`;
-    } else if (type === 'reply') {
-      return `${fromName}さんからコメントをいただきました。:\n「${comment}」`;
-    } else {
-      throw new Error('想定していないパラメーター:' + type);
+    switch (type) {
+      case 'like':
+        return `${fromName}さんがあなたの投稿にいいねをしました。`;
+      case 'follow':
+        return `${fromName}さんからフォローされました。`;
+      case 'reply':
+        return `${fromName}さんからコメントをいただきました。:\n「${comment}」`;
+      default:
+        throw new Error('想定してないパラメーター:' + type);
     }
   }
   private sliceComment(comment: string): string {
