@@ -1,17 +1,14 @@
 <div class="wrap">
-<app-header-nav (activity)="rightNav.toggle()"></app-header-nav>
-<mat-sidenav-container>
-  <mat-sidenav position="end" #rightNav mode="side">
-    <app-activity></app-activity>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <router-outlet></router-outlet>
-  </mat-sidenav-content>
-  </main>
-</mat-sidenav-container>
+  <app-header-nav (activity)="rightNav.toggle()"></app-header-nav>
+  <mat-sidenav-container>
+    <mat-sidenav position="end" #rightNav mode="side">
+      <app-activity></app-activity>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <main>
+        <router-outlet></router-outlet>
+      </main>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
   <app-footer></app-footer>
 </div>
-
-  
-
-
