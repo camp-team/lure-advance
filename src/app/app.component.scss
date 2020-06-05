@@ -1,13 +1,8 @@
 .wrap {
   display: flex;
-  flex-flow: column;
-  justify-content: stretch;
+  flex-direction: column;
   min-height: 100%;
 }
-
-main {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  overflow: hidden;
+app-footer {
+  margin-top: auto;
 }

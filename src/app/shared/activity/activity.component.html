@@ -1,0 +1,26 @@
+<div class="activity" *ngFor="let notification of notifications$ | async">
+  <div
+    class="activity__avatar"
+    [style.background-image]="'url(' + notification.user.avatarURL + ')'"
+  ></div>
+  <div class="activity__body">
+    <p class="activity__message">{{ notification | notifymsg }}</p>
+    <p class="activity__updateAt">
+      {{ notification.updateAt.toDate() | date: 'yyyy年MM月dd日' }}
+    </p>
+  </div>
+  <div class="activity__thumbnail">
+    <img [src]="notification.thing.fileUrls[0]" alt="" />
+  </div>
+  <div class="activity__action">
+    <button [mat-menu-trigger-for]="menu" mat-icon-button>
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu>
+      <button (click)="deleteItem(notification.id)" mat-menu-item>
+        <mat-icon>delete</mat-icon>
+        <span>削除</span>
+      </button>
+    </mat-menu>
+  </div>
+</div>

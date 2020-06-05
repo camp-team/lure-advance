@@ -3,7 +3,7 @@
     <mat-card-header class="thing__header">
       <div
         mat-card-avatar
-        [style.background-image]="'url(https://placehold.jp/40x40.png)'"
+        [style.background-image]="'url(' + thing.user.avatarURL + ')'"
         class="thing__avator"
       ></div>
       <mat-card-title class="thing__title">{{ thing.title }}</mat-card-title>
@@ -24,7 +24,7 @@
     <mat-card-actions>
       <button
         *ngIf="isUnlike(thing.id)"
-        (click)="likeThing(thing.id)"
+        (click)="likeThing(thing)"
         mat-icon-button
       >
         <mat-icon>favorite_border</mat-icon>

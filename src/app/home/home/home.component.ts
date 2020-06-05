@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ThingService } from 'src/app/services/thing.service';
-import { Thing } from 'src/app/interfaces/thing';
+import { Thing, ThingWithUser } from 'src/app/interfaces/thing';
 import { User } from 'src/app/interfaces/user';
-import { UserService } from 'src/app/services/user.service';
 import { map, take } from 'rxjs/operators';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -12,24 +12,26 @@ import { map, take } from 'rxjs/operators';
 })
 export class HomeComponent implements OnInit {
   user: User;
-  things: Thing[];
+  things: ThingWithUser[];
   likedThingsIds: string[];
   likeState = {};
 
   constructor(
     private thingService: ThingService,
-    private userService: UserService
+    private authService: AuthService
   ) {
-    this.userService.user$.subscribe((user) => {
+    this.authService.user$.subscribe((user) => {
       this.user = user;
-      this.thingService
-        .getlikedThingIds(this.user.uid)
-        .then((res) => (this.likedThingsIds = res));
+      if (user) {
+        this.thingService
+          .getlikedThingIds(this.user.uid)
+          .then((res) => (this.likedThingsIds = res));
+      }
     });
 
     //TODO アルゴリア連携
     this.thingService
-      .getAllThings()
+      .getThings()
       .pipe(
         map((res) => res.map((item) => item)),
         take(1)
@@ -40,13 +42,13 @@ export class HomeComponent implements OnInit {
 
   isMore: boolean;
 
-  likeThing(thingId: string): Promise<void> {
-    const index = this.things.findIndex((thing) => thing.id === thingId);
+  likeThing(thing: Thing): Promise<void> {
+    const index = this.things.findIndex((item) => thing.id === item.id);
     this.things[index].likeCount++;
-    this.likeState[thingId] = {
+    this.likeState[thing.id] = {
       isLike: true,
     };
-    return this.thingService.likeThing(thingId, this.user.uid);
+    return this.thingService.likeThing(thing, this.user);
   }
 
   unLikeThing(thingId: string): Promise<void> {

@@ -49,7 +49,7 @@ export class CreateComponent implements OnInit {
 
   create(id: string) {
     const detailValue = this.detailFormGroup.value;
-    const userId = this.authService.uid;
+    const userId = this.authService.user.uid;
     const thing: Omit<Thing, 'updateAt' | 'fileUrls'> = {
       id,
       title: detailValue.title,

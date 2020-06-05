@@ -22,6 +22,10 @@ import {
 } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { SharedModule } from './shared/shared.module';
 import { LegalComponent } from './footer/legal/legal.component';
 import { PrivacypolicyComponent } from './footer/privacypolicy/privacypolicy.component';
 import { FooterComponent } from './footer/footer.component';
@@ -51,6 +55,10 @@ import { FooterComponent } from './footer/footer.component';
     MatSnackBarModule,
     MatMenuModule,
     MatDividerModule,
+    MatBadgeModule,
+    MatSidenavModule,
+    MatListModule,
+    SharedModule,
   ],
   providers: [
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2000 } },

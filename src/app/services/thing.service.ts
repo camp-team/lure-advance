@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
-import { Thing } from '../interfaces/thing';
+import { Observable, combineLatest } from 'rxjs';
+import { Thing, ThingWithUser } from '../interfaces/thing';
 import { firestore } from 'firebase';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { map, take } from 'rxjs/operators';
+import { map, take, switchMap } from 'rxjs/operators';
+import { User } from '../interfaces/user';
+import { UserService } from './user.service';
+import { Notification } from '../interfaces/notification';
 
 @Injectable({
   providedIn: 'root',
@@ -12,11 +15,34 @@ import { map, take } from 'rxjs/operators';
 export class ThingService {
   constructor(
     private db: AngularFirestore,
-    private storage: AngularFireStorage
+    private storage: AngularFireStorage,
+    private userService: UserService
   ) {}
 
-  getAllThings(): Observable<Thing[]> {
-    return this.db.collection<Thing>('things').valueChanges();
+  getThings(): Observable<ThingWithUser[]> {
+    let allthings: Thing[];
+    return this.db
+      .collection<Thing>(`things`, (ref) => ref.orderBy('updateAt', 'desc'))
+      .valueChanges()
+      .pipe(
+        switchMap((things: Thing[]) => {
+          allthings = things;
+          const distinctUids: string[] = [
+            ...new Set(things.map((thing) => thing.designerId)),
+          ];
+          return combineLatest(
+            distinctUids.map((uid) => this.userService.getUserByID(uid))
+          );
+        }),
+        map((users: User[]) => {
+          return allthings.map((thing) => {
+            return {
+              ...thing,
+              user: users.find((user) => thing.designerId === user.uid),
+            };
+          });
+        })
+      );
   }
 
   getThingByID(thingId: string): Observable<Thing> {
@@ -50,10 +76,10 @@ export class ThingService {
     );
   }
 
-  likeThing(thingId: string, uid: string): Promise<void> {
-    return this.db.doc(`things/${thingId}/likeUsers/${uid}`).set({
-      uid,
-      thingId,
+  likeThing(thing: Thing, user: User): Promise<void> {
+    return this.db.doc(`things/${thing.id}/likeUsers/${user.uid}`).set({
+      designerId: thing.designerId,
+      fromUid: user.uid,
     });
   }
 

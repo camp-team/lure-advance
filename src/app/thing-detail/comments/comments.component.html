@@ -28,6 +28,7 @@
     <app-comon-comment
       *ngFor="let comment of comments$ | async"
       [comment]="comment"
+      [rootCommentId]="comment.id"
       [thingId]="id"
     ></app-comon-comment>
   </mat-card>

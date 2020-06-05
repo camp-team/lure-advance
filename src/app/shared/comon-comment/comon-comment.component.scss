@@ -22,6 +22,9 @@ mat-form-field {
   &__body {
     margin: 0;
   }
+  &__actions {
+    text-align: left;
+  }
   &__name {
     line-height: 1;
     font-weight: 500;
