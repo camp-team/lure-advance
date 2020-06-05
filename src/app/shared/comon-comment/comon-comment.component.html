@@ -20,20 +20,18 @@
       <ng-container *ngIf="comment?.replyCount">
         <button
           (click)="readReplyComments()"
-          *ngIf="!isShowReplies"
+          *ngIf="!isShowReplies; else replies"
           mat-icon-button
         >
           <mat-icon>keyboard_arrow_down</mat-icon>
           <span>{{ comment.replyCount }}件の返信を表示</span>
         </button>
-        <button
-          (click)="isShowReplies = false"
-          *ngIf="isShowReplies"
-          mat-icon-button
-        >
-          <mat-icon>keyboard_arrow_up</mat-icon>
-          <span>{{ comment.replyCount }}件の返信を非表示</span>
-        </button>
+        <ng-template #replies>
+          <button (click)="isShowReplies = false" mat-icon-button>
+            <mat-icon>keyboard_arrow_up</mat-icon>
+            <span>{{ comment.replyCount }}件の返信を非表示</span>
+          </button>
+        </ng-template>
         <ng-container *ngIf="isShowReplies">
           <app-comon-comment
             *ngFor="let reply of replyComments$ | async"
