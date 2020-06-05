@@ -29,6 +29,7 @@ import { SharedModule } from './shared/shared.module';
 import { LegalComponent } from './footer/legal/legal.component';
 import { PrivacypolicyComponent } from './footer/privacypolicy/privacypolicy.component';
 import { FooterComponent } from './footer/footer.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { FooterComponent } from './footer/footer.component';
     LegalComponent,
     PrivacypolicyComponent,
     FooterComponent,
+    NotFoundComponent,
   ],
   imports: [
     BrowserModule,

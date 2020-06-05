@@ -1,0 +1,30 @@
+.wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  padding: 120px 40px;
+}
+h1 {
+  font-size: 24px;
+  color: rgba(black, 0.6);
+}
+
+.btn {
+  line-height: 64px;
+  padding: 0 40px;
+  border-radius: 40px;
+  span {
+    font-size: 24px;
+  }
+}
+.icon {
+  height: 240px;
+  max-width: 100%;
+  border-radius: 50%;
+}
