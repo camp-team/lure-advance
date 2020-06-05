@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { LegalComponent } from './footer/legal/legal.component';
+import { PrivacypolicyComponent } from './footer/privacypolicy/privacypolicy.component';
 
 const routes: Routes = [
   {
@@ -36,6 +38,14 @@ const routes: Routes = [
     path: 'mypage/:uid',
     loadChildren: () =>
       import('./mypage/mypage.module').then((m) => m.MypageModule),
+  },
+  {
+    path: 'intl/legal',
+    component: LegalComponent,
+  },
+  {
+    path: 'intl/privacypolicy',
+    component: PrivacypolicyComponent,
   },
 ];
 

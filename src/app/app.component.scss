@@ -1,0 +1,13 @@
+.wrap {
+  display: flex;
+  flex-flow: column;
+  justify-content: stretch;
+  min-height: 100%;
+}
+
+main {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  overflow: hidden;
+}

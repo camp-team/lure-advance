@@ -1,3 +1,4 @@
+<div class="wrap">
 <app-header-nav (activity)="rightNav.toggle()"></app-header-nav>
 <mat-sidenav-container>
   <mat-sidenav position="end" #rightNav mode="side">
@@ -6,4 +7,11 @@
   <mat-sidenav-content>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
+  </main>
 </mat-sidenav-container>
+  <app-footer></app-footer>
+</div>
+
+  
+
+

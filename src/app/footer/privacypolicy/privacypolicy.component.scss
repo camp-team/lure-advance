@@ -1,0 +1,29 @@
+.container {
+  padding: 0 24px;
+  margin: 0 auto;
+  max-width: 960px;
+}
+h1 {
+  font-size: 20px;
+  color: rgba(black, 0.6);
+}
+p {
+  color: rgba(black, 0.6);
+}
+h2 {
+  font-size: 18px;
+  color: rgba(black, 0.6);
+  padding: 0;
+}
+ol {
+  li {
+    font-size: 16px;
+    color: rgba(black, 0.6);
+  }
+}
+ul {
+  list-style: none;
+  li + li {
+    margin: 4px 0;
+  }
+}

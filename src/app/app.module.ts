@@ -26,8 +26,18 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { SharedModule } from './shared/shared.module';
+import { LegalComponent } from './footer/legal/legal.component';
+import { PrivacypolicyComponent } from './footer/privacypolicy/privacypolicy.component';
+import { FooterComponent } from './footer/footer.component';
+
 @NgModule({
-  declarations: [AppComponent, HeaderNavComponent],
+  declarations: [
+    AppComponent,
+    HeaderNavComponent,
+    LegalComponent,
+    PrivacypolicyComponent,
+    FooterComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
