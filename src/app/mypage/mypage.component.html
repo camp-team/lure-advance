@@ -1,4 +1,29 @@
-<p>mypage works!</p>
+<mat-card class="profile" *ngIf="user$ | async as user">
+  <div class="profile__header">
+    <div
+      class="profile__avatar"
+      [style.background-image]="'url(' + user.avatarURL + ')'"
+    ></div>
+    <div class="profile__action">
+      <p class="profile__name">{{ user.name }}</p>
+      <button mat-icon-button>
+        <mat-icon>settings</mat-icon>
+        <span>プロフィールを編集する</span>
+      </button>
+    </div>
+  </div>
+  <p class="profile__about">
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, doloribus.
+  </p>
+  <div class="profile__sns">
+    <button mat-icon-button>
+      <mat-icon>insert_link </mat-icon>
+      <a href="Lorem ipsum dolor sit amet consectetur.">
+        Lorem ipsum dolor sit amet consectetur.</a
+      >
+    </button>
+  </div>
+</mat-card>
 
 <nav mat-tab-nav-bar>
   <a
