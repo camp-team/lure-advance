@@ -10,6 +10,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MainComponent } from './main/main.component';
+import { MatDividerModule } from '@angular/material/divider';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { MainComponent } from './main/main.component';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
+    MatDividerModule,
+    SharedModule,
   ],
 })
 export class MypageModule {}

@@ -1,1 +1,6 @@
-<p>designs works!</p>
+<div class="grid">
+  <app-thing-card-sm
+    [post]="post"
+    *ngFor="let post of posts"
+  ></app-thing-card-sm>
+</div>
