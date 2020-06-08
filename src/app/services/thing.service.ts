@@ -4,7 +4,7 @@ import { Observable, combineLatest, of } from 'rxjs';
 import { Thing, ThingWithUser } from '../interfaces/thing';
 import { firestore } from 'firebase';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { map, take, switchMap, takeLast } from 'rxjs/operators';
+import { map, take, switchMap } from 'rxjs/operators';
 import { User } from '../interfaces/user';
 import { UserService } from './user.service';
 
@@ -53,6 +53,70 @@ export class ThingService {
     return this.db.doc<Thing>(`things/${thingId}`).valueChanges();
   }
 
+  getThingsByDesignerID(uid: string): Observable<Thing[]> {
+    return this.db
+      .collection<Thing>(`things`, (ref) =>
+        ref.where('designerId', '==', uid).orderBy('updateAt', 'desc')
+      )
+      .valueChanges();
+  }
+
+  getThingsLatestByDesignerID(uid: string): Observable<Thing[]> {
+    return this.db
+      .collection<Thing>(`things`, (ref) =>
+        ref.where('designerId', '==', uid).orderBy('updateAt', 'desc').limit(1)
+      )
+      .valueChanges();
+  }
+
+  getThingsOrderByLikeCount(uid: string): Observable<Thing[]> {
+    return this.db
+      .collection<Thing>(`things`, (ref) =>
+        ref.where('designerId', '==', uid).orderBy('likeCount', 'desc').limit(3)
+      )
+      .valueChanges();
+  }
+
+  getLikedThings(uid: string): Observable<Thing[]> {
+    return this.db
+      .collectionGroup<{
+        thingId: string;
+        fromUid: string;
+        designerId: string;
+      }>('likeUsers', (ref) => ref.where('fromUid', '==', uid))
+      .valueChanges()
+      .pipe(
+        switchMap((likeThings) =>
+          combineLatest(
+            likeThings.map((item) => this.getThingByID(item.thingId))
+          )
+        )
+      );
+  }
+
+  getLikedThingIdsWithPromise(uid: string): Promise<string[]> {
+    return this.db
+      .collectionGroup<{
+        thingId: string;
+        fromUid: string;
+        designerId: string;
+      }>('likeUsers', (ref) => ref.where('fromUid', '==', uid))
+      .valueChanges()
+      .pipe(
+        map((res) => res.map((item) => item.thingId)),
+        take(1)
+      )
+      .toPromise();
+  }
+
+  getMyLikedThingsByUid(uid: string): Promise<string[]> {
+    return this.db
+      .collection<string>(`users/${uid}/likedThings`)
+      .valueChanges()
+      .pipe(take(1))
+      .toPromise();
+  }
+
   createThing(thing: Omit<Thing, 'updateAt' | 'fileUrls'>): Promise<void> {
     const value: Thing = {
       ...thing,
@@ -91,28 +155,5 @@ export class ThingService {
   unLikeThing(thingId: string, uid: string): Promise<void> {
     console.log('hogehoge');
     return this.db.doc(`things/${thingId}/likeUsers/${uid}`).delete();
-  }
-
-  getLikedThingIds(uid: string): Promise<string[]> {
-    return this.db
-      .collectionGroup<{
-        thingId: string;
-        fromUid: string;
-        designerId: string;
-      }>('likeUsers', (ref) => ref.where('fromUid', '==', uid))
-      .valueChanges()
-      .pipe(
-        map((res) => res.map((item) => item.thingId)),
-        take(1)
-      )
-      .toPromise();
-  }
-
-  getMyLikedThingsByUid(uid: string): Promise<string[]> {
-    return this.db
-      .collection<string>(`users/${uid}/likedThings`)
-      .valueChanges()
-      .pipe(take(1))
-      .toPromise();
   }
 }
