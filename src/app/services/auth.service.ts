@@ -13,21 +13,18 @@ export class AuthService {
   user$: Observable<User> = this.afAuth.authState.pipe(
     switchMap((user) => {
       if (user) {
-        return this.userService.getUserByID(user.uid);
+        this.uid = user.uid;
+        return this.userService.getUserByID(this.uid);
       } else {
         return of(null);
       }
     })
   );
-
-  user: User;
-
+  uid: string;
   constructor(
     private afAuth: AngularFireAuth,
     private userService: UserService
-  ) {
-    this.user$.subscribe((user) => (this.user = user));
-  }
+  ) {}
 
   login(): Promise<auth.UserCredential> {
     return this.afAuth.signInWithPopup(new auth.GoogleAuthProvider());
