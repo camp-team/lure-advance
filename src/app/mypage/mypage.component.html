@@ -1,42 +1,44 @@
-<mat-card class="profile" *ngIf="user$ | async as user">
-  <div class="profile__header">
-    <div
-      class="profile__avatar"
-      [style.background-image]="'url(' + user.avatarURL + ')'"
-    ></div>
-    <div class="profile__action">
-      <p class="profile__name">{{ user.name }}</p>
+<div class="container">
+  <mat-card class="profile" *ngIf="user$ | async as user">
+    <div class="profile__header">
+      <div
+        class="profile__avatar"
+        [style.background-image]="'url(' + user.avatarURL + ')'"
+      ></div>
+      <div class="profile__action">
+        <p class="profile__name">{{ user.name }}</p>
+        <button mat-icon-button>
+          <mat-icon>settings</mat-icon>
+          <span>プロフィールを編集する</span>
+        </button>
+      </div>
+    </div>
+    <p class="profile__about">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, doloribus.
+    </p>
+    <div class="profile__sns">
       <button mat-icon-button>
-        <mat-icon>settings</mat-icon>
-        <span>プロフィールを編集する</span>
+        <mat-icon>insert_link </mat-icon>
+        <a href="Lorem ipsum dolor sit amet consectetur.">
+          Lorem ipsum dolor sit amet consectetur.</a
+        >
       </button>
     </div>
-  </div>
-  <p class="profile__about">
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, doloribus.
-  </p>
-  <div class="profile__sns">
-    <button mat-icon-button>
-      <mat-icon>insert_link </mat-icon>
-      <a href="Lorem ipsum dolor sit amet consectetur.">
-        Lorem ipsum dolor sit amet consectetur.</a
-      >
-    </button>
-  </div>
-</mat-card>
+  </mat-card>
 
-<nav mat-tab-nav-bar>
-  <a
-    mat-tab-link
-    *ngFor="let link of navLinks"
-    [routerLink]="link.path"
-    routerLinkActive
-    #rla="routerLinkActive"
-    [active]="rla.isActive"
-    [routerLinkActiveOptions]="{ exact: true }"
-  >
-    {{ link.label }}
-  </a>
-</nav>
+  <nav mat-tab-nav-bar>
+    <a
+      mat-tab-link
+      *ngFor="let link of navLinks"
+      [routerLink]="link.path"
+      routerLinkActive
+      #rla="routerLinkActive"
+      [active]="rla.isActive"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      {{ link.label }}
+    </a>
+  </nav>
 
-<router-outlet></router-outlet>
+  <router-outlet></router-outlet>
+</div>
