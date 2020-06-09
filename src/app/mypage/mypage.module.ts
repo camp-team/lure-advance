@@ -2,19 +2,33 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MypageRoutingModule } from './mypage-routing.module';
-import { AboutComponent } from './about/about.component';
 import { DesignsComponent } from './designs/designs.component';
 import { LikesComponent } from './likes/likes.component';
 import { MypageComponent } from './mypage.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MainComponent } from './main/main.component';
+import { MatDividerModule } from '@angular/material/divider';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
-    AboutComponent,
     DesignsComponent,
     LikesComponent,
     MypageComponent,
+    MainComponent,
   ],
-  imports: [CommonModule, MypageRoutingModule, MatTabsModule],
+  imports: [
+    CommonModule,
+    MypageRoutingModule,
+    MatTabsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatCardModule,
+    MatDividerModule,
+    SharedModule,
+  ],
 })
 export class MypageModule {}

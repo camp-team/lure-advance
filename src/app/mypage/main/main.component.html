@@ -1,0 +1,28 @@
+<section class="latest-posts">
+  <div class="grid grid--latest">
+    <app-thing-card-wide
+      [post]="post"
+      *ngFor="let post of latestPosts"
+    ></app-thing-card-wide>
+  </div>
+</section>
+
+<section class="pupular-posts">
+  <h2>人気の投稿</h2>
+  <div class="grid grid--popular">
+    <app-thing-card-sm
+      [post]="post"
+      *ngFor="let post of popularPosts"
+    ></app-thing-card-sm>
+  </div>
+</section>
+
+<section class="your-favorite">
+  <h2>いいねした投稿</h2>
+  <div class="grid grid--favorite">
+    <app-thing-card-sm
+      [post]="post"
+      *ngFor="let post of likedPosts"
+    ></app-thing-card-sm>
+  </div>
+</section>

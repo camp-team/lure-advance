@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AboutComponent } from './about/about.component';
 import { DesignsComponent } from './designs/designs.component';
 import { LikesComponent } from './likes/likes.component';
 import { MypageComponent } from './mypage.component';
+import { MainComponent } from './main/main.component';
 
 const routes: Routes = [
   {
@@ -21,7 +21,7 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        component: AboutComponent,
+        component: MainComponent,
       },
     ],
   },

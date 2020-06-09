@@ -1,0 +1,41 @@
+.post {
+  display: block;
+  padding: 0;
+  :hover {
+    cursor: pointer;
+  }
+  p {
+    margin: 0;
+  }
+  &__thumbnail {
+    img {
+      max-width: 100%;
+      vertical-align: bottom;
+    }
+  }
+  &__body {
+    padding: 8px;
+  }
+  &__title {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  &__sub-body {
+    display: flex;
+    font-size: 13px;
+    color: rgba(black, 0.6);
+    margin-bottom: 8px;
+    align-items: center;
+    p + p {
+      margin: 0 8px;
+    }
+  }
+  &__likeCount {
+    margin-right: 8px;
+  }
+  &__description {
+    font-size: 14px;
+    color: rgba(black, 0.6);
+    overflow: hidden;
+  }
+}

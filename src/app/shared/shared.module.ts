@@ -12,9 +12,20 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivityComponent } from './activity/activity.component';
 import { MatListModule } from '@angular/material/list';
 import { NotifymsgPipe } from '../pipe/notifymsg.pipe';
+import { ThingCardComponent } from './thing-card/thing-card.component';
+import { RouterModule } from '@angular/router';
+import { ThingCardSmComponent } from './thing-card-sm/thing-card-sm.component';
+import { ThingCardWideComponent } from './thing-card-wide/thing-card-wide.component';
 
 @NgModule({
-  declarations: [ComonCommentComponent, ActivityComponent, NotifymsgPipe],
+  declarations: [
+    ComonCommentComponent,
+    ActivityComponent,
+    NotifymsgPipe,
+    ThingCardComponent,
+    ThingCardSmComponent,
+    ThingCardWideComponent,
+  ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -27,7 +38,14 @@ import { NotifymsgPipe } from '../pipe/notifymsg.pipe';
     MatButtonModule,
     MatSnackBarModule,
     MatListModule,
+    RouterModule,
   ],
-  exports: [ComonCommentComponent, ActivityComponent],
+  exports: [
+    ComonCommentComponent,
+    ActivityComponent,
+    ThingCardComponent,
+    ThingCardSmComponent,
+    ThingCardWideComponent,
+  ],
 })
 export class SharedModule {}
