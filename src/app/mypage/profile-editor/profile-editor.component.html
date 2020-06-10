@@ -1,0 +1,63 @@
+<ng-container *ngIf="user$ | async as user">
+  <form [formGroup]="form">
+    <div class="actions">
+      <button mat-dialog-close mat-icon-button>
+        <mat-icon>close</mat-icon>
+      </button>
+      <p class="actions__title">プロフィール編集</p>
+      <button
+        (click)="save(user)"
+        [mat-dialog-close]="true"
+        mat-flat-button
+        color="primary"
+        [disabled]="form.invalid"
+      >
+        保存
+      </button>
+    </div>
+    <div>
+      <input
+        #imageInput
+        (change)="openAvatarEditor($event)"
+        type="file"
+        class="avatar-input"
+        accept=".png, .jpg, .jpeg"
+      />
+      <div
+        (click)="imageInput.click()"
+        class="avatar"
+        [style.background-image]="'url(' + user.avatarURL + ')'"
+      ></div>
+    </div>
+    <mat-form-field>
+      <mat-label>名前</mat-label>
+      <input #name formControlName="name" matInput />
+      <mat-hint align="end">{{ name.value.length }}/50</mat-hint>
+      <mat-error *ngIf="nameControl.hasError('maxlength')">
+        文字が多すぎます</mat-error
+      >
+      <mat-error *ngIf="nameControl.hasError('required')">
+        必須入力です</mat-error
+      >
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>自己紹介</mat-label>
+      <textarea formControlName="myself" #myself matInput></textarea>
+      <mat-hint align="end">{{ myself.value.length }}/160</mat-hint>
+      <mat-error *ngIf="myselfControl.hasError('maxlength')">
+        文字が多すぎます</mat-error
+      >
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>ウェブサイト</mat-label>
+      <input formControlName="myweb" #myweb matInput />
+      <mat-hint align="end">{{ myweb.value.length }}/100</mat-hint>
+      <mat-error *ngIf="mywebControl.hasError('maxlength')">
+        文字が多すぎます</mat-error
+      >
+      <mat-error *ngIf="mywebControl.hasError('pattern')">
+        urlが不正です</mat-error
+      >
+    </mat-form-field>
+  </form>
+</ng-container>
