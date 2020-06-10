@@ -1,0 +1,33 @@
+<ng-container *ngIf="user$ | async as user">
+  <div class="actions">
+    <button mat-dialog-close mat-icon-button><mat-icon>close</mat-icon></button>
+    <p class="actions__title">メディア編集</p>
+    <button
+      (click)="save(user)"
+      [mat-dialog-close]="true"
+      mat-flat-button
+      color="primary"
+    >
+      保存
+    </button>
+  </div>
+  <div class="cropper">
+    <image-cropper
+      [maintainAspectRatio]="true"
+      [aspectRatio]="1 / 1"
+      format="png"
+      [imageFile]="imageFile"
+      [transform]="transform"
+      [containWithinAspectRatio]="true"
+      (imageCropped)="imageCropped($event)"
+    ></image-cropper>
+  </div>
+  <mat-slider
+    #slider
+    [ngModel]="slider"
+    [max]="max"
+    [min]="min"
+    [step]="step"
+    (input)="zoom($event)"
+  ></mat-slider>
+</ng-container>
