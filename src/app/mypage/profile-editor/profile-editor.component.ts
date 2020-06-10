@@ -62,6 +62,7 @@ export class ProfileEditorComponent implements OnInit {
     const formValue = this.form.value;
     const newValue: User = {
       ...user,
+      name: formValue.name,
       description: formValue.myself,
       weblink: formValue.myweb,
     };
