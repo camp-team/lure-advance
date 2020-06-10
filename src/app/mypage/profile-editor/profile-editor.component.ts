@@ -28,11 +28,13 @@ export class ProfileEditorComponent implements OnInit {
   ) {}
 
   user$: Observable<User> = this.authService.user$;
-
   form: FormGroup = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(40)]],
     myself: ['', [Validators.maxLength(150)]],
-    myweb: ['', [Validators.maxLength(100)]],
+    myweb: [
+      '',
+      [Validators.maxLength(100), Validators.pattern(/https?:\/\/(www\.)?.+/)],
+    ],
   });
 
   ngOnInit(): void {
