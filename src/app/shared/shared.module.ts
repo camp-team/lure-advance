@@ -16,6 +16,7 @@ import { ThingCardComponent } from './thing-card/thing-card.component';
 import { RouterModule } from '@angular/router';
 import { ThingCardSmComponent } from './thing-card-sm/thing-card-sm.component';
 import { ThingCardWideComponent } from './thing-card-wide/thing-card-wide.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [

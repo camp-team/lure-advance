@@ -4,4 +4,6 @@ export interface User {
   avatarURL: string;
   name: string;
   notificationCount: number;
+  description?: string;
+  weblink?: string;
 }

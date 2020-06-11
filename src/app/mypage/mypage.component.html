@@ -1,5 +1,5 @@
-<div class="container">
-  <mat-card class="profile" *ngIf="user$ | async as user">
+<div class="container" *ngIf="user$ | async as user">
+  <mat-card class="profile">
     <div class="profile__header">
       <div
         class="profile__avatar"
@@ -7,21 +7,19 @@
       ></div>
       <div class="profile__action">
         <p class="profile__name">{{ user.name }}</p>
-        <button mat-icon-button>
+        <button (click)="openEditor()" mat-icon-button>
           <mat-icon>settings</mat-icon>
           <span>プロフィールを編集する</span>
         </button>
       </div>
     </div>
     <p class="profile__about">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, doloribus.
+      {{ user.description }}
     </p>
     <div class="profile__sns">
       <button mat-icon-button>
         <mat-icon>insert_link </mat-icon>
-        <a href="Lorem ipsum dolor sit amet consectetur.">
-          Lorem ipsum dolor sit amet consectetur.</a
-        >
+        <a href="{{ user.weblink }}" target="_blank"> {{ user.weblink }}</a>
       </button>
     </div>
   </mat-card>

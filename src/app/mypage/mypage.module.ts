@@ -12,6 +12,14 @@ import { MatCardModule } from '@angular/material/card';
 import { MainComponent } from './main/main.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { SharedModule } from '../shared/shared.module';
+import { ProfileEditorComponent } from './profile-editor/profile-editor.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatDialogModule } from '@angular/material/dialog';
+import { AvatarEditorComponent } from './profile-editor/avatar-editor/avatar-editor.component';
+import { ImageCropperModule } from 'ngx-image-cropper';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
   declarations: [
@@ -19,6 +27,8 @@ import { SharedModule } from '../shared/shared.module';
     LikesComponent,
     MypageComponent,
     MainComponent,
+    ProfileEditorComponent,
+    AvatarEditorComponent,
   ],
   imports: [
     CommonModule,
@@ -29,6 +39,13 @@ import { SharedModule } from '../shared/shared.module';
     MatCardModule,
     MatDividerModule,
     SharedModule,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    FormsModule,
+    MatDialogModule,
+    ImageCropperModule,
+    MatSliderModule,
   ],
 })
 export class MypageModule {}
