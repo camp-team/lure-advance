@@ -4,5 +4,7 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>キャンセル</button>
-  <button (click)="delete()" mat-button color="warn">削除</button>
+  <button [mat-dialog-close]="true" (click)="delete()" mat-button color="warn">
+    削除
+  </button>
 </mat-dialog-actions>
