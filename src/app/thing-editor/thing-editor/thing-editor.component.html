@@ -100,7 +100,9 @@
     </mat-form-field>
     <div class="details__actions">
       <button (click)="cancel(thing)" mat-button>キャンセル</button>
-      <button mat-flat-button color="primary">保存</button>
+      <button [disabled]="form.invalid" mat-flat-button color="primary">
+        保存
+      </button>
     </div>
   </form>
 </div>
