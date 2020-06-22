@@ -36,11 +36,6 @@ const routes: Routes = [
       import('./mypage/mypage.module').then((m) => m.MypageModule),
   },
   {
-    path: 'mypage/:uid',
-    loadChildren: () =>
-      import('./mypage/mypage.module').then((m) => m.MypageModule),
-  },
-  {
     path: 'intl/legal',
     component: LegalComponent,
   },
