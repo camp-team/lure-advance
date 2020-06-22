@@ -20,12 +20,21 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./thing-editor.component.scss'],
 })
 export class ThingEditorComponent implements OnInit {
+  MAX_FILE_LENGTH = 5;
   thing$: Observable<Thing> = this.route.parent.paramMap.pipe(
     switchMap((map) => {
       const thingId = map.get('thing');
       return this.thingService.getThingByID(thingId);
     })
   );
+
+  images: any[] = [];
+  imageFiles: (File | string)[] = [];
+  defaultImageLength: number;
+
+  stls: (string | ArrayBuffer)[] = [];
+  stlFiles: (File | string)[] = [];
+  defaultStlLength: number;
 
   form: FormGroup = this.fb.group({
     title: ['', [Validators.required, Validators.maxLength(100)]],
@@ -47,6 +56,16 @@ export class ThingEditorComponent implements OnInit {
   removable = true;
   addOnBlur = true;
 
+  selectFiles(event) {
+    const files: File[] = Object.values(event.target.files);
+    if (files.length + this.images.length > this.MAX_FILE_LENGTH) {
+      this.snackBar.open('最大ファイル数は5つです');
+      return;
+    }
+    files.forEach((file) => this.readFile(file));
+    console.log(this.stls);
+  }
+
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
@@ -62,9 +81,27 @@ export class ThingEditorComponent implements OnInit {
     }
   }
 
+  private readFile(file: File) {
+    const fr: FileReader = new FileReader();
+    fr.onload = (e) => {
+      if (this.isStl(file)) {
+        this.stlFiles.push(file);
+        this.stls.push(e.target.result);
+      } else {
+        this.images.push(e.target.result);
+        this.imageFiles.push(file);
+      }
+    };
+    fr.readAsDataURL(file);
+  }
+
+  private isStl(file: File) {
+    const fileName = file.name.toLocaleLowerCase();
+    return fileName.endsWith('.stl');
+  }
+
   remove(tag: string): void {
     const index = this.tags.indexOf(tag);
-
     if (index >= 0) {
       this.tags.splice(index, 1);
     }
@@ -85,6 +122,16 @@ export class ThingEditorComponent implements OnInit {
         ...thing,
         tags: null,
       });
+
+      this.images = [];
+      this.imageFiles = [];
+      this.images.push(...thing.imageUrls);
+      this.imageFiles.push(...thing.imageUrls);
+      this.defaultImageLength = thing.imageUrls.length;
+      this.stls = [];
+      this.stls.push(...thing.stlUrls);
+      this.stlFiles.push(...thing.stlUrls);
+      this.defaultStlLength = thing.stlUrls.length;
     });
   }
 
@@ -92,10 +139,19 @@ export class ThingEditorComponent implements OnInit {
     this.router.navigateByUrl('/' + thing.id);
   }
 
-  save(thing: Thing) {
+  async save(thing: Thing) {
+    const res = await this.thingService.uploadFiles(
+      thing.id,
+      this.stlFiles,
+      this.imageFiles,
+      this.defaultImageLength,
+      this.defaultStlLength
+    );
     const formValue = this.form.value;
     const newValue: Thing = {
       ...thing,
+      stlUrls: res.stlUrls,
+      imageUrls: res.imageUrls,
       title: formValue.title,
       description: formValue.description,
       tags: this.tags,
@@ -103,5 +159,15 @@ export class ThingEditorComponent implements OnInit {
     this.thingService
       .updateThing(newValue)
       .then(() => this.snackBar.open('保存しました。'));
+  }
+
+  deleteImage(index: number) {
+    this.images.splice(index, 1);
+    this.imageFiles.splice(index, 1);
+  }
+
+  deleteStl(index: number) {
+    this.stls.splice(index, 1);
+    this.stlFiles.splice(index, 1);
   }
 }
