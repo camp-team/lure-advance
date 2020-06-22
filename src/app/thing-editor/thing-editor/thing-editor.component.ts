@@ -128,6 +128,7 @@ export class ThingEditorComponent implements OnInit {
       this.images.push(...thing.imageUrls);
       this.imageFiles.push(...thing.imageUrls);
       this.defaultImageLength = thing.imageUrls.length;
+
       this.stls = [];
       this.stls.push(...thing.stlUrls);
       this.stlFiles.push(...thing.stlUrls);
@@ -156,9 +157,10 @@ export class ThingEditorComponent implements OnInit {
       description: formValue.description,
       tags: this.tags,
     };
-    this.thingService
-      .updateThing(newValue)
-      .then(() => this.snackBar.open('保存しました。'));
+    this.thingService.updateThing(newValue).then(() => {
+      this.snackBar.open('保存しました。');
+      this.router.navigateByUrl(`/${thing.id}`);
+    });
   }
 
   deleteImage(index: number) {
