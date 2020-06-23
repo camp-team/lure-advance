@@ -19,6 +19,8 @@ import { SharedModule } from '../shared/shared.module';
 import { MatChipsModule } from '@angular/material/chips';
 import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { SwiperModule } from 'ngx-swiper-wrapper';
+import { StlModelViewerModule } from 'angular-stl-model-viewer';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatMenuModule,
     MatChipsModule,
     MatDialogModule,
+    SwiperModule,
+    StlModelViewerModule,
   ],
 })
 export class ThingDetailModule {}

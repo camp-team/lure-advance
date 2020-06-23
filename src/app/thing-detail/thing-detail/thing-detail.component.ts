@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Thing } from 'src/app/interfaces/thing';
+import { Thing, ThingWithUser } from 'src/app/interfaces/thing';
 import { ThingService } from 'src/app/services/thing.service';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+import { AuthService } from 'src/app/services/auth.service';
+import { SwiperConfigInterface } from 'ngx-swiper-wrapper';
 
 @Component({
   selector: 'app-thing-detail',
@@ -13,12 +15,23 @@ import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component'
   styleUrls: ['./thing-detail.component.scss'],
 })
 export class ThingDetailComponent implements OnInit {
-  thing$: Observable<Thing> = this.route.paramMap.pipe(
+  thing$: Observable<ThingWithUser> = this.route.paramMap.pipe(
     switchMap((map) => {
       const thingId = map.get('thing');
-      return this.thingService.getThingByID(thingId);
+      return this.thingService.getThingWithUserById(thingId);
     })
   );
+
+  index: number;
+  config: SwiperConfigInterface = {
+    loop: true,
+    slidesPerView: 1,
+    pagination: true,
+    navigation: true,
+    simulateTouch: false,
+  };
+  uid: string = this.authService.uid;
+  isLiked: boolean;
 
   navLinks = [
     {
@@ -38,6 +51,7 @@ export class ThingDetailComponent implements OnInit {
   constructor(
     private thingService: ThingService,
     private route: ActivatedRoute,
+    private authService: AuthService,
     private dialog: MatDialog
   ) {}
 
@@ -45,7 +59,29 @@ export class ThingDetailComponent implements OnInit {
     this.dialog.open(DeleteDialogComponent, {
       data: thing,
       restoreFocus: false,
+      autoFocus: false,
     });
+  }
+
+  likeThing(thing: Thing): Promise<void> {
+    const uid: string = this.authService.uid;
+    if (!uid) {
+      return;
+    }
+    thing.likeCount++;
+    this.isLiked = true;
+
+    return this.thingService.likeThing(thing, uid);
+  }
+
+  unLikeThing(thing: Thing): Promise<void> {
+    const uid: string = this.authService.uid;
+    if (!uid) {
+      return;
+    }
+    thing.likeCount--;
+    this.isLiked = false;
+    return this.thingService.unLikeThing(thing.id, uid);
   }
 
   ngOnInit(): void {}

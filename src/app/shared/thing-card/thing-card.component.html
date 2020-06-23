@@ -1,26 +1,24 @@
-<mat-card class="thing">
-  <mat-card-header class="thing__header">
+<div class="thing">
+  <div class="thing__header">
     <div
-      mat-card-avatar
+      class="thing__avatar"
       [style.background-image]="'url(' + thing.user.avatarURL + ')'"
-      class="thing__avator"
     ></div>
-    <mat-card-title class="thing__title">{{ thing.title }}</mat-card-title>
-    <mat-card-subtitle class="thing__user-name">{{
-      thing.title
-    }}</mat-card-subtitle>
-    <mat-card-subtitle class="thing__updateAt">{{
-      thing.updateAt.toDate() | date: 'yyyy/MM/dd'
-    }}</mat-card-subtitle>
-  </mat-card-header>
-  <img
-    mat-card-image
+    <p class="thing__title">{{ thing.title }}</p>
+    <span class="thing__spacer"></span>
+    <p class="thing__updateAt">
+      {{ thing.updateAt.toDate() | date: 'yyyy年MM月dd日' }}
+    </p>
+    <button *ngIf="thing.designerId === uid" mat-icon-button>
+      <mat-icon>more_vert</mat-icon>
+    </button>
+  </div>
+  <div
+    [style.background-image]="'url(' + thing.imageUrls[0] + ')'"
     class="thing__thumbnail"
-    [src]="thing.fileUrls[0]"
     routerLink="{{ thing.id }}"
-    alt=""
-  />
-  <mat-card-actions>
+  ></div>
+  <div class="thing__actions">
     <button
       *ngIf="isLiked; else unLiked"
       (click)="unLikeThing(thing.id)"
@@ -36,5 +34,5 @@
       </button>
     </ng-template>
     <button mat-icon-button><mat-icon>mode_comment</mat-icon></button>
-  </mat-card-actions>
-</mat-card>
+  </div>
+</div>

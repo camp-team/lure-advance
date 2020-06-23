@@ -1,18 +1,46 @@
-<form>
+<label class="file">
   <input
+    class="file__input"
     (change)="selectFiles($event)"
+    #file_input
     type="file"
-    id="file"
-    name="file"
     multiple
-    accept=".png, .jpg, .jpeg"
+    accept=".jpeg, .jpg, .png, .stl "
   />
-  <button mat-flat-button color="primary">ファイルを選択</button>
-  <div class="task" *ngFor="let job of jobs">
-    <!-- <mat-progress-bar
-      *ngIf="job.percentage | async as pct"
-      mode="determinate"
-      [value]="pct"
-    ></mat-progress-bar> -->
+  <mat-icon class="file__icon" inline>backup</mat-icon>
+  <button
+    class="file__up-btn"
+    [disabled]="images.length >= MAX_FILE_LENGTH"
+    (click)="file_input.click()"
+    mat-flat-button
+    color="primary"
+  >
+    ファイルを選択する
+  </button>
+</label>
+
+<p *ngIf="images.length">Image</p>
+<div class="grid">
+  <div
+    class="upload upload--image"
+    *ngFor="let file of images; index as i"
+    [style.background-image]="'url(' + file + ')'"
+  >
+    <button (click)="deleteImage(i)" class="upload__del-btn">
+      <mat-icon class="upload__del-icon" inline>delete</mat-icon>
+    </button>
   </div>
-</form>
+</div>
+
+<p *ngIf="stls.length">STL</p>
+<div class="grid">
+  <div *ngFor="let stl of stls; index as i">
+    <button (click)="deleteStl(i)" class="upload__del-btn">
+      <mat-icon class="upload__del-icon" inline>delete</mat-icon>
+    </button>
+    <stl-model-viewer
+      class="upload upload--stl"
+      [stlModels]="[stl]"
+    ></stl-model-viewer>
+  </div>
+</div>

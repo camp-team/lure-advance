@@ -23,7 +23,8 @@ export class DesignsComponent implements OnInit {
     description:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod maxime amet, perspiciatis commodi at ut repudiandae eum dolore eos ea necessitatibus expedita saepe veniam velit laboriosam aliquam nulla alias vitae.',
     tags: ['ルアー', 'ミノー', 'トラウト'],
-    fileUrls: ['https://placehold.jp/700x525.png'],
+    imageUrls: ['https://placehold.jp/400x300.png'],
+    stlUrls: [],
     commentCount: 5,
     likeCount: 6,
     updateAt: firestore.Timestamp.now(),

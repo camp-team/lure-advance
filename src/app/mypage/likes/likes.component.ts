@@ -22,7 +22,8 @@ export class LikesComponent implements OnInit {
     description:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod maxime amet, perspiciatis commodi at ut repudiandae eum dolore eos ea necessitatibus expedita saepe veniam velit laboriosam aliquam nulla alias vitae.',
     tags: ['ルアー', 'ミノー', 'トラウト'],
-    fileUrls: ['https://placehold.jp/700x525.png'],
+    stlUrls: [],
+    imageUrls: ['https://placehold.jp/400x300.png'],
     commentCount: 5,
     likeCount: 6,
     updateAt: firestore.Timestamp.now(),

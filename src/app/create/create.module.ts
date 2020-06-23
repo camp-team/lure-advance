@@ -19,6 +19,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { FileUploadComponent } from './file-upload/file-upload.component';
 import { MatDividerModule } from '@angular/material/divider';
+import { StlModelViewerModule } from 'angular-stl-model-viewer';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { MatDividerModule } from '@angular/material/divider';
     ReactiveFormsModule,
     FormsModule,
     MatDividerModule,
+    StlModelViewerModule,
   ],
 })
 export class CreateModule {}

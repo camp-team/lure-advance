@@ -11,6 +11,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
+import { StlModelViewerModule } from 'angular-stl-model-viewer';
 
 @NgModule({
   declarations: [ThingEditorComponent],
@@ -26,6 +27,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
+    StlModelViewerModule,
   ],
 })
 export class ThingEditorModule {}
