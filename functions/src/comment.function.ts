@@ -79,7 +79,7 @@ export const deleteReply = functions
     }
   });
 
-export const delteComment = functions
+export const deleteComment = functions
   .region('asia-northeast1')
   .firestore.document('things/{thingId}/comments/{commentId}')
   .onDelete(async (snap, context) => {
