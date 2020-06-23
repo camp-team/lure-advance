@@ -6,9 +6,10 @@ import { CommentService } from 'src/app/services/comment.service';
 
 import { User } from 'src/app/interfaces/user';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import { Thing } from 'src/app/interfaces/thing';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-comments',
@@ -25,14 +26,21 @@ export class CommentsComponent implements OnInit {
 
   isEditing: boolean;
 
-  user: User;
-
-  comments$: Observable<CommentWithUser[]>;
+  comments$: Observable<CommentWithUser[]> = this.route.parent.paramMap.pipe(
+    switchMap((map) => {
+      this.id = map.get('thing');
+      return (this.comments$ = this.commentService.getAllComments(this.id));
+    })
+  );
 
   addComment(): void {
+    const uid: string = this.authService.uid;
+    if (uid === undefined) {
+      return; //TODOガード対応
+    }
     const comment: Omit<Comment, 'id' | 'updateAt'> = {
       thingId: this.id,
-      fromUid: this.user.uid,
+      fromUid: uid,
       toUid: '',
       replyCount: 0,
       body: this.commentForm.value,
@@ -48,13 +56,7 @@ export class CommentsComponent implements OnInit {
     private commentService: CommentService,
     private authService: AuthService,
     private route: ActivatedRoute
-  ) {
-    this.authService.user$.subscribe((user) => (this.user = user));
-    this.route.parent.paramMap.subscribe((map) => {
-      this.id = map.get('thing');
-      this.comments$ = this.commentService.getAllComments(this.id);
-    });
-  }
+  ) {}
 
   ngOnInit(): void {}
 }
