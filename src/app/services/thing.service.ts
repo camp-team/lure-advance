@@ -3,7 +3,10 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable, combineLatest, of } from 'rxjs';
 import { Thing, ThingWithUser } from '../interfaces/thing';
 import { firestore } from 'firebase';
-import { AngularFireStorage } from '@angular/fire/storage';
+import {
+  AngularFireStorage,
+  AngularFireStorageReference,
+} from '@angular/fire/storage';
 import { map, take, switchMap } from 'rxjs/operators';
 import { User } from '../interfaces/user';
 import { UserService } from './user.service';
@@ -197,6 +200,10 @@ export class ThingService {
         })
       );
     }
+  }
+
+  getFileNameByUrl(url: string): string {
+    return this.storage.storage.refFromURL(url).name;
   }
 
   private getPromiseAllDwonLoadUrls(
