@@ -19,7 +19,7 @@
     ></textarea>
     <mat-hint align="end">{{ textarea.value.length }}/5000</mat-hint>
     <mat-error *ngIf="descriptionControl.hasError('maxlength')"
-      >長過ぎます</mat-error
+      >{{ textarea.value.length }}は長過ぎます</mat-error
     >
   </mat-form-field>
   <mat-form-field>
