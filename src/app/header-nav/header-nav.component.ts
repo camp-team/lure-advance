@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { User } from '../interfaces/user';
+import { User } from '@interfaces/user';
 import { Observable } from 'rxjs';
 import { NotificationService } from '../services/notification.service';
 

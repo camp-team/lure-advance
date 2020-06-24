@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Thing } from 'src/app/interfaces/thing';
+import { Thing } from '@interfaces/thing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ThingService } from 'src/app/services/thing.service';
 import { AuthService } from 'src/app/services/auth.service';

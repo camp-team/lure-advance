@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { ThingService } from 'src/app/services/thing.service';
-import { Thing } from 'src/app/interfaces/thing';
+import { Thing } from '@interfaces/thing';
 import { firestore } from 'firebase';
 
 @Component({

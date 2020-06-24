@@ -1,14 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable, combineLatest, of } from 'rxjs';
-import { Thing, ThingWithUser } from '../interfaces/thing';
+import { Thing, ThingWithUser } from '@interfaces/thing';
 import { firestore } from 'firebase';
-import {
-  AngularFireStorage,
-  AngularFireStorageReference,
-} from '@angular/fire/storage';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { map, take, switchMap } from 'rxjs/operators';
-import { User } from '../interfaces/user';
+import { User } from '@interfaces/user';
 import { UserService } from './user.service';
 
 @Injectable({

@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { NotificationWithUserAndThing } from '../interfaces/notification';
+import { NotificationWithUserAndThing } from '@interfaces/notification';
 
 @Pipe({
   name: 'notifymsg',

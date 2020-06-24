@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore/';
 import { Observable, combineLatest, of } from 'rxjs';
-import { Thing } from '../interfaces/thing';
+import { Thing } from '@interfaces/thing';
 import { firestore } from 'firebase';
-import { Comment, CommentWithUser } from '../interfaces/comment';
+import { Comment, CommentWithUser } from '@interfaces/comment';
 import { switchMap, map } from 'rxjs/operators';
 import { UserService } from './user.service';
-import { User } from '../interfaces/user';
-
+import { User } from '@interfaces/user';
 @Injectable({
   providedIn: 'root',
 })

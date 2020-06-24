@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NotificationService } from 'src/app/services/notification.service';
-import { NotificationWithUserAndThing } from 'src/app/interfaces/notification';
+import { NotificationWithUserAndThing } from '@interfaces/notification';
 import { AuthService } from 'src/app/services/auth.service';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';

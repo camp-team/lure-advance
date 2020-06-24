@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Comment, CommentWithUser } from 'src/app/interfaces/comment';
+import { Comment, CommentWithUser } from '@interfaces/comment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommentService } from 'src/app/services/comment.service';
 import { FormControl, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
-import { User } from 'src/app/interfaces/user';
+import { User } from '@interfaces/user';
 import { Observable } from 'rxjs';
 
 @Component({

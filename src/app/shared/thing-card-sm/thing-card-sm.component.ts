@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Thing } from 'src/app/interfaces/thing';
+import { Thing } from '@interfaces/thing';
 
 @Component({
   selector: 'app-thing-card-sm',

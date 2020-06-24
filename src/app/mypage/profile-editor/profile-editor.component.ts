@@ -5,7 +5,7 @@ import {
   Validators,
   FormControl,
 } from '@angular/forms';
-import { User } from 'src/app/interfaces/user';
+import { User } from '@interfaces/user';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { AvatarEditorComponent } from './avatar-editor/avatar-editor.component';

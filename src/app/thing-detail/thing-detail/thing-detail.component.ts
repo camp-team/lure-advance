@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Thing, ThingWithUser } from 'src/app/interfaces/thing';
+import { Thing, ThingWithUser } from '@interfaces/thing';
 import { ThingService } from 'src/app/services/thing.service';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';

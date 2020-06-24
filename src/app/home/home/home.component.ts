@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ThingService } from 'src/app/services/thing.service';
-import { ThingWithUser } from 'src/app/interfaces/thing';
-
+import { ThingWithUser } from '@interfaces/thing';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',

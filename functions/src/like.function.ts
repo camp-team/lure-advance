@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { shouldEventRun, markEventTried } from './util';
+import { shouldEventRun, markEventTried } from './utils/transaction-util';
+import { Notification } from './interfaces/notification';
 
 const db = admin.firestore();
 
@@ -29,15 +30,17 @@ export const likeThing = functions
 
       const docRef = db.collection(`users/${targetUid}/notifications`).doc();
 
-      await docRef.set({
+      const notification: Notification = {
         id: docRef.id,
         type: 'like',
         fromUid: likerUid,
-        designerId: targetUid,
+        toUid: targetUid,
         thingId: thingId,
         comment: '',
         updateAt: admin.firestore.Timestamp.now(),
-      });
+      };
+
+      await docRef.set(notification);
 
       await db
         .doc(`users/${targetUid}`)
