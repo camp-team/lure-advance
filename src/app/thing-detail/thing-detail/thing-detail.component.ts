@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Thing, ThingWithUser } from '@interfaces/thing';
 import { ThingService } from 'src/app/services/thing.service';
 import { Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
@@ -16,12 +16,15 @@ import { SwiperConfigInterface } from 'ngx-swiper-wrapper';
 })
 export class ThingDetailComponent implements OnInit {
   thing$: Observable<ThingWithUser> = this.route.paramMap.pipe(
-    switchMap((map) => {
-      const thingId = map.get('thing');
-      return this.thingService.getThingWithUserById(thingId);
+    switchMap((map) =>
+      this.thingService.getThingWithUserById(map.get('thing'))
+    ),
+    tap(async (thing) => {
+      this.uid = this.authService.uid;
+      this.isLiked = await this.thingService.isLiked(this.uid, thing.id);
     })
   );
-
+  uid: string;
   index: number;
   config: SwiperConfigInterface = {
     loop: true,
@@ -30,7 +33,6 @@ export class ThingDetailComponent implements OnInit {
     navigation: true,
     simulateTouch: false,
   };
-  uid: string = this.authService.uid;
   isLiked: boolean;
 
   navLinks = [

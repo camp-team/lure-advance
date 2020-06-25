@@ -7,9 +7,9 @@ import { ThingWithUser } from '@interfaces/thing';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  constructor(private thingService: ThingService) {
-    this.thingService.getThingsWithPromise().then((res) => (this.things = res));
-  }
-  ngOnInit(): void {}
   things: ThingWithUser[];
+  constructor(private thingService: ThingService) {}
+  async ngOnInit(): Promise<void> {
+    this.things = await this.thingService.getThingsWithPromise();
+  }
 }

@@ -11,30 +11,23 @@ import { AuthService } from 'src/app/services/auth.service';
 export class ThingCardComponent implements OnInit {
   @Input() thing: ThingWithUser;
 
-  uid: string = this.authService.uid;
-
   constructor(
     private thingService: ThingService,
     private authService: AuthService
-  ) {
-    const uid: string = this.authService.uid;
-    if (uid) {
-      this.thingService.getLikedThingIdsWithPromise(uid).then((res) => {
-        this.likedThingsIds = res;
-        this.isLiked = res.includes(this.thing.id);
-      });
-    }
+  ) {}
+
+  async ngOnInit() {
+    this.uid = this.authService.uid;
+    this.isLiked = await this.thingService.isLiked(this.uid, this.thing.id);
   }
 
-  ngOnInit() {}
-
-  likedThingsIds: string[] = [];
+  uid: string;
   isLiked: boolean;
 
   likeThing(thing: Thing): Promise<void> {
     const uid: string = this.authService.uid;
-    if (!uid) {
-      return;
+    if (uid === undefined) {
+      throw new Error('TODOガード設定');
     }
     this.thing.likeCount++;
     this.isLiked = true;
@@ -44,8 +37,8 @@ export class ThingCardComponent implements OnInit {
 
   unLikeThing(thingId: string): Promise<void> {
     const uid: string = this.authService.uid;
-    if (!uid) {
-      return;
+    if (uid === undefined) {
+      throw new Error('TODOガード設定');
     }
     this.thing.likeCount--;
     this.isLiked = false;

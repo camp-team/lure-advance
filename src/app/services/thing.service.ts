@@ -24,15 +24,18 @@ export class ThingService {
       .valueChanges()
       .pipe(
         switchMap((things: Thing[]) => {
-          const distinctUids: string[] = Array.from(
-            new Set(things.map((thing) => thing.designerId))
-          );
+          if (things.length) {
+            const distinctUids: string[] = Array.from(
+              new Set(things.map((thing) => thing.designerId))
+            );
 
-          const users$: Observable<User[]> = combineLatest(
-            distinctUids.map((uid) => this.userService.getUserByID(uid))
-          );
-
-          return combineLatest([of(things), users$]);
+            const users$: Observable<User[]> = combineLatest(
+              distinctUids.map((uid) => this.userService.getUserByID(uid))
+            );
+            return combineLatest([of(things), users$]);
+          } else {
+            return of([]);
+          }
         }),
         map(([things, users]) => {
           return things.map((thing) => {
@@ -103,35 +106,31 @@ export class ThingService {
       }>('likeUsers', (ref) => ref.where('fromUid', '==', uid))
       .valueChanges()
       .pipe(
-        switchMap((likeThings) =>
-          combineLatest(
-            likeThings.map((item) => this.getThingByID(item.thingId))
-          )
-        )
+        switchMap((likeThings) => {
+          if (likeThings.length) {
+            return combineLatest(
+              likeThings.map((item) => this.getThingByID(item.thingId))
+            );
+          } else {
+            return of(null);
+          }
+        })
       );
   }
 
   getLikedThingIdsWithPromise(uid: string): Promise<string[]> {
-    return this.db
-      .collectionGroup<{
-        thingId: string;
-        fromUid: string;
-        designerId: string;
-      }>('likeUsers', (ref) => ref.where('fromUid', '==', uid))
-      .valueChanges()
+    return this.getLikedThings(uid)
       .pipe(
-        map((res) => res.map((item) => item.thingId)),
+        map((things) => things.map((thing) => thing.id)),
         take(1)
       )
       .toPromise();
   }
 
-  getMyLikedThingsByUid(uid: string): Promise<string[]> {
-    return this.db
-      .collection<string>(`users/${uid}/likedThings`)
-      .valueChanges()
-      .pipe(take(1))
-      .toPromise();
+  async isLiked(uid: string, thingId: string): Promise<boolean> {
+    if (uid === undefined) return false;
+    const likedThingIds: string[] = await this.getLikedThingIdsWithPromise(uid);
+    return likedThingIds.includes(thingId);
   }
 
   createThing(thing: Omit<Thing, 'updateAt'>): Promise<void> {
