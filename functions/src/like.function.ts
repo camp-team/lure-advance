@@ -19,12 +19,18 @@ export const likeThing = functions
 
       const value = snap.data();
       if (!value) {
+        console.log('Data is Empty.');
         return;
       }
       const targetUid: string = value.designerId;
       const likerUid: string = context.params.uid;
 
+      await db.doc(`users/${targetUid}/likedThings/${thingId}`).set({
+        thingId,
+      });
+
       if (targetUid === likerUid) {
+        console.log('My Thing is Liked.');
         return;
       }
 
@@ -58,10 +64,16 @@ export const unLikeThing = functions
   .onDelete(async (snap, context) => {
     const eventId = context.eventId;
     const should = await shouldEventRun(eventId);
+    const thingId = context.params.thingId;
+    const value = snap.data();
+    const targetUid: string = value.designerId;
     if (should) {
       await db
         .doc(`things/${context.params.thingId}`)
         .update('likeCount', admin.firestore.FieldValue.increment(-1));
+
+      await db.doc(`users/${targetUid}/likedThings/${thingId}`).delete();
+
       return markEventTried(eventId);
     } else {
       return true;
