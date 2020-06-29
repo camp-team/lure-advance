@@ -71,7 +71,7 @@ export class Algolia {
     const idKey = param.idKey || 'id';
 
     if (param.isUpdate) {
-      await this.removeRecord(param.indexName, item.id);
+      await this.removeRecord(param.indexName, item[idKey]);
     }
 
     if (
@@ -86,7 +86,7 @@ export class Algolia {
         param.largeConcentKey
       );
     } else {
-      item.objectID = item.id;
+      item.objectID = item[idKey];
       return index.saveObject(item);
     }
   }
