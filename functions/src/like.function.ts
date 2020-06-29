@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { shouldEventRun, markEventTried } from './utils/transaction-util';
+import { shouldEventRun, markEventTried } from './utils/firebase-util';
 import { Notification } from './interfaces/notification';
 
 const db = admin.firestore();
@@ -68,11 +68,15 @@ export const unLikeThing = functions
     const value = snap.data();
     const targetUid: string = value.designerId;
     if (should) {
-      await db
-        .doc(`things/${context.params.thingId}`)
-        .update('likeCount', admin.firestore.FieldValue.increment(-1));
-
       await db.doc(`users/${targetUid}/likedThings/${thingId}`).delete();
+
+      const snapShot = await db.doc(`things/${context.params.thingId}`).get();
+      if (snapShot.exists) {
+        await snapShot.ref.update(
+          'likeCount',
+          admin.firestore.FieldValue.increment(-1)
+        );
+      }
 
       return markEventTried(eventId);
     } else {
