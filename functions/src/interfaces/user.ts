@@ -4,6 +4,7 @@ export interface User {
   avatarURL: string;
   name: string;
   notificationCount: number;
+  thingCount: number;
   description?: string;
   weblink?: string;
 }
