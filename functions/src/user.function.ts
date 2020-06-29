@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { shouldEventRun, markEventTried } from './utils/transaction-util';
+import { shouldEventRun, markEventTried } from './utils/firebase-util';
 import { User } from './interfaces/user';
 
 const db = admin.firestore();
@@ -18,6 +18,7 @@ export const createUser = functions
         avatarURL: user.photoURL!,
         name: user.displayName!,
         notificationCount: 0,
+        thingCount: 0,
       };
       await db.doc(`users/${user.uid}`).set(newUser);
       return markEventTried(eventId);

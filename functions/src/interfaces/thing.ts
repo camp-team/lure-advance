@@ -9,8 +9,11 @@ export interface Thing {
   tags: string[];
   imageUrls: string[];
   stlUrls: string[];
+  category?: string[];
   commentCount: number;
   likeCount: number;
+  viewCount: number;
+  createdAt: firestore.Timestamp;
   updateAt: firestore.Timestamp;
 }
 

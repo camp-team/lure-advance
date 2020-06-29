@@ -4,10 +4,9 @@ import { Observable, combineLatest, of } from 'rxjs';
 import { Thing, ThingWithUser } from '@interfaces/thing';
 import { firestore } from 'firebase';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { map, take, switchMap } from 'rxjs/operators';
+import { map, take, switchMap, tap, filter } from 'rxjs/operators';
 import { User } from '@interfaces/user';
 import { UserService } from './user.service';
-
 @Injectable({
   providedIn: 'root',
 })
@@ -24,18 +23,13 @@ export class ThingService {
       .valueChanges()
       .pipe(
         switchMap((things: Thing[]) => {
-          if (things.length) {
-            const distinctUids: string[] = Array.from(
-              new Set(things.map((thing) => thing.designerId))
-            );
-
-            const users$: Observable<User[]> = combineLatest(
-              distinctUids.map((uid) => this.userService.getUserByID(uid))
-            );
-            return combineLatest([of(things), users$]);
-          } else {
-            return of([]);
-          }
+          const distinctUids: string[] = Array.from(
+            new Set(things.map((thing) => thing.designerId))
+          );
+          const users$: Observable<User[]> = combineLatest(
+            distinctUids.map((uid) => this.userService.getUserByID(uid))
+          );
+          return combineLatest([of(things), users$]);
         }),
         map(([things, users]) => {
           return things.map((thing) => {
@@ -50,6 +44,7 @@ export class ThingService {
 
   getThingWithUserById(id: string): Observable<ThingWithUser> {
     return this.getThingByID(id).pipe(
+      filter((thing) => Boolean(thing)),
       switchMap((thing) => {
         const user$: Observable<User> = this.userService.getUserByID(
           thing.designerId
@@ -107,13 +102,9 @@ export class ThingService {
       .valueChanges()
       .pipe(
         switchMap((likeThings) => {
-          if (likeThings.length) {
-            return combineLatest(
-              likeThings.map((item) => this.getThingByID(item.thingId))
-            );
-          } else {
-            return of(null);
-          }
+          return combineLatest(
+            likeThings.map((item) => this.getThingByID(item.thingId))
+          );
         })
       );
   }
@@ -121,7 +112,7 @@ export class ThingService {
   getLikedThingIdsWithPromise(uid: string): Promise<string[]> {
     return this.getLikedThings(uid)
       .pipe(
-        map((things) => things.map((thing) => thing.id)),
+        map((things) => things.filter(Boolean).map((thing) => thing.id)),
         take(1)
       )
       .toPromise();
@@ -133,16 +124,20 @@ export class ThingService {
     return likedThingIds.includes(thingId);
   }
 
-  createThing(thing: Omit<Thing, 'updateAt'>): Promise<void> {
+  createThing(thing: Omit<Thing, 'updateAt' | 'createdAt'>): Promise<void> {
     const value: Thing = {
       ...thing,
+      createdAt: firestore.Timestamp.now(),
       updateAt: firestore.Timestamp.now(),
     };
     return this.db.doc<Thing>(`things/${thing.id}`).set(value);
   }
 
   updateThing(thing: Thing): Promise<void> {
-    return this.db.doc<Thing>(`things/${thing.id}`).update(thing);
+    return this.db.doc<Thing>(`things/${thing.id}`).update({
+      ...thing,
+      updateAt: firestore.Timestamp.now(),
+    });
   }
 
   deleteThing(thing: Thing): Promise<void> {
