@@ -1,6 +1,8 @@
 .search {
   display: flex;
   align-items: center;
+  width: 100%;
+  margin: 0 16px;
   position: relative;
   &__input {
     -webkit-appearance: none;
@@ -15,6 +17,7 @@
     font-size: 16px;
     padding-left: 16px;
     padding-right: 32px;
+    width: 100%;
   }
   &__icon {
     position: absolute;
@@ -23,33 +26,20 @@
     right: 8px;
   }
 }
-.spacer {
-  flex: 1;
-}
 
-.avator {
+.avatar {
+  margin-left: 8px;
   width: 40px;
   height: 40px;
   border-radius: 50%;
   background: center/cover;
+  flex-shrink: 0;
+}
+.login {
+  margin-left: 8px;
+  flex-shrink: 0;
 }
 
 mat-icon {
   color: #757575;
-}
-example-container {
-  width: 500px;
-  height: 300px;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-}
-
-.example-sidenav-content {
-  display: flex;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-}
-
-.example-sidenav {
-  padding: 20px;
 }
