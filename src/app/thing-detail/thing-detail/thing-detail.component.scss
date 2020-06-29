@@ -24,6 +24,7 @@
     border-radius: 50%;
     background: center/cover;
     margin-right: 8px;
+    flex-shrink: 0;
   }
   &__spacer {
     flex: 1;
@@ -35,6 +36,8 @@
     background: center/cover;
   }
   &__actions {
+    display: flex;
+    align-items: center;
     padding: 12px;
   }
 }

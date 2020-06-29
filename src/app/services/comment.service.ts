@@ -4,7 +4,7 @@ import { Observable, combineLatest, of } from 'rxjs';
 import { Thing } from '@interfaces/thing';
 import { firestore } from 'firebase';
 import { Comment, CommentWithUser } from '@interfaces/comment';
-import { switchMap, map } from 'rxjs/operators';
+import { switchMap, map, takeWhile, filter } from 'rxjs/operators';
 import { UserService } from './user.service';
 import { User } from '@interfaces/user';
 @Injectable({
@@ -21,22 +21,32 @@ export class CommentService {
       .valueChanges()
       .pipe(
         switchMap((comments) => {
-          const distinctUids: string[] = [
-            ...new Set(comments.map((comment) => comment.fromUid)),
-          ];
+          if (comments.length) {
+            const distinctUids: string[] = [
+              ...new Set(comments.map((comment) => comment.fromUid)),
+            ];
 
-          const users$: Observable<User[]> = combineLatest(
-            distinctUids.map((uid) => this.userService.getUserByID(uid))
-          );
-          return combineLatest([of(comments), users$]);
+            const users$: Observable<User[]> = combineLatest(
+              distinctUids.map((uid) => this.userService.getUserByID(uid))
+            );
+            return combineLatest([of(comments), users$]);
+          } else {
+            console.log('Comments Are Empty.');
+            return of([]);
+          }
         }),
         map(([comments, users]) => {
-          return comments.map((comment) => {
-            return {
-              ...comment,
-              user: users.find((user) => comment.fromUid === user.uid),
-            };
-          });
+          if (comments?.length) {
+            return comments.map((comment) => {
+              return {
+                ...comment,
+                user: users.find((user) => comment.fromUid === user.uid),
+              };
+            });
+          } else {
+            console.log('Return Empty.');
+            return [];
+          }
         })
       );
   }

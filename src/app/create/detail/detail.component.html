@@ -22,6 +22,15 @@
       >{{ textarea.value.length }}は長過ぎます</mat-error
     >
   </mat-form-field>
+  <div *ngIf="categories" class="categories" [formGroup]="categoriesForm">
+    <p>CATEGORIES</p>
+    <mat-checkbox
+      *ngFor="let category of categories"
+      [formControlName]="category.value"
+      class="categories__check"
+      >{{ category.name }}
+    </mat-checkbox>
+  </div>
   <mat-form-field>
     <mat-label>タグ</mat-label>
     <mat-chip-list #chipList aria-label="tag selection">

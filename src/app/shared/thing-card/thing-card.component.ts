@@ -2,6 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Thing, ThingWithUser } from '@interfaces/thing';
 import { ThingService } from 'src/app/services/thing.service';
 import { AuthService } from 'src/app/services/auth.service';
+import * as moment from 'moment';
+import { MatDialog } from '@angular/material/dialog';
+import { DeleteDialogComponent } from 'src/app/thing-detail/delete-dialog/delete-dialog.component';
 
 @Component({
   selector: 'app-thing-card',
@@ -13,7 +16,8 @@ export class ThingCardComponent implements OnInit {
 
   constructor(
     private thingService: ThingService,
-    private authService: AuthService
+    private authService: AuthService,
+    private dialog: MatDialog
   ) {}
 
   async ngOnInit() {
@@ -43,5 +47,13 @@ export class ThingCardComponent implements OnInit {
     this.thing.likeCount--;
     this.isLiked = false;
     return this.thingService.unLikeThing(thingId, uid);
+  }
+
+  delete(thing: Thing) {
+    this.dialog.open(DeleteDialogComponent, {
+      data: thing,
+      restoreFocus: false,
+      autoFocus: false,
+    });
   }
 }

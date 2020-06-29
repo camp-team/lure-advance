@@ -27,6 +27,8 @@ export class DesignsComponent implements OnInit {
     stlUrls: [],
     commentCount: 5,
     likeCount: 6,
+    viewCount: 0,
+    createdAt: firestore.Timestamp.now(),
     updateAt: firestore.Timestamp.now(),
   };
 

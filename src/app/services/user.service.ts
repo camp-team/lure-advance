@@ -25,12 +25,6 @@ export class UserService {
     return this.db.doc<User>(`users/${user.uid}`).set(user);
   }
 
-  mergeUser(user: User): Promise<void> {
-    return this.db.doc<User>(`users/${user.uid}`).set(user, {
-      merge: true,
-    });
-  }
-
   async uploadAvatarImage(avatarImage: Blob, uid: string): Promise<string> {
     const path: string = `users/${uid}/${'avatarImage'}`;
     await this.storage.upload(path, avatarImage);

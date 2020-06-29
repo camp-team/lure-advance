@@ -30,6 +30,8 @@ import { LegalComponent } from './footer/legal/legal.component';
 import { PrivacypolicyComponent } from './footer/privacypolicy/privacypolicy.component';
 import { FooterComponent } from './footer/footer.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
@@ -50,8 +52,11 @@ import { NotFoundComponent } from './not-found/not-found.component';
     AngularFirestoreModule,
     AngularFireStorageModule,
     MatToolbarModule,
+    FormsModule,
+    ReactiveFormsModule,
     MatInputModule,
     MatFormFieldModule,
+    MatAutocompleteModule,
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
