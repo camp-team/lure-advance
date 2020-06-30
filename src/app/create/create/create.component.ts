@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Thing } from 'src/app/interfaces/thing';
+import { Thing } from '@interfaces/thing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ThingService } from 'src/app/services/thing.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -14,16 +14,14 @@ import { Router } from '@angular/router';
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss'],
 })
-export class CreateComponent implements OnInit {
+export class CreateComponent implements OnInit, AfterViewInit {
   @ViewChild(DetailComponent) detailComponent: DetailComponent;
   @ViewChild(FileUploadComponent) fileupComponent: FileUploadComponent;
 
   isEditable = false;
-  detailFormGroup: FormGroup = this.fb.group({
-    title: ['', [Validators.required, Validators.maxLength(100)]],
-    description: ['', [Validators.maxLength(5000)]],
-    tags: [],
-  });
+  detailFormGroup: FormGroup;
+  private categoriesFormGroup: FormGroup;
+
   scheduleFormGroup: FormGroup;
   thingId: string;
 
@@ -43,20 +41,28 @@ export class CreateComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit(): void {
+    this.detailFormGroup = this.detailComponent.form;
+    this.categoriesFormGroup = this.detailComponent.categoriesForm;
+    this.detailFormGroup.valueChanges.subscribe((value) => console.log(value));
+  }
+
   async create() {
     const res = await this.fileupComponent.uploadFiles();
-    console.log();
     const detailValue = this.detailFormGroup.value;
+    const categoryValue = this.detailComponent.selectedCategories;
     const uid = this.authService.uid;
-    const thing: Omit<Thing, 'updateAt'> = {
+    const thing: Omit<Thing, 'updateAt' | 'createdAt'> = {
       id: this.thingId,
       title: detailValue.title,
       description: detailValue.description,
       designerId: uid,
       imageUrls: res.imageUrls,
       stlUrls: res.stlUrls,
+      category: categoryValue,
       commentCount: 0,
       likeCount: 0,
+      viewCount: 0,
       tags: this.detailComponent.tags.map((x) => x.value),
     };
 

@@ -1,7 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Thing, ThingWithUser } from 'src/app/interfaces/thing';
+import { Thing, ThingWithUser } from '@interfaces/thing';
 import { ThingService } from 'src/app/services/thing.service';
 import { AuthService } from 'src/app/services/auth.service';
+import * as moment from 'moment';
+import { MatDialog } from '@angular/material/dialog';
+import { DeleteDialogComponent } from 'src/app/thing-detail/delete-dialog/delete-dialog.component';
 
 @Component({
   selector: 'app-thing-card',
@@ -11,30 +14,24 @@ import { AuthService } from 'src/app/services/auth.service';
 export class ThingCardComponent implements OnInit {
   @Input() thing: ThingWithUser;
 
-  uid: string = this.authService.uid;
-
   constructor(
     private thingService: ThingService,
-    private authService: AuthService
-  ) {
-    const uid: string = this.authService.uid;
-    if (uid) {
-      this.thingService.getLikedThingIdsWithPromise(uid).then((res) => {
-        this.likedThingsIds = res;
-        this.isLiked = res.includes(this.thing.id);
-      });
-    }
+    private authService: AuthService,
+    private dialog: MatDialog
+  ) {}
+
+  async ngOnInit() {
+    this.uid = this.authService.uid;
+    this.isLiked = await this.thingService.isLiked(this.uid, this.thing.id);
   }
 
-  ngOnInit() {}
-
-  likedThingsIds: string[] = [];
+  uid: string;
   isLiked: boolean;
 
   likeThing(thing: Thing): Promise<void> {
     const uid: string = this.authService.uid;
-    if (!uid) {
-      return;
+    if (uid === undefined) {
+      throw new Error('TODOガード設定');
     }
     this.thing.likeCount++;
     this.isLiked = true;
@@ -44,11 +41,19 @@ export class ThingCardComponent implements OnInit {
 
   unLikeThing(thingId: string): Promise<void> {
     const uid: string = this.authService.uid;
-    if (!uid) {
-      return;
+    if (uid === undefined) {
+      throw new Error('TODOガード設定');
     }
     this.thing.likeCount--;
     this.isLiked = false;
     return this.thingService.unLikeThing(thingId, uid);
+  }
+
+  delete(thing: Thing) {
+    this.dialog.open(DeleteDialogComponent, {
+      data: thing,
+      restoreFocus: false,
+      autoFocus: false,
+    });
   }
 }

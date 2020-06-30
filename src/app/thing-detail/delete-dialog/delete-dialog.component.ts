@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Inject } from '@angular/core';
 import { ThingService } from 'src/app/services/thing.service';
-import { Thing } from 'src/app/interfaces/thing';
+import { Thing } from '@interfaces/thing';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';

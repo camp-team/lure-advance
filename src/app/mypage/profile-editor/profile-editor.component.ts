@@ -5,7 +5,7 @@ import {
   Validators,
   FormControl,
 } from '@angular/forms';
-import { User } from 'src/app/interfaces/user';
+import { User } from '@interfaces/user';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { AvatarEditorComponent } from './avatar-editor/avatar-editor.component';
@@ -28,6 +28,7 @@ export class ProfileEditorComponent implements OnInit {
   ) {}
 
   user$: Observable<User> = this.authService.user$;
+
   form: FormGroup = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(40)]],
     myself: ['', [Validators.maxLength(150)]],

@@ -3,13 +3,13 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable, combineLatest, of } from 'rxjs';
 import { UserService } from './user.service';
 import { switchMap, map } from 'rxjs/operators';
-import { User } from '../interfaces/user';
+import { User } from '@interfaces/user';
 import {
   Notification,
   NotificationWithUserAndThing,
-} from '../interfaces/notification';
+} from '@interfaces/notification';
 import { ThingService } from './thing.service';
-import { Thing } from '../interfaces/thing';
+import { Thing } from '@interfaces/thing';
 
 @Injectable({
   providedIn: 'root',

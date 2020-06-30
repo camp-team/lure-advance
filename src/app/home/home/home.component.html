@@ -1,3 +1,17 @@
-<div class="grid">
+<app-filter></app-filter>
+<div class="grid" #container>
   <app-thing-card [thing]="thing" *ngFor="let thing of things"></app-thing-card>
 </div>
+<div
+  infinite-scroll
+  [infiniteScrollDistance]="2"
+  [infiniteScrollThrottle]="20"
+  (scrolled)="onScroll()"
+></div>
+<mat-progress-spinner
+  class="loading"
+  *ngIf="loading"
+  mode="indeterminate"
+  color="primary"
+  [diameter]="40"
+></mat-progress-spinner>

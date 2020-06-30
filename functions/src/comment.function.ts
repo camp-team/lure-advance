@@ -1,6 +1,11 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { shouldEventRun, markEventTried } from './util';
+import {
+  shouldEventRun,
+  markEventTried,
+  deleteCollection,
+} from './utils/firebase-util';
+import { Notification } from './interfaces/notification';
 
 const db = admin.firestore();
 
@@ -17,30 +22,33 @@ export const addReply = functions
         .doc(`things/${thingId}/comments/${commentId}`)
         .update('replyCount', admin.firestore.FieldValue.increment(1));
 
-      const value = snap.data();
+      await db
+        .doc(`things/${thingId}`)
+        .update('commentCount', admin.firestore.FieldValue.increment(1));
 
-      if (!value) {
-        return;
-      }
+      const value = snap.data();
       const targetUid: string = value.toUid;
       const replierUid: string = value.fromUid;
       const comment: string = value.body;
 
       if (targetUid === replierUid) {
+        console.log('');
         return;
       }
 
       const docRef = db.collection(`users/${targetUid}/notifications`).doc();
 
-      await docRef.set({
+      const notification: Notification = {
         id: docRef.id,
         type: 'reply',
         fromUid: replierUid,
-        designerId: targetUid,
+        toUid: targetUid,
         thingId: thingId,
         comment: comment,
         updateAt: admin.firestore.Timestamp.now(),
-      });
+      };
+
+      await docRef.set(notification);
 
       await db
         .doc(`users/${targetUid}`)
@@ -61,18 +69,47 @@ export const deleteReply = functions
     const commentId = context.params.commentId;
     const should = await shouldEventRun(eventId);
     if (should) {
-      await db
+      const commentSnap = await db.doc(`things/${thingId}`).get();
+      if (commentSnap.exists) {
+        await commentSnap.ref.update(
+          'commentCount',
+          admin.firestore.FieldValue.increment(-1)
+        );
+      } else {
+        console.log('Thing or ParentComment Deleted.');
+      }
+
+      const replySnap = await db
         .doc(`things/${thingId}/comments/${commentId}`)
-        .get()
-        .then(async (doc) => {
-          if (doc.exists) {
-            //親のコメントが削除されたときも走るのでドキュメントがある時だけ更新する
-            await doc.ref.update(
-              'replyCount',
-              admin.firestore.FieldValue.increment(-1)
-            );
-          }
-        });
+        .get();
+
+      if (replySnap.exists) {
+        await replySnap.ref.update(
+          'replyCount',
+          admin.firestore.FieldValue.increment(-1)
+        );
+      } else {
+        console.log('Thing or ParentComment Deleted.');
+      }
+
+      return markEventTried(eventId);
+    } else {
+      return true;
+    }
+  });
+
+export const addComment = functions
+  .region('asia-northeast1')
+  .firestore.document('things/{thingId}/comments/{commentId}')
+  .onCreate(async (snap, context) => {
+    const thingId = context.params.thingId;
+    const eventId = context.eventId;
+    const should = await shouldEventRun(eventId);
+    if (should) {
+      await db
+        .doc(`things/${thingId}`)
+        .update('commentCount', admin.firestore.FieldValue.increment(1));
+
       return markEventTried(eventId);
     } else {
       return true;
@@ -88,19 +125,16 @@ export const deleteComment = functions
     const commentId = context.params.commentId;
     const should = await shouldEventRun(eventId);
     if (should) {
-      const snapShot = await db
-        .collection(`things/${thingId}/comments/${commentId}/replies`)
-        .get();
-      console.log(snapShot);
-      if (snapShot.size === 0) {
-        return;
+      const snapShot = await db.doc(`things/${thingId}`).get();
+      if (snapShot.exists) {
+        await snapShot.ref.update(
+          'commentCount',
+          admin.firestore.FieldValue.increment(-1)
+        );
       }
 
-      const batch = db.batch();
-      snapShot.docs.forEach(async (doc) => {
-        batch.delete(doc.ref);
-        return await batch.commit();
-      });
+      const path: string = `things/${thingId}/comments/${commentId}/replies`;
+      await deleteCollection(path);
 
       return markEventTried(eventId);
     } else {

@@ -9,6 +9,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { ActivityComponent } from './activity/activity.component';
 import { MatListModule } from '@angular/material/list';
 import { NotifymsgPipe } from '../pipe/notifymsg.pipe';
@@ -16,7 +17,8 @@ import { ThingCardComponent } from './thing-card/thing-card.component';
 import { RouterModule } from '@angular/router';
 import { ThingCardSmComponent } from './thing-card-sm/thing-card-sm.component';
 import { ThingCardWideComponent } from './thing-card-wide/thing-card-wide.component';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatChipsModule } from '@angular/material/chips';
+import { FilterComponent } from './filter/filter.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +28,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     ThingCardComponent,
     ThingCardSmComponent,
     ThingCardWideComponent,
+    FilterComponent,
   ],
   imports: [
     CommonModule,
@@ -40,6 +43,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatSnackBarModule,
     MatListModule,
     RouterModule,
+    MatExpansionModule,
+    MatChipsModule,
   ],
   exports: [
     ComonCommentComponent,
@@ -47,6 +52,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     ThingCardComponent,
     ThingCardSmComponent,
     ThingCardWideComponent,
+    FilterComponent,
   ],
 })
 export class SharedModule {}

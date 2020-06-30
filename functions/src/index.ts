@@ -4,4 +4,4 @@ admin.initializeApp(functions.config().firebase);
 export { createUser } from './user.function';
 export { likeThing, unLikeThing } from './like.function';
 export { addReply, deleteReply, deleteComment } from './comment.function';
-export { deleteFiles } from './thing.function';
+export { deleteThing, addThing, updateThing } from './thing.function';

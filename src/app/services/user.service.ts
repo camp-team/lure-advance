@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
-import { User } from '../interfaces/user';
+import { User } from '@interfaces/user';
 import { AngularFireStorage } from '@angular/fire/storage';
 
 @Injectable({
@@ -23,12 +23,6 @@ export class UserService {
 
   createUser(user: User): Promise<void> {
     return this.db.doc<User>(`users/${user.uid}`).set(user);
-  }
-
-  mergeUser(user: User): Promise<void> {
-    return this.db.doc<User>(`users/${user.uid}`).set(user, {
-      merge: true,
-    });
   }
 
   async uploadAvatarImage(avatarImage: Blob, uid: string): Promise<string> {
