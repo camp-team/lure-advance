@@ -41,7 +41,7 @@ export class DetailComponent implements OnInit {
   categories: Category[];
 
   tags: Tag[] = [];
-  selectedCategories: string[];
+  selectedCategories: string[] = [];
 
   add(event: MatChipInputEvent): void {
     const input = event.input;
@@ -83,11 +83,11 @@ export class DetailComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.categoriesForm = await this.buidCategoriesForm();
+
     this.categoriesForm.valueChanges.subscribe((value) => {
       this.selectedCategories = Object.entries(value)
         .filter(([_, value]) => value)
         .map(([key, _]) => key);
-      console.log(this.selectedCategories);
     });
   }
 }

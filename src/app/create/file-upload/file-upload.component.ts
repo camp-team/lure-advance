@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ThingService } from 'src/app/services/thing.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ThingRef } from '@interfaces/thing-ref';
 
 @Component({
   selector: 'app-file-upload',
@@ -21,7 +22,7 @@ export class FileUploadComponent implements OnInit {
   imageFiles: (File | string)[] = [];
 
   stls: (string | ArrayBuffer)[] = [];
-  stlFiles: (File | string)[] = [];
+  stlFiles: File[] = [];
 
   selectFiles(event) {
     const files: File[] = Object.values(event.target.files);
@@ -62,10 +63,14 @@ export class FileUploadComponent implements OnInit {
   }
 
   async uploadFiles() {
-    return await this.thingService.uploadFiles(
+    return await this.thingService.saveThings(
       this.thingId,
       this.stlFiles,
       this.imageFiles
     );
+  }
+
+  uploadStlFiles(): Promise<ThingRef[]> {
+    return this.thingService.uploadStlFiles(this.thingId, this.stlFiles);
   }
 }

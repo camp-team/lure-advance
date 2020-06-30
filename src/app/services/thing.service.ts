@@ -7,6 +7,7 @@ import { AngularFireStorage } from '@angular/fire/storage';
 import { map, take, switchMap, tap, filter } from 'rxjs/operators';
 import { User } from '@interfaces/user';
 import { UserService } from './user.service';
+import { ThingRef } from '@interfaces/thing-ref';
 @Injectable({
   providedIn: 'root',
 })
@@ -144,9 +145,9 @@ export class ThingService {
     return this.db.doc<Thing>(`things/${thing.id}`).delete();
   }
 
-  async uploadFiles(
+  async saveThings(
     thingId: string,
-    stlFiles: (File | string)[],
+    stlFiles: (File | ThingRef)[],
     imageFiles: (File | string)[],
     defaultImageLength: number = 0,
     defaultStlLength: number = 0
@@ -160,11 +161,7 @@ export class ThingService {
       'image'
     );
 
-    const stlUrls: string[] = await this.getPromiseAllDwonLoadUrls(
-      thingId,
-      stlFiles,
-      'stl'
-    );
+    const stlRef = await this.uploadStlFiles(thingId, stlFiles);
 
     const imageUrls: string[] = await this.getPromiseAllDwonLoadUrls(
       thingId,
@@ -172,12 +169,12 @@ export class ThingService {
       'image'
     );
 
-    return { stlUrls, imageUrls };
+    return { stlRef, imageUrls };
   }
 
   private deleteUploadedFile(
     thingId: string,
-    files: (File | string)[],
+    files: (File | string | ThingRef)[],
     defaultLength: number,
     type: string
   ): Promise<any> {
@@ -206,6 +203,36 @@ export class ThingService {
       files.map(async (file, index) => {
         if (file instanceof File) {
           return await this.uploadAndgetDownLoadUrl(thingId, file, type, index);
+        } else {
+          return file;
+        }
+      })
+    );
+  }
+
+  uploadStlFiles(
+    thingId: string,
+    files: (File | ThingRef)[]
+  ): Promise<ThingRef[]> {
+    return Promise.all(
+      files.map(async (file, index) => {
+        if (file instanceof File) {
+          const path = `things/${thingId}/files/${thingId}-stl-${index}`;
+          await this.storage.upload(path, file);
+
+          const url: string = await this.storage
+            .ref(path)
+            .getDownloadURL()
+            .toPromise();
+
+          const thingFile: ThingRef = {
+            downloadUrl: url,
+            fileName: file.name,
+            fileSize: file.size,
+            downloadCount: 0,
+            updatedAt: firestore.Timestamp.now(),
+          };
+          return thingFile;
         } else {
           return file;
         }

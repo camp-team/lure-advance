@@ -8,6 +8,7 @@ import { DetailComponent } from '../detail/detail.component';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { Router } from '@angular/router';
+import { async } from '@angular/core/testing';
 
 @Component({
   selector: 'app-create',
@@ -20,7 +21,6 @@ export class CreateComponent implements OnInit, AfterViewInit {
 
   isEditable = false;
   detailFormGroup: FormGroup;
-  private categoriesFormGroup: FormGroup;
 
   scheduleFormGroup: FormGroup;
   thingId: string;
@@ -43,12 +43,12 @@ export class CreateComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.detailFormGroup = this.detailComponent.form;
-    this.categoriesFormGroup = this.detailComponent.categoriesForm;
     this.detailFormGroup.valueChanges.subscribe((value) => console.log(value));
   }
 
   async create() {
     const res = await this.fileupComponent.uploadFiles();
+    const thingRef = await this.fileupComponent.uploadStlFiles();
     const detailValue = this.detailFormGroup.value;
     const categoryValue = this.detailComponent.selectedCategories;
     const uid = this.authService.uid;
@@ -58,7 +58,7 @@ export class CreateComponent implements OnInit, AfterViewInit {
       description: detailValue.description,
       designerId: uid,
       imageUrls: res.imageUrls,
-      stlUrls: res.stlUrls,
+      stlRef: thingRef,
       category: categoryValue,
       commentCount: 0,
       likeCount: 0,

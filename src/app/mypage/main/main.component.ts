@@ -18,7 +18,7 @@ export class MainComponent implements OnInit {
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod maxime amet, perspiciatis commodi at ut repudiandae eum dolore eos ea necessitatibus expedita saepe veniam velit laboriosam aliquam nulla alias vitae.',
     tags: ['ルアー', 'ミノー', 'トラウト'],
     imageUrls: ['https://placehold.jp/400x300.png'],
-    stlUrls: [],
+    stlRef: [],
     commentCount: 5,
     likeCount: 6,
     viewCount: 0,

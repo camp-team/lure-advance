@@ -13,6 +13,7 @@ import {
 import { MatChipInputEvent } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ThingRef } from '@interfaces/thing-ref';
 
 @Component({
   selector: 'app-thing-editor',
@@ -33,7 +34,7 @@ export class ThingEditorComponent implements OnInit {
   defaultImageLength: number;
 
   stls: (string | ArrayBuffer)[] = [];
-  stlFiles: (File | string)[] = [];
+  stlFiles: (File | ThingRef)[] = [];
   defaultStlLength: number;
 
   form: FormGroup = this.fb.group({
@@ -130,9 +131,9 @@ export class ThingEditorComponent implements OnInit {
       this.defaultImageLength = thing.imageUrls.length;
 
       this.stls = [];
-      this.stls.push(...thing.stlUrls);
-      this.stlFiles.push(...thing.stlUrls);
-      this.defaultStlLength = thing.stlUrls.length;
+      this.stls.push(...thing.stlRef.map((ref) => ref.downloadUrl));
+      this.stlFiles.push(...thing.stlRef);
+      this.defaultStlLength = thing.stlRef.length;
     });
   }
 
@@ -141,7 +142,7 @@ export class ThingEditorComponent implements OnInit {
   }
 
   async save(thing: Thing) {
-    const res = await this.thingService.uploadFiles(
+    const res = await this.thingService.saveThings(
       thing.id,
       this.stlFiles,
       this.imageFiles,
@@ -151,7 +152,7 @@ export class ThingEditorComponent implements OnInit {
     const formValue = this.form.value;
     const newValue: Thing = {
       ...thing,
-      stlUrls: res.stlUrls,
+      stlRef: res.stlRef,
       imageUrls: res.imageUrls,
       title: formValue.title,
       description: formValue.description,

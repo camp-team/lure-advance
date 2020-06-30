@@ -36,10 +36,10 @@
           *ngFor="let url of thing.imageUrls"
           [style.background-image]="'url(' + url + ')'"
         ></div>
-        <ng-container *ngFor="let stl of thing.stlUrls">
+        <ng-container *ngFor="let ref of thing.stlRef">
           <stl-model-viewer
             style="overflow: hidden;"
-            [stlModels]="[stl]"
+            [stlModels]="[ref.downloadUrl]"
           ></stl-model-viewer>
         </ng-container>
       </swiper>

@@ -7,6 +7,7 @@ import { ThingService } from 'src/app/services/thing.service';
 import * as JSZip from 'jszip';
 import * as JSZipUtils from 'jszip-utils';
 import { saveAs } from 'file-saver';
+import { ThingRef } from '@interfaces/thing-ref';
 
 @Component({
   selector: 'app-files',
@@ -25,16 +26,12 @@ export class FilesComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  getFileName(url: string): string {
-    return this.thingService.getFileNameByUrl(url);
-  }
-
-  async downLoadZipFile(thing: Thing, urls: string[]) {
+  async downLoadZipFile(thing: Thing, refs: ThingRef[]) {
     const zip = new JSZip();
     await Promise.all(
-      urls.map(async (url) => {
-        const data = await JSZipUtils.getBinaryContent(url);
-        const fileName = this.thingService.getFileNameByUrl(url);
+      refs.map(async (ref) => {
+        const data = await JSZipUtils.getBinaryContent(ref.downloadUrl);
+        const fileName = this.thingService.getFileNameByUrl(ref.downloadUrl);
         return zip.file(fileName, data, { binary: true });
       })
     );
@@ -42,4 +39,6 @@ export class FilesComponent implements OnInit {
     const fileName = `${thing.id}.zip`;
     saveAs(res, fileName);
   }
+
+  downLoad() {}
 }
