@@ -34,11 +34,11 @@ export class SearchService {
     const distinctIds: string[] = Array.from(
       new Set(items.map((item) => item.designerId))
     );
-    const users: Observable<User>[] = distinctIds.map((uid) =>
+    const userObservables$: Observable<User>[] = distinctIds.map((uid) =>
       this.userService.getUserByID(uid)
     );
 
-    const users$: Observable<User[]> = combineLatest(users);
+    const users$: Observable<User[]> = combineLatest(userObservables$);
 
     return combineLatest([of(items), users$]).pipe(
       map(([items, users]) => {
