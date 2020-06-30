@@ -1,13 +1,8 @@
 <div class="container">
   <app-file-upload [thingId]="thingId"></app-file-upload>
-  <app-detail [form]="detailFormGroup"></app-detail>
+  <app-detail></app-detail>
   <div class="actions">
-    <button
-      (click)="create()"
-      mat-flat-button
-      color="primary"
-      [disabled]="detailFormGroup.invalid"
-    >
+    <button (click)="create()" mat-flat-button color="primary">
       アップロード
     </button>
   </div>

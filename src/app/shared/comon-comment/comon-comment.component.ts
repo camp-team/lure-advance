@@ -1,10 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Comment, CommentWithUser } from 'src/app/interfaces/comment';
+import { Comment, CommentWithUser } from '@interfaces/comment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommentService } from 'src/app/services/comment.service';
 import { FormControl, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
-import { User } from 'src/app/interfaces/user';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -16,8 +15,6 @@ export class ComonCommentComponent implements OnInit {
   @Input() rootCommentId: string;
   @Input() comment: CommentWithUser;
   @Input() thingId: string;
-
-  user: User;
 
   inputComment = new FormControl('', Validators.maxLength(400));
   replyCommentForm = new FormControl('', Validators.maxLength(400));
@@ -33,9 +30,7 @@ export class ComonCommentComponent implements OnInit {
     private snackBar: MatSnackBar,
     private commentService: CommentService,
     private authService: AuthService
-  ) {
-    this.authService.user$.subscribe((user) => (this.user = user));
-  }
+  ) {}
 
   alterEditMode(): void {
     this.isEditing = true;
@@ -43,9 +38,13 @@ export class ComonCommentComponent implements OnInit {
   }
 
   replyComment(): void {
+    const uid = this.authService.uid;
+    if (uid === undefined) {
+      return;
+    }
     const replyComment: Omit<Comment, 'id' | 'updateAt'> = {
       thingId: this.thingId,
-      fromUid: this.user.uid,
+      fromUid: uid,
       toUid: this.comment.fromUid,
       body: this.replyCommentForm.value,
       replyCount: 0,

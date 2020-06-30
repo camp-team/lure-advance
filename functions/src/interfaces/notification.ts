@@ -1,11 +1,11 @@
 import { firestore } from 'firebase';
-import { User } from './user';
 import { Thing } from './thing';
+import { User } from './user';
 
 export interface Notification {
   id: string;
   type: 'like' | 'reply' | 'follow';
-  designerId: string;
+  toUid: string;
   fromUid: string;
   thingId: string;
   comment: string;

@@ -1,15 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { Comment, CommentWithUser } from 'src/app/interfaces/comment';
+import { Comment, CommentWithUser } from '@interfaces/comment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommentService } from 'src/app/services/comment.service';
-
-import { User } from 'src/app/interfaces/user';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, of } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
-import { Thing } from 'src/app/interfaces/thing';
 import { switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-comments',

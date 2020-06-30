@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ThingService } from 'src/app/services/thing.service';
 import { Observable } from 'rxjs';
-import { Thing } from 'src/app/interfaces/thing';
+import { Thing } from '@interfaces/thing';
 import { switchMap } from 'rxjs/operators';
 import {
   FormGroup,

@@ -1,11 +1,12 @@
-<div class="container">
-  <div class="thing" *ngIf="thing$ | async as thing">
+<div class="container" *ngIf="thing$ | async as thing">
+  <div class="thing">
     <div class="thing__header">
-      <div
+      <button
+        mat-icon-button
         class="thing__avatar"
         [style.background-image]="'url(' + thing.user.avatarURL + ')'"
         routerLink="/mypage/{{ thing.designerId }}"
-      ></div>
+      ></button>
       <p class="thing__title">{{ thing.title }}</p>
       <span class="thing__spacer"></span>
       <p class="thing__updateAt">
@@ -20,7 +21,7 @@
       </button>
       <mat-menu #menu>
         <button routerLink="/{{ thing.id }}/edit" mat-menu-item>
-          <mat-icon> edit</mat-icon> <span>編集</span>
+          <mat-icon>edit</mat-icon> <span>編集</span>
         </button>
         <button (click)="delete(thing)" mat-menu-item>
           <mat-icon>delete</mat-icon>
@@ -58,7 +59,12 @@
           <span>{{ thing.likeCount }}</span>
         </button>
       </ng-template>
-      <button mat-icon-button><mat-icon>mode_comment</mat-icon></button>
+      <span class="thing__spacer"></span>
+      <mat-chip-list>
+        <mat-chip (click)="navigateByTag(tag)" *ngFor="let tag of thing.tags">{{
+          tag
+        }}</mat-chip>
+      </mat-chip-list>
     </div>
   </div>
 

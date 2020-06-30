@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ImageTransform, ImageCroppedEvent } from 'ngx-image-cropper';
 import { UserService } from 'src/app/services/user.service';
-import { User } from 'src/app/interfaces/user';
+import { User } from '@interfaces/user';
 import { base64ToFile } from 'ngx-image-cropper';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';

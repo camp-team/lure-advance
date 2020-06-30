@@ -1,15 +1,25 @@
-<mat-toolbar>
+<mat-toolbar class="header">
   <button mat-button routerLink="/" class="logo">LOGO</button>
-  <span class="spacer"></span>
-  <div class="search">
+  <form class="search" (ngSubmit)="routeSearch(ctrl.value)">
     <input
+      [formControl]="ctrl"
       class="search__input"
       type="search"
       autocomplete="off"
       placeholder="Seach Lure Advance"
+      [matAutocomplete]="auto"
     />
     <mat-icon class="search__icon">search</mat-icon>
-  </div>
+  </form>
+  <mat-autocomplete
+    #auto
+    (optionActivated)="setSearchQuery($event.option?.value)"
+    (optionSelected)="routeSearch($event.option?.value)"
+  >
+    <mat-option *ngFor="let option of searchOptions" [value]="option.title">
+      {{ option.title }}
+    </mat-option>
+  </mat-autocomplete>
   <button routerLink="/create" mat-icon-button class="">
     <mat-icon>add</mat-icon>
   </button>
@@ -27,29 +37,29 @@
       <mat-icon>notifications</mat-icon>
     </button>
   </ng-template>
-  <button
-    *ngIf="user$ | async as user; else loginbtn"
-    class="avator"
-    [style.background-image]="'url(' + user.avatarURL + ')'"
-    [matMenuTriggerFor]="menu"
-    mat-icon-button
-  ></button>
-  <mat-menu #menu>
+  <ng-container *ngIf="user$ | async as user; else loginbtn">
     <button
-      routerLinkActive="router-link-active"
-      mat-menu-item
-      routerLink="/mypage/{{ uid }}"
-    >
-      <mat-icon>account_box</mat-icon>
-      <span>マイページ</span>
-    </button>
+      class="avatar"
+      [style.background-image]="'url(' + user.avatarURL + ')'"
+      [matMenuTriggerFor]="menu"
+      mat-icon-button
+    ></button>
+    <mat-menu #menu>
+      <button
+        routerLinkActive="router-link-active"
+        mat-menu-item
+        routerLink="/mypage/{{ user.uid }}"
+      >
+        <mat-icon>account_box</mat-icon>
+        <span>マイページ</span>
+      </button>
 
-    <button mat-menu-item (click)="logout()">
-      <mat-icon>input</mat-icon>
-      <span>ログアウト</span>
-    </button>
-  </mat-menu>
-
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>input</mat-icon>
+        <span>ログアウト</span>
+      </button>
+    </mat-menu>
+  </ng-container>
   <ng-template #loginbtn>
     <button
       [disabled]="isProccesing"

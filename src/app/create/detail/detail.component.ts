@@ -1,8 +1,15 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Tag } from 'src/app/interfaces/tag';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  Validators,
+} from '@angular/forms';
+import { CategoryService } from 'src/app/services/category.service';
+import { Category } from 'src/app/interfaces/category';
 
 @Component({
   selector: 'app-detail',
@@ -10,7 +17,13 @@ import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
   styleUrls: ['./detail.component.scss'],
 })
 export class DetailComponent implements OnInit {
-  @Input() form: FormGroup;
+  form: FormGroup = this.fb.group({
+    title: ['', [Validators.required, Validators.maxLength(100)]],
+    description: ['', [Validators.maxLength(5000)]],
+    tags: [],
+  });
+
+  categoriesForm: FormGroup;
 
   get titleControl(): FormControl {
     return this.form.get('title') as FormControl;
@@ -25,7 +38,10 @@ export class DetailComponent implements OnInit {
   removable = true;
   addOnBlur = true;
 
+  categories: Category[];
+
   tags: Tag[] = [];
+  selectedCategories: string[];
 
   add(event: MatChipInputEvent): void {
     const input = event.input;
@@ -50,7 +66,28 @@ export class DetailComponent implements OnInit {
     }
   }
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private categoryService: CategoryService
+  ) {}
 
-  ngOnInit(): void {}
+  private async buidCategoriesForm(): Promise<FormGroup> {
+    const result = await this.categoryService.getCategoriesLatest();
+    this.categories = result;
+    const formControls = {};
+    this.categories.forEach(
+      (category) => (formControls[category.value] = false)
+    );
+    return this.fb.group(formControls);
+  }
+
+  async ngOnInit(): Promise<void> {
+    this.categoriesForm = await this.buidCategoriesForm();
+    this.categoriesForm.valueChanges.subscribe((value) => {
+      this.selectedCategories = Object.entries(value)
+        .filter(([_, value]) => value)
+        .map(([key, _]) => key);
+      console.log(this.selectedCategories);
+    });
+  }
 }

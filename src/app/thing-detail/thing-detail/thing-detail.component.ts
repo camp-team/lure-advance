@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Thing, ThingWithUser } from 'src/app/interfaces/thing';
+import { Thing, ThingWithUser } from '@interfaces/thing';
 import { ThingService } from 'src/app/services/thing.service';
 import { Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
+import { switchMap, tap, take } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { AuthService } from 'src/app/services/auth.service';
@@ -16,12 +16,16 @@ import { SwiperConfigInterface } from 'ngx-swiper-wrapper';
 })
 export class ThingDetailComponent implements OnInit {
   thing$: Observable<ThingWithUser> = this.route.paramMap.pipe(
-    switchMap((map) => {
-      const thingId = map.get('thing');
-      return this.thingService.getThingWithUserById(thingId);
-    })
+    switchMap((map) =>
+      this.thingService.getThingWithUserById(map.get('thing'))
+    ),
+    tap(async (thing) => {
+      this.uid = this.authService.uid;
+      this.isLiked = await this.thingService.isLiked(this.uid, thing.id);
+    }),
+    take(1)
   );
-
+  uid: string;
   index: number;
   config: SwiperConfigInterface = {
     loop: true,
@@ -30,9 +34,8 @@ export class ThingDetailComponent implements OnInit {
     navigation: true,
     simulateTouch: false,
   };
-  uid: string = this.authService.uid;
-  isLiked: boolean;
 
+  isLiked: boolean;
   navLinks = [
     {
       path: 'description',
@@ -52,7 +55,8 @@ export class ThingDetailComponent implements OnInit {
     private thingService: ThingService,
     private route: ActivatedRoute,
     private authService: AuthService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router
   ) {}
 
   delete(thing: Thing) {
@@ -82,6 +86,14 @@ export class ThingDetailComponent implements OnInit {
     thing.likeCount--;
     this.isLiked = false;
     return this.thingService.unLikeThing(thing.id, uid);
+  }
+
+  navigateByTag(tag: string) {
+    this.router.navigate([''], {
+      queryParams: {
+        tags: tag,
+      },
+    });
   }
 
   ngOnInit(): void {}

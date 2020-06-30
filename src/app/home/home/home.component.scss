@@ -6,6 +6,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 24px;
+  overflow: auto;
 }
 
 .thing {
@@ -21,4 +22,7 @@
   &__avator {
     background: center/cover;
   }
+}
+.loading {
+  margin: 40px auto;
 }

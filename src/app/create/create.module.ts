@@ -20,6 +20,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { FileUploadComponent } from './file-upload/file-upload.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { StlModelViewerModule } from 'angular-stl-model-viewer';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { StlModelViewerModule } from 'angular-stl-model-viewer';
     FormsModule,
     MatDividerModule,
     StlModelViewerModule,
+    MatCheckboxModule,
   ],
 })
 export class CreateModule {}

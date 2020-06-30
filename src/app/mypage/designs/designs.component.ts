@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Thing } from 'src/app/interfaces/thing';
+import { Thing } from '@interfaces/thing';
 import { ThingService } from 'src/app/services/thing.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { firestore } from 'firebase';
@@ -27,6 +27,8 @@ export class DesignsComponent implements OnInit {
     stlUrls: [],
     commentCount: 5,
     likeCount: 6,
+    viewCount: 0,
+    createdAt: firestore.Timestamp.now(),
     updateAt: firestore.Timestamp.now(),
   };
 

@@ -1,16 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable, combineLatest, of } from 'rxjs';
-import { Thing, ThingWithUser } from '../interfaces/thing';
+import { Thing, ThingWithUser } from '@interfaces/thing';
 import { firestore } from 'firebase';
-import {
-  AngularFireStorage,
-  AngularFireStorageReference,
-} from '@angular/fire/storage';
-import { map, take, switchMap } from 'rxjs/operators';
-import { User } from '../interfaces/user';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { map, take, switchMap, tap, filter } from 'rxjs/operators';
+import { User } from '@interfaces/user';
 import { UserService } from './user.service';
-
 @Injectable({
   providedIn: 'root',
 })
@@ -30,11 +26,9 @@ export class ThingService {
           const distinctUids: string[] = Array.from(
             new Set(things.map((thing) => thing.designerId))
           );
-
           const users$: Observable<User[]> = combineLatest(
             distinctUids.map((uid) => this.userService.getUserByID(uid))
           );
-
           return combineLatest([of(things), users$]);
         }),
         map(([things, users]) => {
@@ -50,6 +44,7 @@ export class ThingService {
 
   getThingWithUserById(id: string): Observable<ThingWithUser> {
     return this.getThingByID(id).pipe(
+      filter((thing) => Boolean(thing)),
       switchMap((thing) => {
         const user$: Observable<User> = this.userService.getUserByID(
           thing.designerId
@@ -106,47 +101,43 @@ export class ThingService {
       }>('likeUsers', (ref) => ref.where('fromUid', '==', uid))
       .valueChanges()
       .pipe(
-        switchMap((likeThings) =>
-          combineLatest(
+        switchMap((likeThings) => {
+          return combineLatest(
             likeThings.map((item) => this.getThingByID(item.thingId))
-          )
-        )
+          );
+        })
       );
   }
 
   getLikedThingIdsWithPromise(uid: string): Promise<string[]> {
-    return this.db
-      .collectionGroup<{
-        thingId: string;
-        fromUid: string;
-        designerId: string;
-      }>('likeUsers', (ref) => ref.where('fromUid', '==', uid))
-      .valueChanges()
+    return this.getLikedThings(uid)
       .pipe(
-        map((res) => res.map((item) => item.thingId)),
+        map((things) => things.filter(Boolean).map((thing) => thing.id)),
         take(1)
       )
       .toPromise();
   }
 
-  getMyLikedThingsByUid(uid: string): Promise<string[]> {
-    return this.db
-      .collection<string>(`users/${uid}/likedThings`)
-      .valueChanges()
-      .pipe(take(1))
-      .toPromise();
+  async isLiked(uid: string, thingId: string): Promise<boolean> {
+    if (uid === undefined) return false;
+    const likedThingIds: string[] = await this.getLikedThingIdsWithPromise(uid);
+    return likedThingIds.includes(thingId);
   }
 
-  createThing(thing: Omit<Thing, 'updateAt'>): Promise<void> {
+  createThing(thing: Omit<Thing, 'updateAt' | 'createdAt'>): Promise<void> {
     const value: Thing = {
       ...thing,
+      createdAt: firestore.Timestamp.now(),
       updateAt: firestore.Timestamp.now(),
     };
     return this.db.doc<Thing>(`things/${thing.id}`).set(value);
   }
 
   updateThing(thing: Thing): Promise<void> {
-    return this.db.doc<Thing>(`things/${thing.id}`).update(thing);
+    return this.db.doc<Thing>(`things/${thing.id}`).update({
+      ...thing,
+      updateAt: firestore.Timestamp.now(),
+    });
   }
 
   deleteThing(thing: Thing): Promise<void> {

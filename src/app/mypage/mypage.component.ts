@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { User } from '../interfaces/user';
+import { User } from '@interfaces/user';
 import { AuthService } from '../services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ProfileEditorComponent } from './profile-editor/profile-editor.component';
