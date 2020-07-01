@@ -26,6 +26,7 @@ export class DesignsComponent implements OnInit {
     imageUrls: ['https://placehold.jp/400x300.png'],
     stlRef: [],
     commentCount: 5,
+    category: [],
     likeCount: 6,
     viewCount: 0,
     createdAt: firestore.Timestamp.now(),

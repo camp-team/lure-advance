@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { StlModelViewerModule } from 'angular-stl-model-viewer';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [ThingEditorComponent],
@@ -28,6 +29,7 @@ import { StlModelViewerModule } from 'angular-stl-model-viewer';
     MatMenuModule,
     MatButtonModule,
     StlModelViewerModule,
+    MatCheckboxModule,
   ],
 })
 export class ThingEditorModule {}

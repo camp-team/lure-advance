@@ -24,10 +24,10 @@
       >{{ textarea.value.length }}は長過ぎます</mat-error
     >
   </mat-form-field>
-  <div *ngIf="categoriesForm" class="categories" [formGroup]="categoriesForm">
+  <div *ngIf="categories" class="categories" [formGroup]="categoriesForm">
     <p>CATEGORIES</p>
     <mat-checkbox
-      *ngFor="let category of categoryService.getCategoriesLatest()"
+      *ngFor="let category of categories"
       [formControlName]="category.value"
       class="categories__check"
       >{{ category.name }}

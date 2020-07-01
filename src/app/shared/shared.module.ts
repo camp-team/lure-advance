@@ -19,6 +19,7 @@ import { ThingCardSmComponent } from './thing-card-sm/thing-card-sm.component';
 import { ThingCardWideComponent } from './thing-card-wide/thing-card-wide.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { FilterComponent } from './filter/filter.component';
+import { RelativetimePipe } from '../pipe/relativetime.pipe';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { FilterComponent } from './filter/filter.component';
     ThingCardSmComponent,
     ThingCardWideComponent,
     FilterComponent,
+    RelativetimePipe,
   ],
   imports: [
     CommonModule,

@@ -3,7 +3,7 @@ import { NotificationService } from 'src/app/services/notification.service';
 import { NotificationWithUserAndThing } from '@interfaces/notification';
 import { AuthService } from 'src/app/services/auth.service';
 import { Observable, of } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({

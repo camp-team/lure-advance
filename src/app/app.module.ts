@@ -32,6 +32,7 @@ import { FooterComponent } from './footer/footer.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { RelativetimePipe } from './pipe/relativetime.pipe';
 
 @NgModule({
   declarations: [
