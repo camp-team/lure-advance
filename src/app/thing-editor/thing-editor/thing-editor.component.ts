@@ -14,6 +14,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ThingRef } from '@interfaces/thing-ref';
+import { DetailComponentService } from 'src/app/services/ui/detail-component.service';
 
 @Component({
   selector: 'app-thing-editor',
@@ -37,19 +38,11 @@ export class ThingEditorComponent implements OnInit {
   stlFiles: (File | ThingRef)[] = [];
   defaultStlLength: number;
 
-  form: FormGroup = this.fb.group({
-    title: ['', [Validators.required, Validators.maxLength(100)]],
-    description: ['', [Validators.maxLength(5000)]],
-    tags: [],
-  });
+  form: FormGroup = this.componentService.form;
 
-  get titleControl(): FormControl {
-    return this.form.get('title') as FormControl;
-  }
+  titleControl = this.componentService.titleControl;
+  descriptionControl = this.componentService.descriptionControl;
 
-  get descriptionControl(): FormControl {
-    return this.form.get('description') as FormControl;
-  }
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   tags: string[] = [];
   visible = true;
@@ -68,18 +61,7 @@ export class ThingEditorComponent implements OnInit {
   }
 
   add(event: MatChipInputEvent): void {
-    const input = event.input;
-    const value = event.value;
-
-    // Add our tag
-    if ((value || '').trim()) {
-      this.tags.push(value.trim());
-    }
-
-    // Reset the input value
-    if (input) {
-      input.value = '';
-    }
+    this.componentService.addTag(event, this.tags);
   }
 
   private readFile(file: File) {
@@ -102,10 +84,7 @@ export class ThingEditorComponent implements OnInit {
   }
 
   remove(tag: string): void {
-    const index = this.tags.indexOf(tag);
-    if (index >= 0) {
-      this.tags.splice(index, 1);
-    }
+    this.componentService.remove(tag, this.tags);
   }
 
   constructor(
@@ -113,7 +92,8 @@ export class ThingEditorComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private thingService: ThingService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private componentService: DetailComponentService
   ) {}
 
   ngOnInit(): void {

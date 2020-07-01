@@ -2,11 +2,13 @@
 <form [formGroup]="form" class="details">
   <mat-form-field appearance="outline">
     <mat-label>タイトル</mat-label>
-    <input matInput #input formControlName="title" />
+    <input matInput #input autocomplete="off" formControlName="title" />
     <mat-hint align="end">{{ input.value.length }}/100</mat-hint>
-    <mat-error *ngIf="titleControl.hasError('maxlength')">長過ぎます</mat-error>
+    <mat-error *ngIf="titleControl.hasError('maxlength')"
+      >{{ input.value.length }}は長過ぎます</mat-error
+    >
     <mat-error *ngIf="titleControl.hasError('required')"
-      >必須入力です</mat-error
+      >タイトルは必須入力です</mat-error
     >
   </mat-form-field>
   <mat-form-field appearance="outline">
@@ -22,10 +24,10 @@
       >{{ textarea.value.length }}は長過ぎます</mat-error
     >
   </mat-form-field>
-  <div *ngIf="categories" class="categories" [formGroup]="categoriesForm">
+  <div *ngIf="categoriesForm" class="categories" [formGroup]="categoriesForm">
     <p>CATEGORIES</p>
     <mat-checkbox
-      *ngFor="let category of categories"
+      *ngFor="let category of categoryService.getCategoriesLatest()"
       [formControlName]="category.value"
       class="categories__check"
       >{{ category.name }}
@@ -40,7 +42,7 @@
         [removable]="removable"
         (removed)="remove(tag)"
       >
-        {{ tag.value }}
+        {{ tag }}
         <mat-icon matChipRemove>cancel</mat-icon>
       </mat-chip>
       <input
@@ -49,6 +51,7 @@
         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
         [matChipInputAddOnBlur]="addOnBlur"
         (matChipInputTokenEnd)="add($event)"
+        autocomplete="off"
         formControlName="tags"
       />
     </mat-chip-list>

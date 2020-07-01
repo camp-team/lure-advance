@@ -1,6 +1,5 @@
 <div class="container" *ngIf="thing$ | async as thing">
-  <h1>「{{ thing.title }}」を編集</h1>
-
+  <h1>「{{ form.value.title }}」を編集</h1>
   <label class="file">
     <input
       class="file__input"
@@ -12,6 +11,7 @@
     />
     <mat-icon class="file__icon" inline>backup</mat-icon>
     <button
+      type="button"
       class="file__up-btn"
       [disabled]="images.length >= MAX_FILE_LENGTH"
       (click)="file_input.click()"
@@ -94,6 +94,7 @@
           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
           [matChipInputAddOnBlur]="addOnBlur"
           (matChipInputTokenEnd)="add($event)"
+          autocomplete="off"
           formControlName="tags"
         />
       </mat-chip-list>

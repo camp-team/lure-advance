@@ -1,1 +1,3 @@
-<p>description works!</p>
+<ng-container *ngIf="thing$ | async as thing">
+  <p>{{ thing.description }}</p>
+</ng-container>

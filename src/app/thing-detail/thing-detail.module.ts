@@ -21,6 +21,7 @@ import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SwiperModule } from 'ngx-swiper-wrapper';
 import { StlModelViewerModule } from 'angular-stl-model-viewer';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { StlModelViewerModule } from 'angular-stl-model-viewer';
     MatDialogModule,
     SwiperModule,
     StlModelViewerModule,
+    RouterModule,
   ],
 })
 export class ThingDetailModule {}

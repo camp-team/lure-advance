@@ -3,7 +3,7 @@ import { NotificationService } from 'src/app/services/notification.service';
 import { NotificationWithUserAndThing } from '@interfaces/notification';
 import { AuthService } from 'src/app/services/auth.service';
 import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -12,19 +12,18 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./activity.component.scss'],
 })
 export class ActivityComponent implements OnInit {
-  uid: string;
   notifications$: Observable<
     NotificationWithUserAndThing[]
   > = this.authService.user$.pipe(
     switchMap((user) => {
       if (user) {
-        this.uid = user.uid;
         return this.notificationService.getNotificationsByUid(user.uid);
       } else {
-        return of(null);
+        return of([]);
       }
     })
   );
+
   constructor(
     private notificationService: NotificationService,
     private authService: AuthService,
@@ -32,9 +31,12 @@ export class ActivityComponent implements OnInit {
   ) {}
 
   deleteItem(id: string) {
-    this.notificationService
-      .deleteNotification(id, this.uid)
-      .then(() => this.snackBar.open('削除しました。'));
+    const uid: string = this.authService.uid;
+    if (uid) {
+      this.notificationService
+        .deleteNotification(id, uid)
+        .then(() => this.snackBar.open('削除しました。'));
+    }
   }
 
   ngOnInit(): void {}

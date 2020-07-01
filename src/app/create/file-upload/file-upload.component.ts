@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ThingService } from 'src/app/services/thing.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ThingRef } from '@interfaces/thing-ref';
+import { FileUploadComponentService } from 'src/app/services/ui/file-upload-component.service';
 
 @Component({
   selector: 'app-file-upload',
@@ -11,55 +12,29 @@ import { ThingRef } from '@interfaces/thing-ref';
 export class FileUploadComponent implements OnInit {
   @Input() thingId: string;
 
-  MAX_FILE_LENGTH = 5;
   constructor(
     private thingService: ThingService,
-    private snackBar: MatSnackBar
+    private componentService: FileUploadComponentService
   ) {}
   ngOnInit(): void {}
 
-  images: any[] = [];
-  imageFiles: (File | string)[] = [];
+  images: any[] = this.componentService.images;
+  imageFiles: (File | string)[] = this.componentService.imageFiles;
 
-  stls: (string | ArrayBuffer)[] = [];
-  stlFiles: File[] = [];
+  stls: (string | ArrayBuffer)[] = this.componentService.stls;
+  stlFiles: File[] = this.componentService.stlFiles;
 
   selectFiles(event) {
     const files: File[] = Object.values(event.target.files);
-    if (files.length + this.images.length > this.MAX_FILE_LENGTH) {
-      this.snackBar.open('最大ファイル数は5つです');
-      return;
-    }
-    files.forEach((file) => this.readFile(file));
-  }
-
-  private readFile(file: File) {
-    const fr: FileReader = new FileReader();
-    fr.onload = (e) => {
-      if (this.isStl(file)) {
-        this.stlFiles.push(file);
-        this.stls.push(e.target.result);
-      } else {
-        this.images.push(e.target.result);
-        this.imageFiles.push(file);
-      }
-    };
-    fr.readAsDataURL(file);
-  }
-
-  private isStl(file: File) {
-    const fileName = file.name.toLocaleLowerCase();
-    return fileName.endsWith('.stl');
+    this.componentService.selectFiles(files);
   }
 
   deleteImage(index: number) {
-    this.images.splice(index, 1);
-    this.imageFiles.splice(index, 1);
+    this.componentService.deleteImage(index);
   }
 
   deleteStl(index: number) {
-    this.stls.splice(index, 1);
-    this.stlFiles.splice(index, 1);
+    this.componentService.deleteStl(index);
   }
 
   async uploadFiles() {

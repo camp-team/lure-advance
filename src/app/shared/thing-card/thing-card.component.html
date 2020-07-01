@@ -48,5 +48,9 @@
         <span>{{ thing.likeCount }}</span>
       </button>
     </ng-template>
+    <button routerLink="/{{ thing.id }}/comments" mat-icon-button>
+      <mat-icon fontSet="material-icons-outlined"> mode_comment</mat-icon
+      ><span>{{ thing.commentCount }}</span>
+    </button>
   </div>
 </div>

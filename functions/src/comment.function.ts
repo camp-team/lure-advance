@@ -32,7 +32,7 @@ export const addReply = functions
       const comment: string = value.body;
 
       if (targetUid === replierUid) {
-        console.log('');
+        console.log('Replying to My Comment.');
         return;
       }
 
@@ -76,7 +76,7 @@ export const deleteReply = functions
           admin.firestore.FieldValue.increment(-1)
         );
       } else {
-        console.log('Thing or ParentComment Deleted.');
+        console.log('Thing or Parent Comment is Deleted.');
       }
 
       const replySnap = await db
@@ -89,7 +89,7 @@ export const deleteReply = functions
           admin.firestore.FieldValue.increment(-1)
         );
       } else {
-        console.log('Thing or ParentComment Deleted.');
+        console.log('Thing or Parent Comment is Deleted.');
       }
 
       return markEventTried(eventId);
@@ -131,6 +131,8 @@ export const deleteComment = functions
           'commentCount',
           admin.firestore.FieldValue.increment(-1)
         );
+      } else {
+        console.log('Comment does not exist. Thing is Deleted.');
       }
 
       const path: string = `things/${thingId}/comments/${commentId}/replies`;

@@ -1,4 +1,7 @@
-<div class="activity" *ngFor="let notification of notifications$ | async">
+<ng-container
+  class="activity"
+  *ngFor="let notification of notifications$ | async"
+>
   <div
     class="activity__avatar"
     [style.background-image]="'url(' + notification.user.avatarURL + ')'"
@@ -23,4 +26,4 @@
       </button>
     </mat-menu>
   </div>
-</div>
+</ng-container>

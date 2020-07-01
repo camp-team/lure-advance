@@ -4,11 +4,10 @@ import { Thing } from '@interfaces/thing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ThingService } from 'src/app/services/thing.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { DetailComponent } from '../detail/detail.component';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { Router } from '@angular/router';
-import { async } from '@angular/core/testing';
+import { DetailComponentService } from 'src/app/services/ui/detail-component.service';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-create',
@@ -16,11 +15,10 @@ import { async } from '@angular/core/testing';
   styleUrls: ['./create.component.scss'],
 })
 export class CreateComponent implements OnInit, AfterViewInit {
-  @ViewChild(DetailComponent) detailComponent: DetailComponent;
   @ViewChild(FileUploadComponent) fileupComponent: FileUploadComponent;
 
   isEditable = false;
-  detailFormGroup: FormGroup;
+  detailForm: FormGroup = this.detailFormService.form;
 
   scheduleFormGroup: FormGroup;
   thingId: string;
@@ -31,7 +29,8 @@ export class CreateComponent implements OnInit, AfterViewInit {
     private thingService: ThingService,
     private snackBar: MatSnackBar,
     private db: AngularFirestore,
-    private router: Router
+    private router: Router,
+    private detailFormService: DetailComponentService
   ) {
     this.thingId = this.db.createId();
 
@@ -40,17 +39,14 @@ export class CreateComponent implements OnInit, AfterViewInit {
       public: ['1_1'],
     });
   }
-
-  ngAfterViewInit(): void {
-    this.detailFormGroup = this.detailComponent.form;
-    this.detailFormGroup.valueChanges.subscribe((value) => console.log(value));
-  }
+  ngAfterViewInit(): void {}
 
   async create() {
     const res = await this.fileupComponent.uploadFiles();
     const thingRef = await this.fileupComponent.uploadStlFiles();
-    const detailValue = this.detailFormGroup.value;
-    const categoryValue = this.detailComponent.selectedCategories;
+    const detailValue = this.detailForm.value;
+    const categoryValue = this.detailFormService.selectedCategories;
+    const tags: string[] = this.detailFormService.tags;
     const uid = this.authService.uid;
     const thing: Omit<Thing, 'updateAt' | 'createdAt'> = {
       id: this.thingId,
@@ -63,7 +59,7 @@ export class CreateComponent implements OnInit, AfterViewInit {
       commentCount: 0,
       likeCount: 0,
       viewCount: 0,
-      tags: this.detailComponent.tags.map((x) => x.value),
+      tags,
     };
 
     this.thingService.createThing(thing).then(() => {

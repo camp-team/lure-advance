@@ -9,8 +9,9 @@
   />
   <mat-icon class="file__icon" inline>backup</mat-icon>
   <button
+    type="button"
     class="file__up-btn"
-    [disabled]="images.length >= MAX_FILE_LENGTH"
+    [disabled]="images.length >= 5"
     (click)="file_input.click()"
     mat-flat-button
     color="primary"

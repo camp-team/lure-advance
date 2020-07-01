@@ -1,9 +1,11 @@
 <div class="container">
-  <app-file-upload [thingId]="thingId"></app-file-upload>
-  <app-detail></app-detail>
-  <div class="actions">
-    <button (click)="create()" mat-flat-button color="primary">
-      アップロード
-    </button>
-  </div>
+  <form (ngSubmit)="create()">
+    <app-file-upload [thingId]="thingId"></app-file-upload>
+    <app-detail></app-detail>
+    <div class="actions">
+      <button [disabled]="detailForm.invalid" mat-flat-button color="primary">
+        アップロード
+      </button>
+    </div>
+  </form>
 </div>
