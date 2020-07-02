@@ -1,6 +1,5 @@
 <div class="container" *ngIf="thing$ | async as thing">
-  <h1>「{{ thing.title }}」を編集</h1>
-
+  <h1>「{{ form.value.title }}」を編集</h1>
   <label class="file">
     <input
       class="file__input"
@@ -12,10 +11,12 @@
     />
     <mat-icon class="file__icon" inline>backup</mat-icon>
     <button
+      type="button"
       class="file__up-btn"
       [disabled]="images.length >= MAX_FILE_LENGTH"
       (click)="file_input.click()"
       mat-flat-button
+      autocomplete="off"
       color="primary"
     >
       ファイルを選択する
@@ -52,7 +53,7 @@
   <form [formGroup]="form" class="details" (ngSubmit)="save(thing)">
     <mat-form-field appearance="outline">
       <mat-label>タイトル</mat-label>
-      <input matInput #input formControlName="title" />
+      <input matInput autocomplete="off" #input formControlName="title" />
       <mat-hint align="end">{{ input.value.length }}/100</mat-hint>
       <mat-error *ngIf="titleControl.hasError('maxlength')"
         >長過ぎます</mat-error
@@ -67,6 +68,7 @@
         matInput
         formControlName="description"
         #textarea
+        autocomplete="off"
         matTextareaAutosize
         [value]="thing.description"
       >
@@ -76,6 +78,15 @@
         >長過ぎます</mat-error
       >
     </mat-form-field>
+    <div *ngIf="categories" class="categories" [formGroup]="categoriesForm">
+      <p>CATEGORIES</p>
+      <mat-checkbox
+        *ngFor="let category of categories"
+        [formControlName]="category.value"
+        class="categories__check"
+        >{{ category.name }}
+      </mat-checkbox>
+    </div>
     <mat-form-field>
       <mat-label>タグ</mat-label>
       <mat-chip-list #chipList aria-label="tag selection">
@@ -94,6 +105,7 @@
           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
           [matChipInputAddOnBlur]="addOnBlur"
           (matChipInputTokenEnd)="add($event)"
+          autocomplete="off"
           formControlName="tags"
         />
       </mat-chip-list>
