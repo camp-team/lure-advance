@@ -31,7 +31,7 @@ export class FilesComponent implements OnInit {
     await Promise.all(
       refs.map(async (ref) => {
         const data = await JSZipUtils.getBinaryContent(ref.downloadUrl);
-        const fileName = this.thingService.getFileNameByUrl(ref.downloadUrl);
+        const fileName = ref.fileName;
         return zip.file(fileName, data, { binary: true });
       })
     );
@@ -40,5 +40,5 @@ export class FilesComponent implements OnInit {
     saveAs(res, fileName);
   }
 
-  downLoad() {}
+  async downLoad(ref: ThingRef) {}
 }
