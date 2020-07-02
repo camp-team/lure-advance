@@ -58,6 +58,7 @@ export class FilterComponent implements OnInit {
       queryParams: {
         createdAt: key,
       },
+      queryParamsHandling: 'merge',
     });
   }
   buildQueryParameterByTags(event: MatSelectionListChange) {
