@@ -110,7 +110,7 @@
     </mat-form-field>
     <div class="details__actions">
       <button
-        [disabled]="form.invalid || imageFiles.length"
+        [disabled]="form.invalid || !imageFiles.length"
         mat-flat-button
         color="primary"
       >
