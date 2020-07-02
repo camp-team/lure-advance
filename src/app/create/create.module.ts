@@ -17,17 +17,10 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { StlModelViewerModule } from 'angular-stl-model-viewer';
 import { CreateRoutingModule } from './create-routing.module';
 import { CreateComponent } from './create/create.component';
-import { DetailComponent } from './detail/detail.component';
-import { FileUploadComponent } from './file-upload/file-upload.component';
 import { ScheduleComponent } from './schedule/schedule.component';
 
 @NgModule({
-  declarations: [
-    DetailComponent,
-    ScheduleComponent,
-    CreateComponent,
-    FileUploadComponent,
-  ],
+  declarations: [ScheduleComponent, CreateComponent],
   imports: [
     CommonModule,
     CreateRoutingModule,

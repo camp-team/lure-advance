@@ -30,7 +30,6 @@ import { ThingDetailComponent } from './thing-detail/thing-detail.component';
     DescriptionComponent,
     FilesComponent,
     DeleteDialogComponent,
-    RelativetimePipe,
   ],
   imports: [
     CommonModule,

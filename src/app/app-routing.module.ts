@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { LegalComponent } from './footer/legal/legal.component';
 import { PrivacypolicyComponent } from './footer/privacypolicy/privacypolicy.component';
 import { NotFoundComponent } from './not-found/not-found.component';
@@ -15,7 +15,6 @@ const routes: Routes = [
     loadChildren: () =>
       import('./create/create.module').then((m) => m.CreateModule),
   },
-
   {
     path: ':thing',
     loadChildren: () =>
