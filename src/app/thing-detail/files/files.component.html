@@ -2,35 +2,37 @@
   <div class="file-all-download">
     <p class="file-all-download__title">{{ thing.title }}</p>
     <span class="file-all-download__spacer"></span>
-    <a download="test.zip">
-      <button
-        (click)="downLoadZipFile(thing, thing.stlUrls)"
-        color="primary"
-        mat-flat-button
-        class="file-all-download__btn"
-      >
-        <mat-icon>system_update_alt</mat-icon>
-        <span>Download All</span>
-      </button>
-    </a>
+    <button
+      (click)="downLoadZipFile(thing, thing.stlRef)"
+      color="primary"
+      mat-flat-button
+      class="file-all-download__btn"
+    >
+      <mat-icon>system_update_alt</mat-icon>
+      <span>Download All</span>
+    </button>
   </div>
-  <div class="file-download" *ngFor="let url of thing.stlUrls">
+  <div class="file-download" *ngFor="let ref of thing.stlRef">
     <div class="file-download__thumbnail">
       <img src="/assets/images/gear_thumb_medium.jpg" alt="" />
     </div>
     <div class="file-download__body">
-      <p class="file-download__title">{{ getFileName(url) }}</p>
+      <p class="file-download__title">{{ ref.fileName }}</p>
       <p class="file-download__updateAt">
         <small> UpdateAt </small>
-        {{ thing.updateAt.toDate() | date: 'yyyy年MM月dd日' }}
+        {{ ref.updatedAt.toDate() | date: 'yyyy年MM月dd日' }}
       </p>
     </div>
     <span class="file-download__spacer"></span>
-    <a [href]="url" target="_blank">
-      <button color="primary" mat-flat-button class="file-download__btn">
-        <mat-icon>system_update_alt</mat-icon>
-        <span>Download</span>
-      </button>
-    </a>
+
+    <button
+      (click)="downLoad(ref)"
+      color="primary"
+      mat-flat-button
+      class="file-download__btn"
+    >
+      <mat-icon>system_update_alt</mat-icon>
+      <span>Download</span>
+    </button>
   </div>
 </ng-container>

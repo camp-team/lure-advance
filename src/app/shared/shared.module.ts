@@ -1,24 +1,25 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ComonCommentComponent } from './comon-comment/comon-comment.component';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { ActivityComponent } from './activity/activity.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
-import { NotifymsgPipe } from '../pipe/notifymsg.pipe';
-import { ThingCardComponent } from './thing-card/thing-card.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
+import { NotifymsgPipe } from '../pipe/notifymsg.pipe';
+import { RelativetimePipe } from '../pipe/relativetime.pipe';
+import { ActivityComponent } from './activity/activity.component';
+import { ComonCommentComponent } from './comon-comment/comon-comment.component';
+import { FilterComponent } from './filter/filter.component';
 import { ThingCardSmComponent } from './thing-card-sm/thing-card-sm.component';
 import { ThingCardWideComponent } from './thing-card-wide/thing-card-wide.component';
-import { MatChipsModule } from '@angular/material/chips';
-import { FilterComponent } from './filter/filter.component';
+import { ThingCardComponent } from './thing-card/thing-card.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { FilterComponent } from './filter/filter.component';
     ThingCardSmComponent,
     ThingCardWideComponent,
     FilterComponent,
+    RelativetimePipe,
   ],
   imports: [
     CommonModule,

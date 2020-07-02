@@ -36,10 +36,10 @@
           *ngFor="let url of thing.imageUrls"
           [style.background-image]="'url(' + url + ')'"
         ></div>
-        <ng-container *ngFor="let stl of thing.stlUrls">
+        <ng-container *ngFor="let ref of thing.stlRef">
           <stl-model-viewer
             style="overflow: hidden;"
-            [stlModels]="[stl]"
+            [stlModels]="[ref.downloadUrl]"
           ></stl-model-viewer>
         </ng-container>
       </swiper>
@@ -59,6 +59,10 @@
           <span>{{ thing.likeCount }}</span>
         </button>
       </ng-template>
+      <button mat-icon-button>
+        <mat-icon fontSet="material-icons-outlined"> mode_comment</mat-icon
+        ><span>{{ thing.commentCount }}</span>
+      </button>
       <span class="thing__spacer"></span>
       <mat-chip-list>
         <mat-chip (click)="navigateByTag(tag)" *ngFor="let tag of thing.tags">{{

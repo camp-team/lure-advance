@@ -51,6 +51,12 @@
   }
 }
 
+.categories {
+  &__check + &__check {
+    margin-left: 12px;
+  }
+}
+
 img {
   max-width: 100%;
 }

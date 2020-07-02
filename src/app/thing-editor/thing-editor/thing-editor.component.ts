@@ -1,18 +1,21 @@
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ThingService } from 'src/app/services/thing.service';
-import { Observable } from 'rxjs';
-import { Thing } from '@interfaces/thing';
-import { switchMap } from 'rxjs/operators';
 import {
-  FormGroup,
   FormBuilder,
-  Validators,
   FormControl,
+  FormGroup,
+  Validators,
 } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Thing } from '@interfaces/thing';
+import { ThingRef } from '@interfaces/thing-ref';
+import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { Category } from 'src/app/interfaces/category';
+import { CategoryService } from 'src/app/services/category.service';
+import { ThingService } from 'src/app/services/thing.service';
 
 @Component({
   selector: 'app-thing-editor',
@@ -33,7 +36,7 @@ export class ThingEditorComponent implements OnInit {
   defaultImageLength: number;
 
   stls: (string | ArrayBuffer)[] = [];
-  stlFiles: (File | string)[] = [];
+  stlFiles: (File | ThingRef)[] = [];
   defaultStlLength: number;
 
   form: FormGroup = this.fb.group({
@@ -56,6 +59,10 @@ export class ThingEditorComponent implements OnInit {
   removable = true;
   addOnBlur = true;
 
+  categories: Category[];
+  categoriesForm: FormGroup;
+  selectedCategories: string[] = [];
+
   selectFiles(event) {
     const files: File[] = Object.values(event.target.files);
     if (files.length + this.images.length > this.MAX_FILE_LENGTH) {
@@ -63,19 +70,16 @@ export class ThingEditorComponent implements OnInit {
       return;
     }
     files.forEach((file) => this.readFile(file));
-    console.log(this.stls);
   }
 
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
 
-    // Add our tag
     if ((value || '').trim()) {
       this.tags.push(value.trim());
     }
 
-    // Reset the input value
     if (input) {
       input.value = '';
     }
@@ -102,6 +106,7 @@ export class ThingEditorComponent implements OnInit {
 
   remove(tag: string): void {
     const index = this.tags.indexOf(tag);
+
     if (index >= 0) {
       this.tags.splice(index, 1);
     }
@@ -112,11 +117,12 @@ export class ThingEditorComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private thingService: ThingService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private categoryService: CategoryService
   ) {}
 
-  ngOnInit(): void {
-    this.thing$.subscribe((thing) => {
+  async ngOnInit(): Promise<void> {
+    this.thing$.subscribe(async (thing) => {
       this.tags = thing.tags;
       this.form.patchValue({
         ...thing,
@@ -130,9 +136,14 @@ export class ThingEditorComponent implements OnInit {
       this.defaultImageLength = thing.imageUrls.length;
 
       this.stls = [];
-      this.stls.push(...thing.stlUrls);
-      this.stlFiles.push(...thing.stlUrls);
-      this.defaultStlLength = thing.stlUrls.length;
+      this.stls.push(...thing.stlRef.map((ref) => ref.downloadUrl));
+      this.stlFiles.push(...thing.stlRef);
+      this.defaultStlLength = thing.stlRef.length;
+
+      this.categoriesForm = await this.buidCategoriesForm(thing.category);
+      this.categoriesForm.valueChanges.subscribe((value) => {
+        this.selectedCategories = this.toValuesFromSelected(value);
+      });
     });
   }
 
@@ -141,7 +152,7 @@ export class ThingEditorComponent implements OnInit {
   }
 
   async save(thing: Thing) {
-    const res = await this.thingService.uploadFiles(
+    const res = await this.thingService.saveThings(
       thing.id,
       this.stlFiles,
       this.imageFiles,
@@ -151,9 +162,10 @@ export class ThingEditorComponent implements OnInit {
     const formValue = this.form.value;
     const newValue: Thing = {
       ...thing,
-      stlUrls: res.stlUrls,
+      stlRef: res.stlRef,
       imageUrls: res.imageUrls,
       title: formValue.title,
+      category: this.selectedCategories,
       description: formValue.description,
       tags: this.tags,
     };
@@ -171,5 +183,23 @@ export class ThingEditorComponent implements OnInit {
   deleteStl(index: number) {
     this.stls.splice(index, 1);
     this.stlFiles.splice(index, 1);
+  }
+  private async buidCategoriesForm(values: string[] = []): Promise<FormGroup> {
+    const result = await this.categoryService.getCategoriesLatest();
+    this.categories = result;
+
+    const formControls = {};
+    this.categories.forEach(
+      (category) =>
+        (formControls[category.value] = values.includes(category.value))
+    );
+
+    return this.fb.group(formControls);
+  }
+
+  private toValuesFromSelected(selectedValue: any): string[] {
+    return Object.entries(selectedValue)
+      .filter(([_, value]) => value)
+      .map(([key, _]) => key);
   }
 }

@@ -9,7 +9,7 @@
     <p class="thing__title">{{ thing.title }}</p>
     <span class="thing__spacer"></span>
     <p class="thing__updateAt">
-      {{ thing.updateAt | date: 'yyyy年MM月dd日' }}
+      {{ thing.updateAt | relativetime }}
     </p>
     <button
       [mat-menu-trigger-for]="menu"
@@ -48,5 +48,9 @@
         <span>{{ thing.likeCount }}</span>
       </button>
     </ng-template>
+    <button routerLink="/{{ thing.id }}/comments" mat-icon-button>
+      <mat-icon fontSet="material-icons-outlined"> mode_comment</mat-icon
+      ><span>{{ thing.commentCount }}</span>
+    </button>
   </div>
 </div>
