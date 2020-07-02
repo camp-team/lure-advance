@@ -9,7 +9,7 @@ export interface Thing {
   tags: string[];
   imageUrls: string[];
   stlRef: ThingRef[];
-  category?: string[];
+  category: string[];
   commentCount: number;
   likeCount: number;
   viewCount: number;

@@ -24,6 +24,7 @@ export class LikesComponent implements OnInit {
     tags: ['ルアー', 'ミノー', 'トラウト'],
     imageUrls: ['https://placehold.jp/400x300.png'],
     stlRef: [],
+    category: [],
     commentCount: 5,
     likeCount: 6,
     viewCount: 0,
