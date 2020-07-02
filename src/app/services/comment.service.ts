@@ -31,12 +31,11 @@ export class CommentService {
             );
             return combineLatest([of(comments), users$]);
           } else {
-            console.log('Comments Are Empty.');
-            return of([]);
+            return of(null);
           }
         }),
         map(([comments, users]) => {
-          if (comments?.length) {
+          if (comments) {
             return comments.map((comment) => {
               return {
                 ...comment,
@@ -44,7 +43,6 @@ export class CommentService {
               };
             });
           } else {
-            console.log('Return Empty.');
             return [];
           }
         })
@@ -82,7 +80,6 @@ export class CommentService {
     thingId: string,
     rootCommentId: string
   ): Observable<CommentWithUser[]> {
-    let allReplies: Comment[];
     return this.db
       .collection<Comment>(
         `things/${thingId}/comments/${rootCommentId}/replies`,
@@ -91,21 +88,29 @@ export class CommentService {
       .valueChanges()
       .pipe(
         switchMap((replies) => {
-          allReplies = replies;
-          const distinctUids: string[] = Array.from(
-            new Set(replies.map((comment) => comment.fromUid))
-          );
-          return combineLatest(
-            distinctUids.map((uid) => this.userService.getUserByID(uid))
-          );
+          if (replies.length) {
+            const distinctUids: string[] = Array.from(
+              new Set(replies.map((comment) => comment.fromUid))
+            );
+            const users$ = combineLatest(
+              distinctUids.map((uid) => this.userService.getUserByID(uid))
+            );
+            return combineLatest([of(replies), users$]);
+          } else {
+            of(null);
+          }
         }),
-        map((users) => {
-          return allReplies.map((rep) => {
-            return {
-              ...rep,
-              user: users.find((user) => user.uid === rep.fromUid),
-            };
-          });
+        map(([replies, users]) => {
+          if (replies) {
+            return replies.map((rep) => {
+              return {
+                ...rep,
+                user: users.find((user) => user.uid === rep.fromUid),
+              };
+            });
+          } else {
+            of([]);
+          }
         })
       );
   }
