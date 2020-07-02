@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { SwiperConfigInterface } from 'ngx-swiper-wrapper';
+import { CategoryService } from 'src/app/services/category.service';
 
 @Component({
   selector: 'app-thing-detail',
@@ -56,7 +57,8 @@ export class ThingDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private authService: AuthService,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    public categoryService: CategoryService
   ) {}
 
   delete(thing: Thing) {
