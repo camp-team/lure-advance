@@ -31,11 +31,11 @@ export class CommentService {
             );
             return combineLatest([of(comments), users$]);
           } else {
-            return of(null);
+            return of([]);
           }
         }),
         map(([comments, users]) => {
-          if (comments) {
+          if (comments?.length) {
             return comments.map((comment) => {
               return {
                 ...comment,

@@ -63,11 +63,11 @@ export class NotificationService {
             );
             return combineLatest([of(notifications), users$, things$]);
           } else {
-            of(null);
+            of([]);
           }
         }),
         map(([notifications, users, things]) => {
-          if (notifications) {
+          if (notifications?.length) {
             return notifications.map((item) => {
               return {
                 ...item,
@@ -76,7 +76,7 @@ export class NotificationService {
               };
             });
           } else {
-            of([]);
+            return [];
           }
         })
       );

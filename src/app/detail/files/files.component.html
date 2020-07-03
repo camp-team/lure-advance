@@ -3,6 +3,7 @@
     <p class="file-all-download__title">{{ thing.title }}</p>
     <span class="file-all-download__spacer"></span>
     <button
+      *ngIf="thing.stlRef.length"
       (click)="downLoadZipFile(thing, thing.stlRef)"
       color="primary"
       mat-flat-button

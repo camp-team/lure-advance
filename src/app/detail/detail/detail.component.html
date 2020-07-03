@@ -10,7 +10,7 @@
       <p class="thing__title">{{ thing.title }}</p>
       <span class="thing__spacer"></span>
       <p class="thing__updateAt">
-        {{ thing.updateAt.toDate() | date: 'yyyy年MM月dd日' }}
+        {{ thing.updateAt.toDate() | relativetime }}
       </p>
       <button
         [mat-menu-trigger-for]="menu"

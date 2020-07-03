@@ -8,38 +8,30 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { StlModelViewerModule } from 'angular-stl-model-viewer';
 import { SwiperModule } from 'ngx-swiper-wrapper';
-import { RelativetimePipe } from '../pipe/relativetime.pipe';
 import { SharedModule } from '../shared/shared.module';
 import { CommentsComponent } from './comments/comments.component';
-import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 import { DescriptionComponent } from './description/description.component';
+import { DetailRoutingModule } from './detail-routing.module';
+import { DetailComponent } from './detail/detail.component';
 import { FilesComponent } from './files/files.component';
-import { ThingDetailRoutingModule } from './thing-detail-routing.module';
-import { ThingDetailComponent } from './thing-detail/thing-detail.component';
 
 @NgModule({
   declarations: [
-    ThingDetailComponent,
+    DetailComponent,
     CommentsComponent,
     DescriptionComponent,
     FilesComponent,
-    DeleteDialogComponent,
   ],
   imports: [
     CommonModule,
-    ThingDetailRoutingModule,
+    DetailRoutingModule,
     SharedModule,
     MatTabsModule,
-    MatCardModule,
-    MatIconModule,
-    MatButtonModule,
-    MatListModule,
     MatMenuModule,
     FormsModule,
     ReactiveFormsModule,
@@ -51,6 +43,9 @@ import { ThingDetailComponent } from './thing-detail/thing-detail.component';
     SwiperModule,
     StlModelViewerModule,
     RouterModule,
+    MatIconModule,
+    MatButtonModule,
+    MatCardModule,
   ],
 })
-export class ThingDetailModule {}
+export class DetailModule {}

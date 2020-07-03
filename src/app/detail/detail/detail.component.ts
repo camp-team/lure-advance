@@ -4,18 +4,19 @@ import { ThingService } from 'src/app/services/thing.service';
 import { Observable } from 'rxjs';
 import { switchMap, tap, take } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+
 import { AuthService } from 'src/app/services/auth.service';
 import { SwiperConfigInterface } from 'ngx-swiper-wrapper';
 import { CategoryService } from 'src/app/services/category.service';
+import { DeleteDialogComponent } from 'src/app/shared/delete-dialog/delete-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-thing-detail',
-  templateUrl: './thing-detail.component.html',
-  styleUrls: ['./thing-detail.component.scss'],
+  templateUrl: './detail.component.html',
+  styleUrls: ['./detail.component.scss'],
 })
-export class ThingDetailComponent implements OnInit {
+export class DetailComponent implements OnInit {
   thing$: Observable<ThingWithUser> = this.route.paramMap.pipe(
     switchMap((map) =>
       this.thingService.getThingWithUserById(map.get('thing'))

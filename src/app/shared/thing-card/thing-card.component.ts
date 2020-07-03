@@ -3,8 +3,8 @@ import { Thing, ThingWithUser } from '@interfaces/thing';
 import { ThingService } from 'src/app/services/thing.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
-import { DeleteDialogComponent } from 'src/app/thing-detail/delete-dialog/delete-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 
 @Component({
   selector: 'app-thing-card',

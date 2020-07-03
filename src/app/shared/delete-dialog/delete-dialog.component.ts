@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, Inject } from '@angular/core';
-import { ThingService } from 'src/app/services/thing.service';
-import { Thing } from '@interfaces/thing';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { Thing } from '@interfaces/thing';
+import { ThingService } from 'src/app/services/thing.service';
 
 @Component({
   selector: 'app-delete-dialog',

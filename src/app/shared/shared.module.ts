@@ -20,6 +20,8 @@ import { FilterComponent } from './filter/filter.component';
 import { ThingCardSmComponent } from './thing-card-sm/thing-card-sm.component';
 import { ThingCardWideComponent } from './thing-card-wide/thing-card-wide.component';
 import { ThingCardComponent } from './thing-card/thing-card.component';
+import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,7 @@ import { ThingCardComponent } from './thing-card/thing-card.component';
     ThingCardWideComponent,
     FilterComponent,
     RelativetimePipe,
+    DeleteDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -47,6 +50,7 @@ import { ThingCardComponent } from './thing-card/thing-card.component';
     RouterModule,
     MatExpansionModule,
     MatChipsModule,
+    MatDialogModule,
   ],
   exports: [
     ComonCommentComponent,
@@ -55,6 +59,8 @@ import { ThingCardComponent } from './thing-card/thing-card.component';
     ThingCardSmComponent,
     ThingCardWideComponent,
     FilterComponent,
+    DeleteDialogComponent,
+    RelativetimePipe,
   ],
 })
 export class SharedModule {}
