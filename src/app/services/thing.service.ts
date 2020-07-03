@@ -145,7 +145,7 @@ export class ThingService {
     return this.db.doc<Thing>(`things/${thing.id}`).delete();
   }
 
-  async saveThings(
+  async savenOnStorage(
     thingId: string,
     stlFiles: (File | ThingRef)[],
     imageFiles: (File | string)[],
@@ -225,14 +225,14 @@ export class ThingService {
             .getDownloadURL()
             .toPromise();
 
-          const thingFile: ThingRef = {
+          const ref: ThingRef = {
             downloadUrl: url,
             fileName: file.name,
             fileSize: file.size,
             downloadCount: 0,
             updatedAt: firestore.Timestamp.now(),
           };
-          return thingFile;
+          return ref;
         } else {
           return file;
         }

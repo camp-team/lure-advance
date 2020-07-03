@@ -1,5 +1,6 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
 import {
   FormBuilder,
   FormControl,
@@ -11,9 +12,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Thing } from '@interfaces/thing';
 import { ThingRef } from '@interfaces/thing-ref';
-import { Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 import { Category } from 'src/app/interfaces/category';
+import { AuthService } from 'src/app/services/auth.service';
 import { CategoryService } from 'src/app/services/category.service';
 import { ThingService } from 'src/app/services/thing.service';
 
@@ -22,12 +24,18 @@ import { ThingService } from 'src/app/services/thing.service';
   templateUrl: './thing-editor.component.html',
   styleUrls: ['./thing-editor.component.scss'],
 })
-export class ThingEditorComponent implements OnInit {
+export class ThingEditorComponent implements OnInit, OnDestroy {
   MAX_FILE_LENGTH = 5;
-  thing$: Observable<Thing> = this.route.parent.paramMap.pipe(
+
+  private thing: Thing;
+  private subscriptin: Subscription;
+  private thing$: Observable<Thing> = this.route.parent.paramMap.pipe(
     switchMap((map) => {
       const thingId = map.get('thing');
       return this.thingService.getThingByID(thingId);
+    }),
+    tap((thing) => {
+      this.thing = thing;
     })
   );
 
@@ -118,11 +126,26 @@ export class ThingEditorComponent implements OnInit {
     private router: Router,
     private thingService: ThingService,
     private snackBar: MatSnackBar,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private db: AngularFirestore,
+    private authService: AuthService
   ) {}
 
-  async ngOnInit(): Promise<void> {
-    this.thing$.subscribe(async (thing) => {
+  ngOnDestroy(): void {
+    this.subscriptin.unsubscribe();
+  }
+
+  ngOnInit(): void {
+    this.subscriptin = this.thing$.subscribe(async (thing) => {
+      this.categoriesForm = await this.buidCategoriesForm(
+        thing?.category || []
+      );
+      this.categoriesForm.valueChanges.subscribe((value) => {
+        this.selectedCategories = this.toValuesFromSelected(value);
+      });
+      if (thing === undefined) {
+        return;
+      }
       this.tags = thing.tags;
       this.form.patchValue({
         ...thing,
@@ -139,21 +162,18 @@ export class ThingEditorComponent implements OnInit {
       this.stls.push(...thing.stlRef.map((ref) => ref.downloadUrl));
       this.stlFiles.push(...thing.stlRef);
       this.defaultStlLength = thing.stlRef.length;
-
-      this.categoriesForm = await this.buidCategoriesForm(thing.category);
-      this.categoriesForm.valueChanges.subscribe((value) => {
-        this.selectedCategories = this.toValuesFromSelected(value);
-      });
     });
   }
 
-  cancel(thing: Thing) {
-    this.router.navigateByUrl('/' + thing.id);
+  cancel() {
+    const path = this.thing ? '/' + this.thing.id : '/';
+    this.router.navigateByUrl(path);
   }
 
-  async save(thing: Thing) {
-    const res = await this.thingService.saveThings(
-      thing.id,
+  async save() {
+    const thingId: string = this.thing ? this.thing.id : this.db.createId();
+    const res = await this.thingService.savenOnStorage(
+      thingId,
       this.stlFiles,
       this.imageFiles,
       this.defaultImageLength,
@@ -161,7 +181,7 @@ export class ThingEditorComponent implements OnInit {
     );
     const formValue = this.form.value;
     const newValue: Thing = {
-      ...thing,
+      ...this.thing,
       stlRef: res.stlRef,
       imageUrls: res.imageUrls,
       title: formValue.title,
@@ -169,10 +189,31 @@ export class ThingEditorComponent implements OnInit {
       description: formValue.description,
       tags: this.tags,
     };
-    this.thingService.updateThing(newValue).then(() => {
-      this.snackBar.open('保存しました。');
-      this.router.navigateByUrl(`/${thing.id}`);
-    });
+    if (this.thing) {
+      this.thingService.updateThing(newValue).then(() => {
+        this.snackBar.open('保存しました');
+        this.router.navigateByUrl(`/${this.thing.id}`);
+      });
+    } else {
+      const uid = this.authService.uid;
+      const thing: Omit<Thing, 'updateAt' | 'createdAt'> = {
+        id: thingId,
+        title: newValue.title,
+        description: newValue.description,
+        designerId: uid,
+        imageUrls: res.imageUrls,
+        stlRef: res.stlRef,
+        category: newValue.category,
+        commentCount: 0,
+        likeCount: 0,
+        viewCount: 0,
+        tags: newValue.tags,
+      };
+      this.thingService.createThing(thing).then(() => {
+        this.snackBar.open('アップロードに成功しました');
+        this.router.navigateByUrl(`/${thingId}`);
+      });
+    }
   }
 
   deleteImage(index: number) {
@@ -184,7 +225,8 @@ export class ThingEditorComponent implements OnInit {
     this.stls.splice(index, 1);
     this.stlFiles.splice(index, 1);
   }
-  private async buidCategoriesForm(values: string[] = []): Promise<FormGroup> {
+
+  private async buidCategoriesForm(values: string[]): Promise<FormGroup> {
     const result = await this.categoryService.getCategoriesLatest();
     this.categories = result;
 

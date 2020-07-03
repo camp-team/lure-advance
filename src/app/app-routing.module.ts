@@ -13,7 +13,9 @@ const routes: Routes = [
   {
     path: 'create',
     loadChildren: () =>
-      import('./create/create.module').then((m) => m.CreateModule),
+      import('./thing-editor/thing-editor.module').then(
+        (m) => m.ThingEditorModule
+      ),
   },
   {
     path: ':thing',

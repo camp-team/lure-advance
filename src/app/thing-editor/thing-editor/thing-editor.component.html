@@ -1,5 +1,5 @@
-<div class="container" *ngIf="thing$ | async as thing">
-  <h1>「{{ form.value.title }}」を編集</h1>
+<div class="container">
+  <h1 *ngIf="form.value.title">「{{ form.value.title }}」を編集</h1>
   <label class="file">
     <input
       class="file__input"
@@ -50,7 +50,7 @@
   </div>
 
   <p>詳細</p>
-  <form [formGroup]="form" class="details" (ngSubmit)="save(thing)">
+  <form [formGroup]="form" class="details" (ngSubmit)="save()">
     <mat-form-field appearance="outline">
       <mat-label>タイトル</mat-label>
       <input matInput autocomplete="off" #input formControlName="title" />
@@ -70,7 +70,6 @@
         #textarea
         autocomplete="off"
         matTextareaAutosize
-        [value]="thing.description"
       >
       </textarea>
       <mat-hint align="end">{{ textarea.value.length }}/5000</mat-hint>
@@ -111,7 +110,7 @@
       </mat-chip-list>
     </mat-form-field>
     <div class="details__actions">
-      <button (click)="cancel(thing)" mat-button>キャンセル</button>
+      <button (click)="cancel()" mat-button>キャンセル</button>
       <button [disabled]="form.invalid" mat-flat-button color="primary">
         保存
       </button>
