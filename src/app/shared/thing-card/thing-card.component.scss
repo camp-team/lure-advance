@@ -29,6 +29,9 @@
     max-width: 100%;
     background: center/cover;
   }
+  &__thumbnail:hover {
+    cursor: pointer;
+  }
   &__actions {
     padding: 12px;
   }
