@@ -3,32 +3,40 @@ import { RouterModule, Routes } from '@angular/router';
 import { LegalComponent } from './footer/legal/legal.component';
 import { PrivacypolicyComponent } from './footer/privacypolicy/privacypolicy.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { ShellComponent } from './shell/shell.component';
 
 const routes: Routes = [
   {
     path: '',
-    pathMatch: 'full',
-    loadChildren: () => import('./home/home.module').then((m) => m.HomeModule),
-  },
-  {
-    path: 'create',
-    loadChildren: () =>
-      import('./editor/editor.module').then((m) => m.EditorModule),
-  },
-  {
-    path: ':thing',
-    loadChildren: () =>
-      import('./detail/detail.module').then((m) => m.DetailModule),
-  },
-  {
-    path: ':thing/edit',
-    loadChildren: () =>
-      import('./editor/editor.module').then((m) => m.EditorModule),
-  },
-  {
-    path: 'mypage/:uid',
-    loadChildren: () =>
-      import('./mypage/mypage.module').then((m) => m.MypageModule),
+    component: ShellComponent,
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        loadChildren: () =>
+          import('./home/home.module').then((m) => m.HomeModule),
+      },
+      {
+        path: 'create',
+        loadChildren: () =>
+          import('./editor/editor.module').then((m) => m.EditorModule),
+      },
+      {
+        path: ':thing',
+        loadChildren: () =>
+          import('./detail/detail.module').then((m) => m.DetailModule),
+      },
+      {
+        path: ':thing/edit',
+        loadChildren: () =>
+          import('./editor/editor.module').then((m) => m.EditorModule),
+      },
+      {
+        path: 'mypage/:uid',
+        loadChildren: () =>
+          import('./mypage/mypage.module').then((m) => m.MypageModule),
+      },
+    ],
   },
   {
     path: 'intl/legal',

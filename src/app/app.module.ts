@@ -31,6 +31,7 @@ import { PrivacypolicyComponent } from './footer/privacypolicy/privacypolicy.com
 import { HeaderNavComponent } from './header-nav/header-nav.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { SharedModule } from './shared/shared.module';
+import { ShellComponent } from './shell/shell.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { SharedModule } from './shared/shared.module';
     PrivacypolicyComponent,
     FooterComponent,
     NotFoundComponent,
+    ShellComponent,
   ],
   imports: [
     BrowserModule,
