@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import algoliasearch from 'algoliasearch/lite';
-import { UserService } from './user.service';
-import { Observable, combineLatest, of } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { User } from '@interfaces/user';
 import { ThingWithUser } from '@interfaces/thing';
-
+import { User } from '@interfaces/user';
+import algoliasearch from 'algoliasearch/lite';
+import { combineLatest, Observable, of } from 'rxjs';
+import { delay, map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { UserService } from './user.service';
+import * as moment from 'moment';
 const searchClient = algoliasearch(
   environment.algolia.appId,
   environment.algolia.searchKey
@@ -27,7 +27,8 @@ export class SearchService {
   async searchThings(
     query: string,
     requestOptions,
-    sortKey: string = 'things'
+    sortKey: string = 'things',
+    isInit: boolean
   ): Promise<Observable<ThingWithUser[]>> {
     const result = await this.index[sortKey].search(query, requestOptions);
     const items = result.hits as any[];
@@ -48,7 +49,29 @@ export class SearchService {
             user: users.find((user) => user.uid === item.designerId),
           };
         });
-      })
+      }),
+      delay(isInit ? 0 : 1000)
     );
+  }
+
+  buidCreateAt(key: string): string {
+    const today = moment().valueOf();
+    switch (key) {
+      case 'today':
+        const aday = moment().subtract(1, 'd').valueOf();
+        return `createdAt:${aday} TO ${today}`;
+      case 'week':
+        const aweek = moment().subtract(7, 'd').valueOf();
+        return `createdAt:${aweek} TO ${today}`;
+      case 'month':
+        const amonth = moment().subtract(30, 'd').valueOf();
+        return `createdAt:${amonth} TO ${today}`;
+      case 'year':
+        const ayear = moment().subtract(365, 'd').valueOf();
+        return `createdAt:${ayear} TO ${today}`;
+      default:
+        const from = moment().subtract(30, 'd').valueOf();
+        return `createdAt:${from} TO ${today}`;
+    }
   }
 }

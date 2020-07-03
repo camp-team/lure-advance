@@ -40,7 +40,9 @@ export class HomeComponent implements OnInit {
       this.tagFilter = (map.get('tags') || '').split(',');
       this.categoriFilter = (map.get('categories') || '').split(',');
       this.sort = map.get('sort') || 'things';
-      this.createdAtFilter = this.buidCreateAt(map.get('createdAt'));
+      this.createdAtFilter = this.searchService.buidCreateAt(
+        map.get('createdAt')
+      );
       this.search();
       this.isInit = false;
     });
@@ -57,39 +59,13 @@ export class HomeComponent implements OnInit {
       filters: this.createdAtFilter,
     };
     this.loading = true;
-    setTimeout(
-      () => {
-        this.searchService
-          .searchThings(this.query, searchiOptions, this.sort)
-          .then(async (result) => {
-            const items = await result.pipe(take(1)).toPromise();
-            this.things.push(...items);
-          })
-          .finally(() => (this.loading = false));
-      },
-      this.isInit ? 0 : 1000
-    );
-  }
-
-  private buidCreateAt(key: string): string {
-    const today = moment().valueOf();
-    switch (key) {
-      case 'today':
-        const aday = moment().subtract(1, 'd').valueOf();
-        return `createdAt:${aday} TO ${today}`;
-      case 'week':
-        const aweek = moment().subtract(7, 'd').valueOf();
-        return `createdAt:${aweek} TO ${today}`;
-      case 'month':
-        const amonth = moment().subtract(30, 'd').valueOf();
-        return `createdAt:${amonth} TO ${today}`;
-      case 'year':
-        const ayear = moment().subtract(365, 'd').valueOf();
-        return `createdAt:${ayear} TO ${today}`;
-      default:
-        const from = moment().subtract(30, 'd').valueOf();
-        return `createdAt:${from} TO ${today}`;
-    }
+    this.searchService
+      .searchThings(this.query, searchiOptions, this.sort, this.isInit)
+      .then(async (result) => {
+        const items = await result.pipe(take(1)).toPromise();
+        this.things.push(...items);
+      })
+      .finally(() => (this.loading = false));
   }
 
   onScroll() {
