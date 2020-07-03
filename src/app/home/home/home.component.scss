@@ -3,10 +3,10 @@
   padding: 24px 160px;
 }
 .grid {
+  margin-top: 16px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 24px;
-  overflow: auto;
 }
 
 .thing {
