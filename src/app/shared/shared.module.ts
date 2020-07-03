@@ -60,6 +60,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     ThingCardWideComponent,
     FilterComponent,
     DeleteDialogComponent,
+    RelativetimePipe,
   ],
 })
 export class SharedModule {}

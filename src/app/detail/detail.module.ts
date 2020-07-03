@@ -8,7 +8,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
@@ -18,9 +17,8 @@ import { SharedModule } from '../shared/shared.module';
 import { CommentsComponent } from './comments/comments.component';
 import { DescriptionComponent } from './description/description.component';
 import { DetailRoutingModule } from './detail-routing.module';
-import { FilesComponent } from './files/files.component';
 import { DetailComponent } from './detail/detail.component';
-import { DeleteDialogComponent } from '../shared/delete-dialog/delete-dialog.component';
+import { FilesComponent } from './files/files.component';
 
 @NgModule({
   declarations: [
@@ -34,10 +32,6 @@ import { DeleteDialogComponent } from '../shared/delete-dialog/delete-dialog.com
     DetailRoutingModule,
     SharedModule,
     MatTabsModule,
-    MatCardModule,
-    MatIconModule,
-    MatButtonModule,
-    MatListModule,
     MatMenuModule,
     FormsModule,
     ReactiveFormsModule,
@@ -49,6 +43,9 @@ import { DeleteDialogComponent } from '../shared/delete-dialog/delete-dialog.com
     SwiperModule,
     StlModelViewerModule,
     RouterModule,
+    MatIconModule,
+    MatButtonModule,
+    MatCardModule,
   ],
 })
 export class DetailModule {}
