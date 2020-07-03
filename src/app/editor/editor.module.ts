@@ -10,14 +10,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { StlModelViewerModule } from 'angular-stl-model-viewer';
-import { ThingEditorRoutingModule } from './thing-editor-routing.module';
-import { ThingEditorComponent } from './thing-editor/thing-editor.component';
+import { EditorRoutingModule } from './editor-routing.module';
+import { EditorComponent } from './editor/editor.component';
 
 @NgModule({
-  declarations: [ThingEditorComponent],
+  declarations: [EditorComponent],
   imports: [
     CommonModule,
-    ThingEditorRoutingModule,
+    EditorRoutingModule,
     MatCardModule,
     ReactiveFormsModule,
     FormsModule,
@@ -31,4 +31,4 @@ import { ThingEditorComponent } from './thing-editor/thing-editor.component';
     MatCheckboxModule,
   ],
 })
-export class ThingEditorModule {}
+export class EditorModule {}

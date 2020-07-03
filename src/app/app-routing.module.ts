@@ -13,9 +13,7 @@ const routes: Routes = [
   {
     path: 'create',
     loadChildren: () =>
-      import('./thing-editor/thing-editor.module').then(
-        (m) => m.ThingEditorModule
-      ),
+      import('./editor/editor.module').then((m) => m.EditorModule),
   },
   {
     path: ':thing',
@@ -27,9 +25,7 @@ const routes: Routes = [
   {
     path: ':thing/edit',
     loadChildren: () =>
-      import('./thing-editor/thing-editor.module').then(
-        (m) => m.ThingEditorModule
-      ),
+      import('./editor/editor.module').then((m) => m.EditorModule),
   },
   {
     path: 'mypage/:uid',

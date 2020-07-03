@@ -21,10 +21,10 @@ import { ThingService } from 'src/app/services/thing.service';
 
 @Component({
   selector: 'app-thing-editor',
-  templateUrl: './thing-editor.component.html',
-  styleUrls: ['./thing-editor.component.scss'],
+  templateUrl: './editor.component.html',
+  styleUrls: ['./editor.component.scss'],
 })
-export class ThingEditorComponent implements OnInit, OnDestroy {
+export class EditorComponent implements OnInit, OnDestroy {
   MAX_FILE_LENGTH = 5;
 
   private thing: Thing;
