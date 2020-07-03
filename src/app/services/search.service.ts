@@ -55,23 +55,17 @@ export class SearchService {
   }
 
   buidCreateAt(key: string): string {
+    const def: string = 'month';
+    const rule = {
+      today: 'day',
+      week: 'week',
+      month: 'month',
+      year: 'year',
+    };
+    const time = moment()
+      .subtract(1, rule[key] || def)
+      .valueOf();
     const today = moment().valueOf();
-    switch (key) {
-      case 'today':
-        const aday = moment().subtract(1, 'd').valueOf();
-        return `createdAt:${aday} TO ${today}`;
-      case 'week':
-        const aweek = moment().subtract(7, 'd').valueOf();
-        return `createdAt:${aweek} TO ${today}`;
-      case 'month':
-        const amonth = moment().subtract(30, 'd').valueOf();
-        return `createdAt:${amonth} TO ${today}`;
-      case 'year':
-        const ayear = moment().subtract(365, 'd').valueOf();
-        return `createdAt:${ayear} TO ${today}`;
-      default:
-        const from = moment().subtract(30, 'd').valueOf();
-        return `createdAt:${from} TO ${today}`;
-    }
+    return `createdAt:${time} TO ${today}`;
   }
 }
