@@ -3,12 +3,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { CommentsComponent } from './comments/comments.component';
 import { DescriptionComponent } from './description/description.component';
 import { FilesComponent } from './files/files.component';
-import { ThingDetailComponent } from './thing-detail/thing-detail.component';
+import { DetailComponent } from './detail/detail.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: ThingDetailComponent,
+    component: DetailComponent,
     children: [
       {
         path: 'description',
@@ -30,4 +30,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class ThingDetailRoutingModule {}
+export class DetailRoutingModule {}

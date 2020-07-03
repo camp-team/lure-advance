@@ -14,26 +14,24 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { StlModelViewerModule } from 'angular-stl-model-viewer';
 import { SwiperModule } from 'ngx-swiper-wrapper';
-import { RelativetimePipe } from '../pipe/relativetime.pipe';
 import { SharedModule } from '../shared/shared.module';
 import { CommentsComponent } from './comments/comments.component';
-import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 import { DescriptionComponent } from './description/description.component';
+import { DetailRoutingModule } from './detail-routing.module';
 import { FilesComponent } from './files/files.component';
-import { ThingDetailRoutingModule } from './thing-detail-routing.module';
-import { ThingDetailComponent } from './thing-detail/thing-detail.component';
+import { DetailComponent } from './detail/detail.component';
+import { DeleteDialogComponent } from '../shared/delete-dialog/delete-dialog.component';
 
 @NgModule({
   declarations: [
-    ThingDetailComponent,
+    DetailComponent,
     CommentsComponent,
     DescriptionComponent,
     FilesComponent,
-    DeleteDialogComponent,
   ],
   imports: [
     CommonModule,
-    ThingDetailRoutingModule,
+    DetailRoutingModule,
     SharedModule,
     MatTabsModule,
     MatCardModule,
@@ -53,4 +51,4 @@ import { ThingDetailComponent } from './thing-detail/thing-detail.component';
     RouterModule,
   ],
 })
-export class ThingDetailModule {}
+export class DetailModule {}

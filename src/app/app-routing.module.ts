@@ -18,9 +18,7 @@ const routes: Routes = [
   {
     path: ':thing',
     loadChildren: () =>
-      import('./thing-detail/thing-detail.module').then(
-        (m) => m.ThingDetailModule
-      ),
+      import('./detail/detail.module').then((m) => m.DetailModule),
   },
   {
     path: ':thing/edit',
