@@ -1,12 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
 import { Comment, CommentWithUser } from '@interfaces/comment';
+import { Thing } from '@interfaces/thing';
+import { User } from '@interfaces/user';
 import { Observable } from 'rxjs';
 import { CommentService } from 'src/app/services/comment.service';
 import { UserService } from 'src/app/services/user.service';
-import { User } from '@interfaces/user';
-import { Thing } from '@interfaces/thing';
 
 @Component({
   selector: 'app-comon-comment',
@@ -18,6 +19,8 @@ export class ComonCommentComponent implements OnInit {
   @Input() comment: CommentWithUser;
   @Input() thingId: string;
   @Input() thing$: Observable<Thing>;
+  @Input() isRootComment: boolean;
+  @Input() isReplyComment: boolean;
 
   inputComment = new FormControl('', [
     Validators.required,
@@ -42,7 +45,8 @@ export class ComonCommentComponent implements OnInit {
   constructor(
     private snackBar: MatSnackBar,
     private commentService: CommentService,
-    private userService: UserService
+    private userService: UserService,
+    private route: ActivatedRoute
   ) {}
 
   alterEditMode(): void {

@@ -26,11 +26,13 @@
         <mat-hint align="end">{{ textarea.value.length }}/400</mat-hint>
       </mat-form-field>
     </form>
+
     <app-comon-comment
       *ngFor="let comment of comments$ | async"
       [comment]="comment"
       [rootCommentId]="comment.id"
       [thingId]="id"
+      [isRootComment]="true"
     ></app-comon-comment>
   </mat-card>
 </div>
