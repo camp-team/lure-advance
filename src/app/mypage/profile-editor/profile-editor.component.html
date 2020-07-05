@@ -36,7 +36,7 @@
       <input #name formControlName="name" matInput />
       <mat-hint align="end">{{ name.value.length }}/50</mat-hint>
       <mat-error *ngIf="nameControl.hasError('maxlength')">
-        文字が多すぎます</mat-error
+        {{ name.value.length }}は文字が多すぎます</mat-error
       >
       <mat-error *ngIf="nameControl.hasError('required')">
         必須入力です</mat-error
@@ -44,20 +44,20 @@
     </mat-form-field>
     <mat-form-field>
       <mat-label>自己紹介</mat-label>
-      <textarea formControlName="myself" #myself matInput></textarea>
-      <mat-hint align="end">{{ myself.value.length }}/160</mat-hint>
-      <mat-error *ngIf="myselfControl.hasError('maxlength')">
-        文字が多すぎます</mat-error
+      <textarea formControlName="description" #description matInput></textarea>
+      <mat-hint align="end">{{ description.value.length }}/160</mat-hint>
+      <mat-error *ngIf="descriptionControl.hasError('maxlength')">
+        {{ description.value.length }}は文字が多すぎます</mat-error
       >
     </mat-form-field>
     <mat-form-field>
       <mat-label>ウェブサイト</mat-label>
-      <input formControlName="myweb" #myweb matInput />
-      <mat-hint align="end">{{ myweb.value.length }}/100</mat-hint>
-      <mat-error *ngIf="mywebControl.hasError('maxlength')">
-        文字が多すぎます</mat-error
+      <input formControlName="weblink" #weblink matInput />
+      <mat-hint align="end">{{ weblink.value.length }}/100</mat-hint>
+      <mat-error *ngIf="weblinkControl.hasError('maxlength')">
+        {{ weblink.value.length }}は文字が多すぎます</mat-error
       >
-      <mat-error *ngIf="mywebControl.hasError('pattern')">
+      <mat-error *ngIf="weblinkControl.hasError('pattern')">
         urlが不正です</mat-error
       >
     </mat-form-field>

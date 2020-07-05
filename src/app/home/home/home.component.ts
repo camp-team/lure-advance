@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ThingWithUser } from '@interfaces/thing';
-import { SearchService } from 'src/app/services/search.service';
 import { ActivatedRoute } from '@angular/router';
+import { ThingWithUser } from '@interfaces/thing';
 import { take } from 'rxjs/operators';
-import * as moment from 'moment';
+import { SearchService } from 'src/app/services/search.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',

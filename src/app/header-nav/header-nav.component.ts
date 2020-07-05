@@ -1,13 +1,14 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { AuthService } from 'src/app/services/auth.service';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { User } from '@interfaces/user';
 import { Observable } from 'rxjs';
-import { NotificationService } from '../services/notification.service';
-import { FormControl } from '@angular/forms';
-import { SearchService } from '../services/search.service';
 import { startWith } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
+import { NotificationService } from '../services/notification.service';
+import { SearchService } from '../services/search.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-header-nav',
@@ -18,13 +19,14 @@ export class HeaderNavComponent implements OnInit {
   private index = this.searchService.index.things;
   searchOptions = [];
 
-  user$: Observable<User> = this.authService.user$;
+  user$: Observable<User> = this.userService.user$;
 
   isProccesing: boolean;
 
   ctrl: FormControl = new FormControl('');
   constructor(
     private authService: AuthService,
+    private userService: UserService,
     private snackBar: MatSnackBar,
     private notificationService: NotificationService,
     private searchService: SearchService,

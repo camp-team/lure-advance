@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { User } from '@interfaces/user';
-import { AuthService } from '../services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
+import { User } from '@interfaces/user';
+import { Observable } from 'rxjs';
+import { UserService } from '../services/user.service';
 import { ProfileEditorComponent } from './profile-editor/profile-editor.component';
+import { ActivatedRoute } from '@angular/router';
+import { switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-mypage',
@@ -11,7 +13,14 @@ import { ProfileEditorComponent } from './profile-editor/profile-editor.componen
   styleUrls: ['./mypage.component.scss'],
 })
 export class MypageComponent implements OnInit {
-  user$: Observable<User> = this.authService.user$;
+  user$: Observable<User> = this.router.paramMap.pipe(
+    switchMap((map) => {
+      this.designerId = map.get('uid');
+      return this.userService.getUserByID(this.designerId);
+    })
+  );
+
+  designerId: string;
 
   navLinks = [
     {
@@ -28,15 +37,18 @@ export class MypageComponent implements OnInit {
       label: 'Likes',
     },
   ];
-  constructor(private authService: AuthService, private dialog: MatDialog) {}
+  constructor(
+    private userService: UserService,
+    private dialog: MatDialog,
+    private router: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {}
 
   openEditor() {
     this.dialog.open(ProfileEditorComponent, {
-      data: this.user$,
+      autoFocus: false,
+      restoreFocus: false,
     });
   }
-
-  imageCropped(event) {}
 }

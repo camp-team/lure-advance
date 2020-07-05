@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { firestore } from 'firebase';
 import { Thing } from '@interfaces/thing';
+import { firestore } from 'firebase';
 import { ThingService } from 'src/app/services/thing.service';
-import { AuthService } from 'src/app/services/auth.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-likes',
@@ -12,7 +12,7 @@ import { AuthService } from 'src/app/services/auth.service';
 export class LikesComponent implements OnInit {
   constructor(
     private thingService: ThingService,
-    private authService: AuthService
+    private userService: UserService
   ) {}
 
   def: Thing = {
@@ -32,7 +32,7 @@ export class LikesComponent implements OnInit {
     updateAt: firestore.Timestamp.now(),
   };
 
-  uid: string = this.authService.uid;
+  uid: string = this.userService.uid;
   //TODO データ準備 https://github.com/camp-team/lure-advance/issues/68
   // this.thingService.getLikedThings(this.uid)
   posts: Thing[] = new Array(50).fill(this.def);

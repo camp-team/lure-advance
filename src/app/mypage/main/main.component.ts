@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/services/auth.service';
-import { ThingService } from 'src/app/services/thing.service';
 import { Thing } from '@interfaces/thing';
 import { firestore } from 'firebase';
+import { ThingService } from 'src/app/services/thing.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-main',
@@ -29,7 +29,7 @@ export class MainComponent implements OnInit {
 
   data: Thing[] = new Array(5).fill(this.def);
 
-  uid = this.authService.uid;
+  uid = this.userService.uid;
   latestPosts: Thing[] = this.data.slice(0, 2);
   //TODO データ準備 https://github.com/camp-team/lure-advance/issues/68
   //  this.thingService.getThingsLatestByDesignerID(this.uid);
@@ -38,7 +38,7 @@ export class MainComponent implements OnInit {
   likedPosts: Thing[] = this.data.slice(0, 5);
   // this.thingService.getLikedThings(this.uid);
   constructor(
-    private authService: AuthService,
+    private userService: UserService,
     private thingService: ThingService
   ) {}
 

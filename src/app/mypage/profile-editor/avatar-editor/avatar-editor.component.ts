@@ -1,13 +1,15 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ImageTransform, ImageCroppedEvent } from 'ngx-image-cropper';
-import { UserService } from 'src/app/services/user.service';
-import { User } from '@interfaces/user';
-import { base64ToFile } from 'ngx-image-cropper';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
-import { AuthService } from 'src/app/services/auth.service';
 import { MatSliderChange } from '@angular/material/slider';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { User } from '@interfaces/user';
+import {
+  base64ToFile,
+  ImageCroppedEvent,
+  ImageTransform,
+} from 'ngx-image-cropper';
+import { Observable } from 'rxjs';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-avatar-editor',
@@ -18,11 +20,10 @@ export class AvatarEditorComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public imageFile: File,
     private userService: UserService,
-    private snackBar: MatSnackBar,
-    private authService: AuthService
+    private snackBar: MatSnackBar
   ) {}
 
-  user$: Observable<User> = this.authService.user$;
+  user$: Observable<User> = this.userService.user$;
 
   max: number = 100;
   min: number = 0;
