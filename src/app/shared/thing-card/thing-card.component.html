@@ -4,20 +4,22 @@
       class="thing__avatar"
       mat-icon-button
       [style.background-image]="'url(' + thing.user.avatarURL + ')'"
-      routerLink="/mypage/{{ thing.designerId }}"
+      (click)="navigateToProfile(thing)"
     ></button>
     <p class="thing__title">{{ thing.title }}</p>
     <span class="thing__spacer"></span>
     <p class="thing__updateAt">
       {{ thing.updateAt | relativetime }}
     </p>
-    <button
-      [mat-menu-trigger-for]="menu"
-      *ngIf="thing.designerId === uid"
-      mat-icon-button
-    >
-      <mat-icon>more_vert</mat-icon>
-    </button>
+    <ng-container *ngIf="user$ | async as user">
+      <button
+        [mat-menu-trigger-for]="menu"
+        *ngIf="thing.designerId === user.uid"
+        mat-icon-button
+      >
+        <mat-icon>more_vert</mat-icon>
+      </button>
+    </ng-container>
     <mat-menu #menu>
       <button routerLink="/{{ thing.id }}/edit" mat-menu-item>
         <mat-icon>edit</mat-icon> <span>編集</span>
@@ -43,7 +45,11 @@
       <span>{{ thing.likeCount }}</span>
     </button>
     <ng-template #unLiked>
-      <button (click)="likeThing(thing)" mat-icon-button>
+      <button
+        [disabled]="isProcessing"
+        (click)="likeThing(thing)"
+        mat-icon-button
+      >
         <mat-icon>favorite_border</mat-icon>
         <span>{{ thing.likeCount }}</span>
       </button>
