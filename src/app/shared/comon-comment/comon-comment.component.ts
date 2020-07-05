@@ -3,7 +3,6 @@ import { FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Comment, CommentWithUser } from '@interfaces/comment';
-import { Thing } from '@interfaces/thing';
 import { User } from '@interfaces/user';
 import { Observable } from 'rxjs';
 import { CommentService } from 'src/app/services/comment.service';
@@ -18,7 +17,6 @@ export class ComonCommentComponent implements OnInit {
   @Input() rootCommentId: string;
   @Input() comment: CommentWithUser;
   @Input() thingId: string;
-  @Input() thing$: Observable<Thing>;
   @Input() isRootComment: boolean;
   @Input() isReplyComment: boolean;
 
