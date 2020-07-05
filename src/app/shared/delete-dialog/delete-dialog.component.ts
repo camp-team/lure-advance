@@ -21,7 +21,6 @@ export class DeleteDialogComponent implements OnInit {
   ngOnInit(): void {}
 
   delete(): void {
-    console.log(this.data, 'things');
     this.thingService.deleteThing(this.data).then(() => {
       this.snackBar.open('削除に成功しました。');
       this.router.navigateByUrl('/');
