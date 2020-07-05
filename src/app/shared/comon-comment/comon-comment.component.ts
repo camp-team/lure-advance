@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { CommentService } from 'src/app/services/comment.service';
 import { UserService } from 'src/app/services/user.service';
 import { User } from '@interfaces/user';
+import { Thing } from '@interfaces/thing';
 
 @Component({
   selector: 'app-comon-comment',
@@ -16,9 +17,17 @@ export class ComonCommentComponent implements OnInit {
   @Input() rootCommentId: string;
   @Input() comment: CommentWithUser;
   @Input() thingId: string;
+  @Input() thing$: Observable<Thing>;
 
-  inputComment = new FormControl('', Validators.maxLength(400));
-  replyCommentForm = new FormControl('', Validators.maxLength(400));
+  inputComment = new FormControl('', [
+    Validators.required,
+    Validators.maxLength(400),
+  ]);
+  replyCommentForm = new FormControl('', [
+    Validators.required,
+    ,
+    Validators.maxLength(400),
+  ]);
 
   isEditing: boolean;
   isReplying: boolean;

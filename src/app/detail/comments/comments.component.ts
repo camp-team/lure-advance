@@ -5,10 +5,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Comment, CommentWithUser } from '@interfaces/comment';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { AuthService } from 'src/app/services/auth.service';
 import { CommentService } from 'src/app/services/comment.service';
 import { UserService } from 'src/app/services/user.service';
-import { User } from '@interfaces/user';
 
 @Component({
   selector: 'app-comments',
@@ -16,6 +14,12 @@ import { User } from '@interfaces/user';
   styleUrls: ['./comments.component.scss'],
 })
 export class CommentsComponent implements OnInit {
+  constructor(
+    private snackBar: MatSnackBar,
+    private commentService: CommentService,
+    private userService: UserService,
+    private route: ActivatedRoute
+  ) {}
   commentForm = new FormControl('', [
     Validators.required,
     Validators.maxLength(400),
@@ -53,14 +57,6 @@ export class CommentsComponent implements OnInit {
       .then(() => (this.isProcessing = false))
       .finally(() => this.commentForm.setValue('', { emitEvent: false }));
   }
-
-  constructor(
-    private snackBar: MatSnackBar,
-    private commentService: CommentService,
-    private userService: UserService,
-    private authService: AuthService,
-    private route: ActivatedRoute
-  ) {}
 
   ngOnInit(): void {}
 }

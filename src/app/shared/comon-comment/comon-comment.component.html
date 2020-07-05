@@ -62,7 +62,7 @@
             キャンセル
           </button>
           <button
-            [disabled]="isProcessing"
+            [disabled]="isProcessing || replyCommentForm.invalid"
             (click)="replyComment()"
             mat-flat-button
             color="primary"

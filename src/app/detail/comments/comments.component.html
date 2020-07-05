@@ -10,6 +10,7 @@
           matTextareaAutosize
           required
           autocomplete="off"
+          [disabled]="isProcessing"
         ></textarea>
         <button
           (click)="addComment()"
