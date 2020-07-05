@@ -1,10 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Comment, CommentWithUser } from '@interfaces/comment';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { CommentService } from 'src/app/services/comment.service';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { AuthService } from 'src/app/services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Comment, CommentWithUser } from '@interfaces/comment';
 import { Observable } from 'rxjs';
+import { CommentService } from 'src/app/services/comment.service';
+import { UserService } from 'src/app/services/user.service';
+import { User } from '@interfaces/user';
 
 @Component({
   selector: 'app-comon-comment',
@@ -24,12 +25,15 @@ export class ComonCommentComponent implements OnInit {
 
   isShowReplies: boolean;
 
+  isProcessing: boolean;
   replyComments$: Observable<Comment[]>;
+
+  user$: Observable<User> = this.userService.user$;
 
   constructor(
     private snackBar: MatSnackBar,
     private commentService: CommentService,
-    private authService: AuthService
+    private userService: UserService
   ) {}
 
   alterEditMode(): void {
@@ -37,14 +41,16 @@ export class ComonCommentComponent implements OnInit {
     this.inputComment.setValue(this.comment.body);
   }
 
-  replyComment(): void {
-    const uid = this.authService.uid;
-    if (uid === undefined) {
+  async replyComment(): Promise<void> {
+    this.isProcessing = true;
+    const user = await this.userService.passUserWhenRequiredForm();
+    if (user === null) {
+      this.isProcessing = false;
       return;
     }
     const replyComment: Omit<Comment, 'id' | 'updateAt'> = {
       thingId: this.thingId,
-      fromUid: uid,
+      fromUid: user.uid,
       toUid: this.comment.fromUid,
       body: this.replyCommentForm.value,
       replyCount: 0,
@@ -52,10 +58,11 @@ export class ComonCommentComponent implements OnInit {
     this.commentService
       .replyComment(this.rootCommentId, replyComment)
       .then(() => this.snackBar.open('コメントに返信しました。'))
+      .then(() => (this.isProcessing = false))
       .finally(() => this.replyCommentForm.setValue(''));
   }
 
-  readReplyComments(): void {
+  loadReplyComments(): void {
     this.replyComments$ = this.commentService.getRepliesByCommentId(
       this.thingId,
       this.rootCommentId

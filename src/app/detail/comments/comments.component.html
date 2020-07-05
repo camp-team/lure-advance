@@ -14,13 +14,13 @@
         <button
           (click)="addComment()"
           matSuffix
-          [disabled]="commentForm.invalid"
+          [disabled]="commentForm.invalid || isProcessing"
           mat-icon-button
         >
           <mat-icon>send</mat-icon>
         </button>
         <mat-error *ngIf="commentForm.hasError('maxlength')"
-          >文字が多過ぎます</mat-error
+          >{{ textarea.value.length }}は文字が多過ぎます</mat-error
         >
         <mat-hint align="end">{{ textarea.value.length }}/400</mat-hint>
       </mat-form-field>

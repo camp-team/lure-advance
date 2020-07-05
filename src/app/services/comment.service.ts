@@ -97,11 +97,11 @@ export class CommentService {
             );
             return combineLatest([of(replies), users$]);
           } else {
-            of(null);
+            return of([]);
           }
         }),
         map(([replies, users]) => {
-          if (replies) {
+          if (replies?.length) {
             return replies.map((rep) => {
               return {
                 ...rep,
@@ -109,7 +109,7 @@ export class CommentService {
               };
             });
           } else {
-            of([]);
+            return [];
           }
         })
       );

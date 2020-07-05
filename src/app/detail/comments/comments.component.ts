@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { Comment, CommentWithUser } from '@interfaces/comment';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CommentService } from 'src/app/services/comment.service';
 import { ActivatedRoute } from '@angular/router';
-import { AuthService } from 'src/app/services/auth.service';
-import { switchMap } from 'rxjs/operators';
+import { Comment, CommentWithUser } from '@interfaces/comment';
 import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { AuthService } from 'src/app/services/auth.service';
+import { CommentService } from 'src/app/services/comment.service';
+import { UserService } from 'src/app/services/user.service';
+import { User } from '@interfaces/user';
 
 @Component({
   selector: 'app-comments',
@@ -20,24 +22,27 @@ export class CommentsComponent implements OnInit {
   ]);
 
   id: string;
-
   isEditing: boolean;
+
+  isProcessing: boolean;
 
   comments$: Observable<CommentWithUser[]> = this.route.parent.paramMap.pipe(
     switchMap((map) => {
       this.id = map.get('thing');
-      return (this.comments$ = this.commentService.getAllComments(this.id));
+      return this.commentService.getAllComments(this.id);
     })
   );
 
-  addComment(): void {
-    const uid: string = this.authService.uid;
-    if (uid === undefined) {
-      return; //TODOガード対応
+  async addComment(): Promise<void> {
+    this.isProcessing = true;
+    const user = await this.userService.passUserWhenRequiredForm();
+    if (user === null) {
+      this.isProcessing = false;
+      return;
     }
     const comment: Omit<Comment, 'id' | 'updateAt'> = {
       thingId: this.id,
-      fromUid: uid,
+      fromUid: user.uid,
       toUid: '',
       replyCount: 0,
       body: this.commentForm.value,
@@ -45,12 +50,14 @@ export class CommentsComponent implements OnInit {
     this.commentService
       .addComment(comment)
       .then(() => this.snackBar.open('コメントを追加しました。'))
-      .finally(() => this.commentForm.setValue(''));
+      .then(() => (this.isProcessing = false))
+      .finally(() => this.commentForm.setValue('', { emitEvent: false }));
   }
 
   constructor(
     private snackBar: MatSnackBar,
     private commentService: CommentService,
+    private userService: UserService,
     private authService: AuthService,
     private route: ActivatedRoute
   ) {}

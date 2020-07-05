@@ -19,7 +19,7 @@
       </div>
       <ng-container *ngIf="comment?.replyCount">
         <button
-          (click)="readReplyComments()"
+          (click)="loadReplyComments()"
           *ngIf="!isShowReplies; else replies"
           mat-icon-button
         >
@@ -50,6 +50,7 @@
             matTextareaAutosize
             required
             autofocus
+            autocomplete="off"
             [formControl]="replyCommentForm"
           ></textarea>
           <mat-error *ngIf="replyCommentForm.hasError('maxlength')"
@@ -60,7 +61,12 @@
           <button (click)="isReplying = false" mat-flat-button>
             キャンセル
           </button>
-          <button (click)="replyComment()" mat-flat-button color="primary">
+          <button
+            [disabled]="isProcessing"
+            (click)="replyComment()"
+            mat-flat-button
+            color="primary"
+          >
             返信
           </button>
         </div>
@@ -75,6 +81,7 @@
           matTextareaAutosize
           required
           autofocus
+          autocomplete="off"
           [formControl]="inputComment"
         ></textarea>
         <mat-error *ngIf="inputComment.hasError('maxlength')"
@@ -92,18 +99,24 @@
     </ng-container>
   </div>
   <div class="comment__edit-btn">
-    <button [matMenuTriggerFor]="commentEditor" mat-icon-button>
-      <mat-icon>more_vert</mat-icon>
-    </button>
-    <mat-menu #commentEditor="matMenu">
-      <button (click)="alterEditMode()" mat-menu-item>
-        <mat-icon>edit</mat-icon>
-        <span>編集</span>
+    <ng-container *ngIf="user$ | async as user">
+      <button
+        *ngIf="comment.fromUid === user.uid"
+        [matMenuTriggerFor]="commentEditor"
+        mat-icon-button
+      >
+        <mat-icon>more_vert</mat-icon>
       </button>
-      <button (click)="deleteComment()" mat-menu-item>
-        <mat-icon>delete</mat-icon>
-        <span>削除</span>
-      </button>
-    </mat-menu>
+      <mat-menu #commentEditor="matMenu">
+        <button (click)="alterEditMode()" mat-menu-item>
+          <mat-icon>edit</mat-icon>
+          <span>編集</span>
+        </button>
+        <button (click)="deleteComment()" mat-menu-item>
+          <mat-icon>delete</mat-icon>
+          <span>削除</span>
+        </button>
+      </mat-menu>
+    </ng-container>
   </div>
 </div>
