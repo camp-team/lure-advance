@@ -4,14 +4,24 @@ mat-form-field {
 
 .comment {
   display: grid;
-  grid-template-columns: 40px 1fr 40px;
   gap: 16px;
-  margin-bottom: 24px;
+  &--root {
+    grid-template-columns: 40px 1fr 40px;
+  }
+  &--reply {
+    grid-template-columns: 24px 1fr 40px;
+  }
   &__avatar {
-    width: 40px;
-    height: 40px;
     border-radius: 50%;
     background: center/cover;
+    &--root {
+      width: 40px;
+      height: 40px;
+    }
+    &--reply {
+      width: 24px;
+      height: 24px;
+    }
   }
   &__header {
     display: flex;
@@ -35,7 +45,16 @@ mat-form-field {
     color: rgba(black, 0.6);
     margin: 0;
   }
+  &__edit-btn {
+    display: none;
+  }
+  &:hover &__edit-btn {
+    display: block;
+  }
+  &__edit-actions {
+    text-align: right;
+  }
 }
-.edit-actions {
-  text-align: right;
+.replies {
+  margin-left: 56px;
 }

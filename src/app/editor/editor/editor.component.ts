@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, HostListener } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import {
   FormBuilder,
@@ -15,10 +15,9 @@ import { ThingRef } from '@interfaces/thing-ref';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { Category } from 'src/app/interfaces/category';
-import { AuthService } from 'src/app/services/auth.service';
 import { CategoryService } from 'src/app/services/category.service';
 import { ThingService } from 'src/app/services/thing.service';
-
+import { UserService } from 'src/app/services/user.service';
 @Component({
   selector: 'app-thing-editor',
   templateUrl: './editor.component.html',
@@ -53,6 +52,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     tags: [],
   });
 
+  isCompleted: boolean;
+
   get titleControl(): FormControl {
     return this.form.get('title') as FormControl;
   }
@@ -60,6 +61,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   get descriptionControl(): FormControl {
     return this.form.get('description') as FormControl;
   }
+
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   tags: string[] = [];
   visible = true;
@@ -128,7 +130,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private categoryService: CategoryService,
     private db: AngularFirestore,
-    private authService: AuthService
+    private userService: UserService
   ) {}
 
   ngOnDestroy(): void {
@@ -144,6 +146,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         this.selectedCategories = this.toValuesFromSelected(value);
       });
       if (thing === undefined) {
+        //+ボタン押下時
         return;
       }
       this.tags = thing.tags;
@@ -192,10 +195,11 @@ export class EditorComponent implements OnInit, OnDestroy {
     if (this.thing) {
       this.thingService.updateThing(newValue).then(() => {
         this.snackBar.open('保存しました');
+        this.isCompleted = true;
         this.router.navigateByUrl(`/${this.thing.id}`);
       });
     } else {
-      const uid = this.authService.uid;
+      const uid = this.userService.uid;
       const thing: Omit<Thing, 'updateAt' | 'createdAt'> = {
         id: thingId,
         title: newValue.title,
@@ -209,8 +213,10 @@ export class EditorComponent implements OnInit, OnDestroy {
         viewCount: 0,
         tags: newValue.tags,
       };
+
       this.thingService.createThing(thing).then(() => {
         this.snackBar.open('アップロードに成功しました');
+        this.isCompleted = true;
         this.router.navigateByUrl(`/${thingId}`);
       });
     }
@@ -243,5 +249,13 @@ export class EditorComponent implements OnInit, OnDestroy {
     return Object.entries(selectedValue)
       .filter(([_, value]) => value)
       .map(([key, _]) => key);
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification($event: any) {
+    if (this.form.dirty) {
+      $event.preventDefault();
+      $event.returnValue = '作業中の内容が失われますがよろしいですか？';
+    }
   }
 }

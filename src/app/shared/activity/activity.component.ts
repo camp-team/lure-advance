@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { NotificationService } from 'src/app/services/notification.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationWithUserAndThing } from '@interfaces/notification';
-import { AuthService } from 'src/app/services/auth.service';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { NotificationService } from 'src/app/services/notification.service';
+import { UserService } from 'src/app/services/user.service';
 @Component({
   selector: 'app-activity',
   templateUrl: './activity.component.html',
@@ -14,7 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class ActivityComponent implements OnInit {
   notifications$: Observable<
     NotificationWithUserAndThing[]
-  > = this.authService.user$.pipe(
+  > = this.userService.user$.pipe(
     switchMap((user) => {
       if (user) {
         return this.notificationService.getNotificationsByUid(user.uid);
@@ -26,12 +25,12 @@ export class ActivityComponent implements OnInit {
 
   constructor(
     private notificationService: NotificationService,
-    private authService: AuthService,
+    private userService: UserService,
     private snackBar: MatSnackBar
   ) {}
 
   deleteItem(id: string) {
-    const uid: string = this.authService.uid;
+    const uid: string = this.userService.uid;
     if (uid) {
       this.notificationService
         .deleteNotification(id, uid)

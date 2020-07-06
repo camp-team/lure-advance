@@ -90,18 +90,7 @@ export class FilterComponent implements OnInit {
       queryParams: {
         sort: key,
       },
+      queryParamsHandling: 'merge',
     });
-  }
-
-  private buildQueryParameter(
-    event: MatSelectionListChange,
-    paramName: string
-  ) {
-    const options: MatListOption[] = event.source.selectedOptions.selected;
-    const filter = options.map((option) => option.value).join(',') || null;
-    const query = Object();
-    query.queryParams[paramName] = filter;
-    query.queryParamsHandling = 'merge';
-    this.router.navigate([''], query);
   }
 }

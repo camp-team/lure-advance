@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { Thing, ThingWithUser } from '@interfaces/thing';
-import { ThingService } from 'src/app/services/thing.service';
-import { Observable } from 'rxjs';
-import { switchMap, tap, take } from 'rxjs/operators';
-import { ActivatedRoute, Router } from '@angular/router';
-
-import { AuthService } from 'src/app/services/auth.service';
-import { SwiperConfigInterface } from 'ngx-swiper-wrapper';
-import { CategoryService } from 'src/app/services/category.service';
-import { DeleteDialogComponent } from 'src/app/shared/delete-dialog/delete-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Thing, ThingWithUser } from '@interfaces/thing';
+import { SwiperConfigInterface } from 'ngx-swiper-wrapper';
+import { Observable } from 'rxjs';
+import { switchMap, take, tap } from 'rxjs/operators';
+import { AuthService } from 'src/app/services/auth.service';
+import { CategoryService } from 'src/app/services/category.service';
+import { ThingService } from 'src/app/services/thing.service';
+import { UserService } from 'src/app/services/user.service';
+import { DeleteDialogComponent } from 'src/app/shared/delete-dialog/delete-dialog.component';
 
 @Component({
   selector: 'app-thing-detail',
@@ -22,7 +23,7 @@ export class DetailComponent implements OnInit {
       this.thingService.getThingWithUserById(map.get('thing'))
     ),
     tap(async (thing) => {
-      this.uid = this.authService.uid;
+      this.uid = this.userService.uid;
       this.isLiked = await this.thingService.isLiked(this.uid, thing.id);
     }),
     take(1)
@@ -56,9 +57,11 @@ export class DetailComponent implements OnInit {
   constructor(
     private thingService: ThingService,
     private route: ActivatedRoute,
+    private userService: UserService,
     private authService: AuthService,
     private dialog: MatDialog,
     private router: Router,
+    private snackBar: MatSnackBar,
     public categoryService: CategoryService
   ) {}
 
@@ -70,10 +73,14 @@ export class DetailComponent implements OnInit {
     });
   }
 
-  likeThing(thing: Thing): Promise<void> {
-    const uid: string = this.authService.uid;
-    if (!uid) {
-      return;
+  async likeThing(thing: Thing): Promise<void> {
+    let uid: string = this.userService.uid;
+    if (uid === undefined) {
+      await this.authService
+        .login()
+        .then(() => this.snackBar.open('ログインしました'));
+      const user = await this.userService.getUserWithSnapShot();
+      uid = user.uid;
     }
     thing.likeCount++;
     this.isLiked = true;
@@ -82,10 +89,7 @@ export class DetailComponent implements OnInit {
   }
 
   unLikeThing(thing: Thing): Promise<void> {
-    const uid: string = this.authService.uid;
-    if (!uid) {
-      return;
-    }
+    const uid: string = this.userService.uid;
     thing.likeCount--;
     this.isLiked = false;
     return this.thingService.unLikeThing(thing.id, uid);

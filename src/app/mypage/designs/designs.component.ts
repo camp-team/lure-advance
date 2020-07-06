@@ -3,6 +3,7 @@ import { Thing } from '@interfaces/thing';
 import { ThingService } from 'src/app/services/thing.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { firestore } from 'firebase';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-designs',
@@ -11,7 +12,7 @@ import { firestore } from 'firebase';
 })
 export class DesignsComponent implements OnInit {
   constructor(
-    private authService: AuthService,
+    private userService: UserService,
     private thingService: ThingService
   ) {}
 
@@ -33,7 +34,7 @@ export class DesignsComponent implements OnInit {
     updateAt: firestore.Timestamp.now(),
   };
 
-  uid: string = this.authService.uid;
+  uid: string = this.userService.uid;
   //TODO データ準備 https://github.com/camp-team/lure-advance/issues/68
   //this.thingService.getThingsByDesignerID(this.uid)
   posts: Thing[] = new Array(50).fill(this.def);

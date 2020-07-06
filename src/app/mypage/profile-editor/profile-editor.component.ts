@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  FormGroup,
   FormBuilder,
-  Validators,
   FormControl,
+  FormGroup,
+  Validators,
 } from '@angular/forms';
-import { User } from '@interfaces/user';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { AvatarEditorComponent } from './avatar-editor/avatar-editor.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { User } from '@interfaces/user';
 import { Observable } from 'rxjs';
-import { AuthService } from 'src/app/services/auth.service';
 import { UserService } from 'src/app/services/user.service';
+import { AvatarEditorComponent } from './avatar-editor/avatar-editor.component';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile-editor',
@@ -23,27 +23,26 @@ export class ProfileEditorComponent implements OnInit {
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private authService: AuthService,
     private userService: UserService
   ) {}
 
-  user$: Observable<User> = this.authService.user$;
+  user$: Observable<User> = this.userService.user$;
 
   form: FormGroup = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(40)]],
-    myself: ['', [Validators.maxLength(150)]],
-    myweb: [
+    description: ['', [Validators.maxLength(150)]],
+    weblink: [
       '',
       [Validators.maxLength(100), Validators.pattern(/https?:\/\/(www\.)?.+/)],
     ],
   });
 
   ngOnInit(): void {
-    this.user$.subscribe((user) => {
+    this.user$.pipe(first()).subscribe((user) => {
       this.form.patchValue({
         name: user.name,
-        myself: user.description,
-        myweb: user.weblink,
+        description: user.description,
+        weblink: user.weblink,
       });
     });
   }
@@ -51,12 +50,12 @@ export class ProfileEditorComponent implements OnInit {
   get nameControl(): FormControl {
     return this.form.get('name') as FormControl;
   }
-  get myselfControl(): FormControl {
-    return this.form.get('myself') as FormControl;
+  get descriptionControl(): FormControl {
+    return this.form.get('description') as FormControl;
   }
 
-  get mywebControl(): FormControl {
-    return this.form.get('myweb') as FormControl;
+  get weblinkControl(): FormControl {
+    return this.form.get('weblink') as FormControl;
   }
 
   save(user: User) {
@@ -64,8 +63,8 @@ export class ProfileEditorComponent implements OnInit {
     const newValue: User = {
       ...user,
       name: formValue.name,
-      description: formValue.myself,
-      weblink: formValue.myweb,
+      description: formValue.description,
+      weblink: formValue.weblink,
     };
     this.userService
       .updateUser(newValue)

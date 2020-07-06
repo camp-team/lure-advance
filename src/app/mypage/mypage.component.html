@@ -7,7 +7,11 @@
       ></div>
       <div class="profile__action">
         <p class="profile__name">{{ user.name }}</p>
-        <button (click)="openEditor()" mat-icon-button>
+        <button
+          *ngIf="designerId === user.uid"
+          (click)="openEditor()"
+          mat-icon-button
+        >
           <mat-icon>settings</mat-icon>
           <span>プロフィールを編集する</span>
         </button>

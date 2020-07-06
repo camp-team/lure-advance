@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LegalComponent } from './footer/legal/legal.component';
 import { PrivacypolicyComponent } from './footer/privacypolicy/privacypolicy.component';
+import { GuestGuard } from './guard/guest.guard';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { ShellComponent } from './shell/shell.component';
 
@@ -20,6 +21,8 @@ const routes: Routes = [
         path: 'create',
         loadChildren: () =>
           import('./editor/editor.module').then((m) => m.EditorModule),
+
+        canActivate: [GuestGuard],
       },
       {
         path: ':thing',
@@ -30,6 +33,7 @@ const routes: Routes = [
         path: ':thing/edit',
         loadChildren: () =>
           import('./editor/editor.module').then((m) => m.EditorModule),
+        canActivate: [GuestGuard],
       },
       {
         path: 'mypage/:uid',

@@ -1,10 +1,15 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Thing, ThingWithUser } from '@interfaces/thing';
-import { ThingService } from 'src/app/services/thing.service';
-import { AuthService } from 'src/app/services/auth.service';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Thing, ThingWithUser } from '@interfaces/thing';
+import { User } from '@interfaces/user';
+import { Observable } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
+import { ThingService } from 'src/app/services/thing.service';
+import { UserService } from 'src/app/services/user.service';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+import { tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-thing-card',
@@ -16,34 +21,41 @@ export class ThingCardComponent implements OnInit {
 
   constructor(
     private thingService: ThingService,
+    private userService: UserService,
     private authService: AuthService,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router
   ) {}
 
-  async ngOnInit() {
-    this.uid = this.authService.uid;
-    this.isLiked = await this.thingService.isLiked(this.uid, this.thing.id);
-  }
-  uid: string;
+  async ngOnInit() {}
+
+  user$: Observable<User> = this.userService.user$.pipe(
+    tap(async (user) => {
+      this.isLiked = await this.thingService.isLiked(user?.uid, this.thing.id);
+    })
+  );
+
   isLiked: boolean;
+  isProcessing: boolean;
 
   async likeThing(thing: Thing): Promise<void> {
-    let uid: string = this.authService.uid;
-    if (uid === undefined) {
-      this.authService
-        .login()
-        .then(() => this.snackBar.open('ログインしました'));
+    this.isProcessing = true;
+    const user: User = await this.userService.passUserWhenRequiredForm();
+    if (user === null) {
+      this.isProcessing = false;
       return;
     }
-
     this.thing.likeCount++;
     this.isLiked = true;
-    return this.thingService.likeThing(thing, uid);
+
+    return this.thingService
+      .likeThing(thing, user.uid)
+      .finally(() => (this.isProcessing = false));
   }
 
   unLikeThing(thingId: string): Promise<void> {
-    const uid: string = this.authService.uid;
+    const uid: string = this.userService.uid;
     this.thing.likeCount--;
     this.isLiked = false;
     return this.thingService.unLikeThing(thingId, uid);
@@ -55,5 +67,9 @@ export class ThingCardComponent implements OnInit {
       restoreFocus: false,
       autoFocus: false,
     });
+  }
+
+  navigateToProfile(thing: Thing) {
+    this.router.navigate(['/mypage', thing.designerId]);
   }
 }
