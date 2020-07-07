@@ -7,20 +7,20 @@ import { NotificationWithUserAndThing } from '@interfaces/notification';
 export class NotifymsgPipe implements PipeTransform {
   transform(value: NotificationWithUserAndThing): string {
     const type = value.type;
-    const comment = this.sliceComment(value.comment);
-    const fromName = value.user.name;
+    const fromName: string = value.user.name;
     switch (type) {
       case 'like':
-        return `${fromName}さんがあなたの投稿にいいねをしました。`;
+        return `${fromName} liked`;
       case 'follow':
-        return `${fromName}さんからフォローされました。`;
+        return `${fromName} followed`;
       case 'reply':
-        return `${fromName}さんからコメントをいただきました。:\n「${comment}」`;
+        const comment = this.sliceComment(value.commentBody);
+        return `${fromName} replied:\n「${comment}」`;
       default:
         throw new Error('想定してないパラメーター:' + type);
     }
   }
   private sliceComment(comment: string): string {
-    return comment.length > 50 ? `${comment.slice(0, 50)}...` : comment;
+    return comment?.length > 30 ? `${comment.slice(0, 30)}...` : comment;
   }
 }

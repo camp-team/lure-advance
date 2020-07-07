@@ -1,29 +1,55 @@
-<ng-container
-  class="activity"
-  *ngFor="let notification of notifications$ | async"
->
-  <div
-    class="activity__avatar"
-    [style.background-image]="'url(' + notification.user.avatarURL + ')'"
-  ></div>
-  <div class="activity__body">
-    <p class="activity__message">{{ notification | notifymsg }}</p>
-    <p class="activity__updateAt">
-      {{ notification.updateAt.toDate() | date: 'yyyy年MM月dd日' }}
-    </p>
-  </div>
-  <div class="activity__thumbnail">
-    <img [src]="notification.thing.imageUrls[0]" alt="" />
-  </div>
-  <div class="activity__action">
-    <button [mat-menu-trigger-for]="menu" mat-icon-button>
-      <mat-icon>more_vert</mat-icon>
-    </button>
-    <mat-menu #menu>
-      <button (click)="deleteItem(notification.id)" mat-menu-item>
-        <mat-icon>delete</mat-icon>
-        <span>削除</span>
-      </button>
-    </mat-menu>
-  </div>
+<ng-container *ngIf="notifications$ | async as notifiacations; else noMsg">
+  <ng-template #view>
+    <div mat-subheader>Notifications</div>
+    <mat-nav-list>
+      <mat-list-item
+        routerLink="/{{ notification.thingId }}"
+        class="activity"
+        *ngFor="let notification of notifiacations"
+      >
+        <button
+          mat-icon-button
+          mat-list-avatar
+          class="activity__avatar"
+          routerLink="/mypage/{{ notification.user.uid }}"
+          [style.background-image]="'url(' + notification.user.avatarURL + ')'"
+        ></button>
+        <div mat-line class="activity__message">
+          {{ notification | notifymsg }}
+        </div>
+        <div mat-line class="activity__updateAt">
+          {{ notification.updateAt.toDate() | date: 'yyyy年MM月dd日' }}
+        </div>
+
+        <img
+          class="activity__thumbnail"
+          [src]="getThumbnailUrl(notification)"
+          alt=""
+        />
+
+        <button
+          class="activity__edit-btn"
+          [mat-menu-trigger-for]="menu"
+          mat-icon-button
+        >
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu>
+          <button (click)="deleteItem(notification.id)" mat-menu-item>
+            <mat-icon>delete</mat-icon>
+            <span>削除</span>
+          </button>
+        </mat-menu>
+      </mat-list-item>
+    </mat-nav-list>
+  </ng-template>
 </ng-container>
+
+<ng-template #noMsg>
+  <div class="no-msg">
+    <p class="no-msg__icon">
+      <mat-icon inline>notifications</mat-icon>
+    </p>
+    <p class="no-msg__text">Message not Receved.</p>
+  </div>
+</ng-template>
