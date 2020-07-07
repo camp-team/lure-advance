@@ -42,7 +42,8 @@ export const likeThing = functions
         fromUid: likerUid,
         toUid: targetUid,
         thingId: thingId,
-        comment: '',
+        commentBody: '',
+        commentId: '',
         updateAt: admin.firestore.Timestamp.now(),
       };
 

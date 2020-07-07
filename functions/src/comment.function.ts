@@ -29,7 +29,7 @@ export const addReply = functions
       const value = snap.data();
       const targetUid: string = value.toUid;
       const replierUid: string = value.fromUid;
-      const comment: string = value.body;
+      const commentBody: string = value.body;
 
       if (targetUid === replierUid) {
         console.log('Replying to My Comment.');
@@ -44,7 +44,8 @@ export const addReply = functions
         fromUid: replierUid,
         toUid: targetUid,
         thingId: thingId,
-        comment: comment,
+        commentBody: commentBody,
+        commentId: commentId,
         updateAt: admin.firestore.Timestamp.now(),
       };
 

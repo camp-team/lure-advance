@@ -8,7 +8,8 @@ export interface Notification {
   toUid: string;
   fromUid: string;
   thingId: string;
-  comment: string;
+  commentBody: string;
+  commentId: string;
   updateAt: firestore.Timestamp;
 }
 export interface NotificationWithUserAndThing extends Notification {
