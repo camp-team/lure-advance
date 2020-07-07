@@ -44,12 +44,13 @@ export class CommentsComponent implements OnInit {
       this.isProcessing = false;
       return;
     }
+    const value: string = this.commentForm.value;
     const comment: Omit<Comment, 'id' | 'updateAt'> = {
       thingId: this.id,
       fromUid: user.uid,
       toUid: '',
       replyCount: 0,
-      body: this.commentForm.value,
+      body: value.trim(),
     };
     this.commentService
       .addComment(comment)

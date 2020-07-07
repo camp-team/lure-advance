@@ -31,6 +31,7 @@ mat-form-field {
   }
   &__body {
     margin: 0;
+    white-space: pre-line;
   }
   &__actions {
     text-align: left;
