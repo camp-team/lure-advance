@@ -35,8 +35,9 @@ export class DetailComponent implements OnInit, OnDestroy {
   config: SwiperConfigInterface = {
     loop: true,
     slidesPerView: 1,
-    pagination: true,
+    pagination: { clickable: true, el: '.pager' },
     navigation: true,
+
     simulateTouch: false,
   };
 
