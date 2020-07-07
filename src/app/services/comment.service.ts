@@ -3,7 +3,11 @@ import { AngularFirestore } from '@angular/fire/firestore/';
 import { Observable, combineLatest, of } from 'rxjs';
 import { Thing } from '@interfaces/thing';
 import { firestore } from 'firebase';
-import { Comment, CommentWithUser } from '@interfaces/comment';
+import {
+  Comment,
+  CommentWithUser,
+  RootCommentAndReplies,
+} from '@interfaces/comment';
 import { switchMap, map, takeWhile, filter } from 'rxjs/operators';
 import { UserService } from './user.service';
 import { User } from '@interfaces/user';
@@ -45,6 +49,27 @@ export class CommentService {
           } else {
             return [];
           }
+        })
+      );
+  }
+
+  getCommentsByID(
+    thingId: string,
+    commentId: string
+  ): Observable<CommentWithUser> {
+    return this.db
+      .doc<Comment>(`things/${thingId}/comments/${commentId}`)
+      .valueChanges()
+      .pipe(
+        switchMap((comment) => {
+          const user$ = this.userService.getUserByID(comment.fromUid);
+          return combineLatest([of(comment), user$]);
+        }),
+        map(([comment, user]) => {
+          return {
+            ...comment,
+            user: user,
+          };
         })
       );
   }
