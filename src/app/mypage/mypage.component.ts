@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { User } from '@interfaces/user';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
 import { UserService } from '../services/user.service';
 import { ProfileEditorComponent } from './profile-editor/profile-editor.component';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap, tap, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-mypage',
@@ -15,12 +15,16 @@ import { switchMap, tap } from 'rxjs/operators';
 export class MypageComponent implements OnInit {
   user$: Observable<User> = this.router.paramMap.pipe(
     switchMap((map) => {
-      this.designerId = map.get('uid');
-      return this.userService.getUserByID(this.designerId);
-    })
+      const designerId = map.get('uid');
+      const designer$ = this.userService.getUserByID(designerId);
+      const user$ = this.userService.user$;
+      return combineLatest([designer$, user$]);
+    }),
+    tap(([designer, user]) => (this.isMypage = designer?.uid === user?.uid)),
+    map(([designer, _]) => designer)
   );
 
-  designerId: string;
+  isMypage: boolean;
 
   navLinks = [
     {
