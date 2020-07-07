@@ -1,5 +1,6 @@
 .post {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   padding: 0;
   :hover {
     cursor: pointer;
@@ -8,12 +9,13 @@
     margin: 0;
   }
   &__thumbnail {
-    img {
-      max-width: 100%;
-      vertical-align: bottom;
-    }
+    flex-shrink: 0;
+    background: center/cover;
+    height: 180px;
   }
   &__body {
+    height: 180px;
+    box-sizing: border-box;
     padding: 8px;
   }
   &__title {
@@ -34,11 +36,9 @@
     margin-right: 8px;
   }
   &__description {
-    font-size: 14px;
-    color: rgba(black, 0.6);
     display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
     overflow: hidden;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
   }
 }
