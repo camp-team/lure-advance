@@ -17,7 +17,7 @@ export class ActivityComponent implements OnInit {
   user$: Observable<User> = this.userService.user$;
   notifications$: Observable<NotificationWithUserAndThing[]> = this.user$.pipe(
     switchMap((user) => {
-      return this.notificationService.getNotificationsByUid(user.uid);
+      return this.notificationService.getNotificationsByUid(user?.uid);
     })
   );
 

@@ -37,7 +37,7 @@ export class NotificationService {
     uid: string
   ): Observable<NotificationWithUserAndThing[]> {
     if (uid === undefined) {
-      return of([]);
+      return of(null);
     }
 
     return this.db
@@ -53,10 +53,6 @@ export class NotificationService {
             );
             const users$: Observable<User[]> = combineLatest(
               distinctUids.map((uid) => this.userService.getUserByID(uid))
-            ).pipe(
-              tap((users) => {
-                console.log(users);
-              })
             );
             const distinctThings: string[] = Array.from(
               new Set(notifications.map((item) => item.thingId))
