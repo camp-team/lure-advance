@@ -7,7 +7,7 @@ import {
 import { Thing } from '@interfaces/thing';
 import { User } from '@interfaces/user';
 import { combineLatest, Observable, of } from 'rxjs';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { ThingService } from './thing.service';
 import { UserService } from './user.service';
 
