@@ -11,6 +11,7 @@ import { CategoryService } from 'src/app/services/category.service';
 import { ThingService } from 'src/app/services/thing.service';
 import { UserService } from 'src/app/services/user.service';
 import { DeleteDialogComponent } from 'src/app/shared/delete-dialog/delete-dialog.component';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 @Component({
   selector: 'app-thing-detail',
@@ -53,6 +54,8 @@ export class DetailComponent implements OnInit {
       label: 'Files',
     },
   ];
+
+  meshOption = [{ position: { x: 0, y: 0, z: 0 } }];
 
   constructor(
     private thingService: ThingService,

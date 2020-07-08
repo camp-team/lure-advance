@@ -52,6 +52,10 @@ export class ComonCommentComponent implements OnInit {
     this.inputComment.setValue(this.comment.body);
   }
 
+  alterReplyMode() {
+    this.isReplying = true;
+  }
+
   async replyComment(): Promise<void> {
     this.isProcessing = true;
     const user = await this.userService.passUserWhenRequiredForm();

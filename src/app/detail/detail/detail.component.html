@@ -39,6 +39,7 @@
         <ng-container *ngFor="let ref of thing.stlRef">
           <stl-model-viewer
             style="overflow: hidden;"
+            [meshOptions]="meshOption"
             [stlModels]="[ref.downloadUrl]"
           ></stl-model-viewer>
         </ng-container>

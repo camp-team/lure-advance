@@ -60,3 +60,7 @@ export const deleteThing = functions
       }),
     ]);
   });
+
+export const incrementViewCount = functions
+  .region('asia-northeast1')
+  .https.onCall(async (path, context) => {});
