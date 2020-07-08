@@ -12,11 +12,7 @@
       <p class="thing__updateAt">
         {{ thing.updateAt.toDate() | relativetime }}
       </p>
-      <button
-        [mat-menu-trigger-for]="menu"
-        *ngIf="thing.designerId === uid"
-        mat-icon-button
-      >
+      <button [mat-menu-trigger-for]="menu" *ngIf="isMypost" mat-icon-button>
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu>
@@ -44,6 +40,7 @@
         </ng-container>
       </swiper>
     </div>
+    <div class="pager"></div>
     <div class="thing__actions">
       <button
         *ngIf="isLiked; else unLiked"
@@ -87,3 +84,4 @@
   </nav>
   <router-outlet></router-outlet>
 </div>
+<ng-template #notFound></ng-template>

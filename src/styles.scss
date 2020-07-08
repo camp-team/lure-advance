@@ -14,3 +14,10 @@ body {
   max-width: 960px;
   margin: 0 auto;
 }
+
+.pager {
+  text-align: center;
+  span {
+    margin: 0 4px;
+  }
+}

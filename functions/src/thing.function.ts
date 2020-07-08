@@ -12,7 +12,12 @@ export const addThing = functions
   .firestore.document('things/{thingId}')
   .onCreate(async (snap, context) => {
     const data = snap.data();
+    const thingId = context.params.thingId;
     const designerId = data.designerId;
+
+    await db
+      .doc(`users/${designerId}/mythings/${thingId}`)
+      .set({ thingId: thingId });
 
     await db
       .doc(`users/${designerId}`)
@@ -46,9 +51,15 @@ export const deleteThing = functions
     const data = snap.data();
     const designerId = data.designerId;
 
-    await db
-      .doc(`users/${designerId}`)
-      .update('thingCount', admin.firestore.FieldValue.increment(-1));
+    await db.doc(`users/${designerId}/mythings/${thingId}`).delete();
+    const snapShot = await db.doc(`users/${designerId}`).get();
+
+    if (snapShot.exists) {
+      await snapShot.ref.update(
+        'thingCount',
+        admin.firestore.FieldValue.increment(-1)
+      );
+    }
 
     await algolia.removeRecord('things', thingId);
 

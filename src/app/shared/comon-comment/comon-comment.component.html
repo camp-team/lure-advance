@@ -17,7 +17,7 @@
           {{ comment.updateAt.toDate() | relativetime }}
         </p>
       </div>
-      <p class="comment__body">{{ comment.body }}</p>
+      <p class="comment__body">{{ comment.body.trim() }}</p>
       <div class="comment__actions">
         <button (click)="isReplying = true" mat-icon-button>
           <mat-icon>reply</mat-icon>
@@ -25,7 +25,7 @@
       </div>
       <ng-container *ngIf="isReplying">
         <mat-form-field appearance="outline">
-          <mat-label>コメント</mat-label>
+          <mat-label>Reply</mat-label>
           <textarea
             #commentInput
             matInput
@@ -49,14 +49,14 @@
             mat-flat-button
             color="primary"
           >
-            返信
+            Reply
           </button>
         </div>
       </ng-container>
     </ng-template>
     <ng-container *ngIf="isEditing; else view">
       <mat-form-field appearance="outline">
-        <mat-label>コメント</mat-label>
+        <mat-label>Reply</mat-label>
         <textarea
           #commentInput
           matInput
@@ -72,10 +72,10 @@
       </mat-form-field>
       <div class="comment__edit-actions">
         <button (click)="isEditing = false" mat-flat-button>
-          キャンセル
+          Cancel
         </button>
         <button (click)="saveComment()" mat-flat-button color="primary">
-          保存
+          Save
         </button>
       </div>
     </ng-container>
@@ -92,11 +92,11 @@
       <mat-menu #commentEditor="matMenu">
         <button (click)="alterEditMode()" mat-menu-item>
           <mat-icon>edit</mat-icon>
-          <span>編集</span>
+          <span>Edit</span>
         </button>
         <button (click)="deleteComment()" mat-menu-item>
           <mat-icon>delete</mat-icon>
-          <span>削除</span>
+          <span>Delete</span>
         </button>
       </mat-menu>
     </ng-container>

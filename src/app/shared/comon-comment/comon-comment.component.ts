@@ -55,6 +55,7 @@ export class ComonCommentComponent implements OnInit {
   async replyComment(): Promise<void> {
     this.isProcessing = true;
     const user = await this.userService.passUserWhenRequiredForm();
+    const value: string = this.replyCommentForm.value;
     if (user === null) {
       this.isProcessing = false;
       return;
@@ -63,7 +64,7 @@ export class ComonCommentComponent implements OnInit {
       thingId: this.thingId,
       fromUid: user.uid,
       toUid: this.comment.fromUid,
-      body: this.replyCommentForm.value,
+      body: value,
       replyCount: 0,
     };
     this.commentService
