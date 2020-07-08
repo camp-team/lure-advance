@@ -2,6 +2,7 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { deleteCollection } from './utils/firebase-util';
 import { Algolia } from './utils/algolia-util';
+import { Thing } from './interfaces/thing';
 
 const storage = admin.storage().bucket();
 const algolia = new Algolia();
@@ -19,9 +20,13 @@ export const addThing = functions
       .doc(`users/${designerId}/mythings/${thingId}`)
       .set({ thingId: thingId });
 
-    await db
-      .doc(`users/${designerId}`)
-      .update('thingCount', admin.firestore.FieldValue.increment(1));
+    const userSnapShot = await db.doc(`users/${designerId}`).get();
+    if (userSnapShot.exists) {
+      await userSnapShot.ref.update(
+        'thingCount',
+        admin.firestore.FieldValue.increment(1)
+      );
+    }
 
     return algolia.saveRecord({
       indexName: 'things',
@@ -70,4 +75,16 @@ export const deleteThing = functions
         directory: `things/${thingId}/files`,
       }),
     ]);
+  });
+
+export const incrementViewCount = functions
+  .region('asia-northeast1')
+  .https.onCall(async (snap: Thing) => {
+    const thingSnapShot = await db.doc(`things/${snap.id}`).get();
+    if (thingSnapShot.exists) {
+      thingSnapShot.ref.update(
+        'viewCount',
+        admin.firestore.FieldValue.increment(1)
+      );
+    }
   });

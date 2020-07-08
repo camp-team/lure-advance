@@ -26,6 +26,7 @@ export class DetailComponent implements OnInit, OnDestroy {
       const uid = this.userService.uid;
       this.isLiked = await this.thingService.isLiked(uid, thing.id);
       this.isMypost = thing.designerId === uid;
+      this.thingService.incrementViewCount(thing);
     }),
     take(1)
   );
@@ -108,5 +109,9 @@ export class DetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.thing$.pipe(take(1)).subscribe((thing) => {
+      this.thingService.incrementViewCount(thing);
+    });
+  }
 }
