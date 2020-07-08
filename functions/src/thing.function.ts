@@ -1,7 +1,8 @@
-import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { deleteCollection } from './utils/firebase-util';
+import * as functions from 'firebase-functions';
 import { Algolia } from './utils/algolia-util';
+import { deleteCollection } from './utils/firebase-util';
+import { Thing } from './interfaces/thing';
 
 const storage = admin.storage().bucket();
 const algolia = new Algolia();
@@ -63,4 +64,15 @@ export const deleteThing = functions
 
 export const incrementViewCount = functions
   .region('asia-northeast1')
-  .https.onCall(async (path, context) => {});
+  .https.onCall(async (data: Thing) => {
+    const snapShot = await db.doc(`things/${data.id}`).get();
+    if (snapShot.exists) {
+      return snapShot.ref.update(
+        'viewCount',
+        admin.firestore.FieldValue.increment(1)
+      );
+    } else {
+      console.log('Data does not exsist.');
+      return;
+    }
+  });

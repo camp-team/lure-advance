@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Observable, combineLatest, of } from 'rxjs';
-import { Thing, ThingWithUser } from '@interfaces/thing';
-import { firestore } from 'firebase';
+import { AngularFireFunctions } from '@angular/fire/functions';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { map, take, switchMap, tap, filter } from 'rxjs/operators';
-import { User } from '@interfaces/user';
-import { UserService } from './user.service';
+import { Thing, ThingWithUser } from '@interfaces/thing';
 import { ThingRef } from '@interfaces/thing-ref';
+import { User } from '@interfaces/user';
+import { firestore } from 'firebase';
+import { combineLatest, Observable, of } from 'rxjs';
+import { filter, map, switchMap, take } from 'rxjs/operators';
+import { UserService } from './user.service';
 @Injectable({
   providedIn: 'root',
 })
@@ -15,7 +16,8 @@ export class ThingService {
   constructor(
     private db: AngularFirestore,
     private storage: AngularFireStorage,
-    private userService: UserService
+    private userService: UserService,
+    private fns: AngularFireFunctions
   ) {}
 
   getThings(): Observable<ThingWithUser[]> {
@@ -262,5 +264,16 @@ export class ThingService {
 
   unLikeThing(thingId: string, uid: string): Promise<void> {
     return this.db.doc(`things/${thingId}/likeUsers/${uid}`).delete();
+  }
+
+  increamentViewCount(thing: Thing): Promise<any> {
+    const callable = this.fns.httpsCallable('incrementViewCount');
+    return callable(thing).toPromise();
+  }
+
+  increamentViewCoun(thing: Thing): Promise<any> {
+    return this.db
+      .doc<Thing>(`things/${thing.id}`)
+      .update({ ...thing, viewCount: ++thing.viewCount });
   }
 }

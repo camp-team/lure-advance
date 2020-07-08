@@ -9,4 +9,9 @@ export {
   deleteReply,
   deleteComment,
 } from './comment.function';
-export { deleteThing, addThing, updateThing } from './thing.function';
+export {
+  deleteThing,
+  addThing,
+  updateThing,
+  incrementViewCount,
+} from './thing.function';

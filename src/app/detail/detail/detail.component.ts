@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,7 +18,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss'],
 })
-export class DetailComponent implements OnInit {
+export class DetailComponent implements OnInit, OnDestroy {
   thing$: Observable<ThingWithUser> = this.route.paramMap.pipe(
     switchMap((map) =>
       this.thingService.getThingWithUserById(map.get('thing'))
@@ -26,9 +26,11 @@ export class DetailComponent implements OnInit {
     tap(async (thing) => {
       this.uid = this.userService.uid;
       this.isLiked = await this.thingService.isLiked(this.uid, thing.id);
+      this.thingSnapShot = thing;
     }),
     take(1)
   );
+  thingSnapShot: Thing;
   uid: string;
   index: number;
   config: SwiperConfigInterface = {
@@ -67,6 +69,12 @@ export class DetailComponent implements OnInit {
     private snackBar: MatSnackBar,
     public categoryService: CategoryService
   ) {}
+
+  ngOnDestroy(): void {
+    console.log('OnDestory');
+    console.log(this.thingSnapShot, 'Thing');
+    this.thingService.increamentViewCount(this.thingSnapShot);
+  }
 
   delete(thing: Thing) {
     this.dialog.open(DeleteDialogComponent, {

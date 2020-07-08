@@ -31,17 +31,17 @@ export class HeaderNavComponent implements OnInit {
     private notificationService: NotificationService,
     private searchService: SearchService,
     private router: Router
-  ) {
+  ) {}
+
+  @Output() activity: EventEmitter<boolean> = new EventEmitter();
+
+  ngOnInit(): void {
     this.ctrl.valueChanges.pipe(startWith('')).subscribe((key) => {
-      this.index.search('').then((result) => {
+      this.index.search(key).then((result) => {
         this.searchOptions = result.hits;
       });
     });
   }
-
-  @Output() activity: EventEmitter<boolean> = new EventEmitter();
-
-  ngOnInit(): void {}
 
   login() {
     this.isProccesing = true;
