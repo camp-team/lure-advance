@@ -33,7 +33,7 @@ export class HeaderNavComponent implements OnInit {
     private router: Router
   ) {
     this.ctrl.valueChanges.pipe(startWith('')).subscribe((key) => {
-      this.index.search('').then((result) => {
+      this.index.search(key).then((result) => {
         this.searchOptions = result.hits;
       });
     });
