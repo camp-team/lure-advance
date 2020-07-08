@@ -3,11 +3,7 @@ import { AngularFirestore } from '@angular/fire/firestore/';
 import { Observable, combineLatest, of } from 'rxjs';
 import { Thing } from '@interfaces/thing';
 import { firestore } from 'firebase';
-import {
-  Comment,
-  CommentWithUser,
-  RootCommentAndReplies,
-} from '@interfaces/comment';
+import { Comment, CommentWithUser } from '@interfaces/comment';
 import { switchMap, map, takeWhile, filter } from 'rxjs/operators';
 import { UserService } from './user.service';
 import { User } from '@interfaces/user';
