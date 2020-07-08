@@ -32,6 +32,7 @@ import { HeaderNavComponent } from './header-nav/header-nav.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { SharedModule } from './shared/shared.module';
 import { ShellComponent } from './shell/shell.component';
+import { IntlShellComponent } from './intl-shell/intl-shell.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { ShellComponent } from './shell/shell.component';
     FooterComponent,
     NotFoundComponent,
     ShellComponent,
+    IntlShellComponent,
   ],
   imports: [
     BrowserModule,
