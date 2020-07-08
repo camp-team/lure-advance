@@ -8,6 +8,7 @@ import { map, take, switchMap, tap, filter } from 'rxjs/operators';
 import { User } from '@interfaces/user';
 import { UserService } from './user.service';
 import { ThingRef } from '@interfaces/thing-ref';
+import { AngularFireFunctions } from '@angular/fire/functions';
 @Injectable({
   providedIn: 'root',
 })
@@ -15,7 +16,8 @@ export class ThingService {
   constructor(
     private db: AngularFirestore,
     private storage: AngularFireStorage,
-    private userService: UserService
+    private userService: UserService,
+    private fns: AngularFireFunctions
   ) {}
 
   getThings(): Observable<ThingWithUser[]> {
@@ -262,5 +264,10 @@ export class ThingService {
 
   unLikeThing(thingId: string, uid: string): Promise<void> {
     return this.db.doc(`things/${thingId}/likeUsers/${uid}`).delete();
+  }
+
+  incrementViewCount(thing: Thing): Promise<any> {
+    const call = this.fns.httpsCallable('incrementViewCount');
+    return call(thing).toPromise();
   }
 }

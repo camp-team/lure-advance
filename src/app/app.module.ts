@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAnalyticsModule } from '@angular/fire/analytics';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { AngularFireFunctionsModule } from '@angular/fire/functions';
+import { AngularFireFunctionsModule, REGION } from '@angular/fire/functions';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -32,6 +32,7 @@ import { HeaderNavComponent } from './header-nav/header-nav.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { SharedModule } from './shared/shared.module';
 import { ShellComponent } from './shell/shell.component';
+import { IntlShellComponent } from './intl-shell/intl-shell.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { ShellComponent } from './shell/shell.component';
     FooterComponent,
     NotFoundComponent,
     ShellComponent,
+    IntlShellComponent,
   ],
   imports: [
     BrowserModule,
@@ -69,6 +71,7 @@ import { ShellComponent } from './shell/shell.component';
     SharedModule,
   ],
   providers: [
+    { provide: REGION, useValue: 'asia-northeast1' },
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2000 } },
   ],
   bootstrap: [AppComponent],

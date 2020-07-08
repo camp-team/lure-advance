@@ -5,6 +5,7 @@ import { PrivacypolicyComponent } from './footer/privacypolicy/privacypolicy.com
 import { GuestGuard } from './guard/guest.guard';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { ShellComponent } from './shell/shell.component';
+import { IntlShellComponent } from './intl-shell/intl-shell.component';
 
 const routes: Routes = [
   {
@@ -43,16 +44,22 @@ const routes: Routes = [
     ],
   },
   {
-    path: 'intl/legal',
-    component: LegalComponent,
-  },
-  {
-    path: 'intl/privacypolicy',
-    component: PrivacypolicyComponent,
-  },
-  {
-    path: '**',
-    component: NotFoundComponent,
+    path: '',
+    component: IntlShellComponent,
+    children: [
+      {
+        path: 'intl/legal',
+        component: LegalComponent,
+      },
+      {
+        path: 'intl/privacypolicy',
+        component: PrivacypolicyComponent,
+      },
+      {
+        path: '**',
+        component: NotFoundComponent,
+      },
+    ],
   },
 ];
 
