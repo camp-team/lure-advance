@@ -82,9 +82,11 @@ export const incrementViewCount = functions
   .https.onCall(async (snap: Thing) => {
     const thingSnapShot = await db.doc(`things/${snap.id}`).get();
     if (thingSnapShot.exists) {
-      thingSnapShot.ref.update(
+      return thingSnapShot.ref.update(
         'viewCount',
         admin.firestore.FieldValue.increment(1)
       );
+    } else {
+      return;
     }
   });
