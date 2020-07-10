@@ -21,11 +21,11 @@
     </mat-option>
   </mat-autocomplete>
   <ng-container *ngIf="user$ | async as user; else loginbtn">
-    <button routerLink="/create" mat-icon-button class="">
+    <button routerLink="/create" mat-icon-button>
       <mat-icon>add</mat-icon>
     </button>
     <button
-      (click)="activity.emit(); clearNotificationCount(user.uid)"
+      (click)="toggle(); clearNotificationCount(user.uid)"
       mat-icon-button
     >
       <mat-icon matBadge="{{ user.notificationCount || null }}"
@@ -56,6 +56,11 @@
       <button mat-menu-item (click)="logout()">
         <mat-icon>input</mat-icon>
         <span>ログアウト</span>
+      </button>
+      <mat-divider></mat-divider>
+      <button routerLink="/settings" mat-menu-item>
+        <mat-icon>settings</mat-icon>
+        <span>設定</span>
       </button>
     </mat-menu>
   </ng-container>
