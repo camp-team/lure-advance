@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { StlModelViewerModule } from 'angular-stl-model-viewer';
@@ -19,7 +20,6 @@ import { DescriptionComponent } from './description/description.component';
 import { DetailRoutingModule } from './detail-routing.module';
 import { DetailComponent } from './detail/detail.component';
 import { FilesComponent } from './files/files.component';
-import { NotFoundComponent } from '../not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +48,7 @@ import { NotFoundComponent } from '../not-found/not-found.component';
     MatButtonModule,
     MatCardModule,
     SharedModule,
+    MatProgressSpinnerModule,
   ],
 })
 export class DetailModule {}

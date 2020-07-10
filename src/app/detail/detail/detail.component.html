@@ -1,5 +1,5 @@
-<ng-container *ngIf="thing$ | async as thing; else notFound">
-  <div class="container">
+<div class="container">
+  <ng-container *ngIf="thing$ | async as thing; else loading">
     <div class="thing">
       <div class="thing__header">
         <button
@@ -86,10 +86,18 @@
       </a>
     </nav>
     <router-outlet></router-outlet>
-  </div>
-</ng-container>
-<ng-template #notFound>
-  <div class="container">
-    <app-not-found></app-not-found>
-  </div>
-</ng-template>
+  </ng-container>
+  <ng-template #loading>
+    <ng-container *ngIf="isLoading; else notFound">
+      <mat-progress-spinner
+        class="loading"
+        mode="indeterminate"
+        color="primary"
+        [diameter]="40"
+      ></mat-progress-spinner>
+    </ng-container>
+    <ng-template #notFound>
+      <app-not-found></app-not-found>
+    </ng-template>
+  </ng-template>
+</div>

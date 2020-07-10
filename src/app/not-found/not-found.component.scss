@@ -1,14 +1,10 @@
 .wrap {
+  display: grid;
+  place-items: center;
+}
+.body {
   display: flex;
-  justify-content: center;
   align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: auto;
-  padding: 120px 40px;
 }
 h1 {
   font-size: 24px;

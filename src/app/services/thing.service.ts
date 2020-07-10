@@ -47,18 +47,23 @@ export class ThingService {
 
   getThingWithUserById(id: string): Observable<ThingWithUser> {
     return this.getThingByID(id).pipe(
-      filter((thing) => Boolean(thing)),
       switchMap((thing) => {
-        const user$: Observable<User> = this.userService.getUserByID(
-          thing.designerId
-        );
-        return combineLatest([of(thing), user$]);
+        if (thing) {
+          const user$: Observable<User> = this.userService.getUserByID(
+            thing.designerId
+          );
+          return combineLatest([of(thing), user$]);
+        } else {
+          return of([]);
+        }
       }),
       map(([thing, user]) => {
-        return {
-          ...thing,
-          user: user,
-        };
+        return thing
+          ? {
+              ...thing,
+              user: user,
+            }
+          : null;
       })
     );
   }
@@ -123,6 +128,7 @@ export class ThingService {
 
   async isLiked(uid: string, thingId: string): Promise<boolean> {
     if (uid === undefined) return false;
+    if (thingId === undefined) return false;
     const likedThingIds: string[] = await this.getLikedThingIdsWithPromise(uid);
     return likedThingIds.includes(thingId);
   }
@@ -267,6 +273,9 @@ export class ThingService {
   }
 
   incrementViewCount(thing: Thing): Promise<any> {
+    if (thing === undefined) {
+      return;
+    }
     const call = this.fns.httpsCallable('incrementViewCount');
     return call(thing).toPromise();
   }
