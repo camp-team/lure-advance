@@ -82,6 +82,10 @@ export const deleteThing = functions
 export const incrementViewCount = functions
   .region('asia-northeast1')
   .https.onCall(async (snap: Thing) => {
+    if (snap === undefined) {
+      console.log('Thing is undefined.');
+      return;
+    }
     const thingSnapShot = await db.doc(`things/${snap.id}`).get();
     if (thingSnapShot.exists) {
       const updateThingViewCount = thingSnapShot.ref.update(
@@ -93,6 +97,7 @@ export const incrementViewCount = functions
         .update('viewCount', admin.firestore.FieldValue.increment(1));
       return Promise.all([updateThingViewCount, updateUserViewCount]);
     } else {
+      console.log('Thing does not exist.');
       return;
     }
   });
