@@ -102,6 +102,10 @@ export class ComonCommentComponent implements OnInit {
     }
   }
 
+  getAavatarUrl(user: User) {
+    return user?.avatarURL || 'assets/images/no_image.png';
+  }
+
   deleteComment(): void {
     if (this.rootCommentId === this.comment.id) {
       this.commentService

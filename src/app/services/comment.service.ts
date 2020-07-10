@@ -39,7 +39,7 @@ export class CommentService {
             return comments.map((comment) => {
               return {
                 ...comment,
-                user: users.find((user) => comment.fromUid === user.uid),
+                user: users.find((user) => comment.fromUid === user?.uid),
               };
             });
           } else {

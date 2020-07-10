@@ -11,6 +11,10 @@ const routes: Routes = [
     component: SettingsComponent,
     children: [
       {
+        path: '',
+        redirectTo: 'account',
+      },
+      {
         path: 'account',
         component: AccountComponent,
       },

@@ -7,7 +7,7 @@
     class="comment__avatar"
     [class.comment__avatar--root]="isRootComment"
     [class.comment__avatar--reply]="isReplyComment"
-    [style.background-image]="'url(' + comment.user.avatarURL + ')'"
+    [style.background-image]="'url(' + getAavatarUrl(comment.user) + ')'"
   ></div>
   <div class="comment__body">
     <ng-template #view>
