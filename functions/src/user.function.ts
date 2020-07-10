@@ -26,6 +26,7 @@ export const createUser = functions
         notificationCount: 0,
         thingCount: 0,
         downloadCount: 0,
+        likeCount: 0,
         viewCount: 0,
         commentCount: 0,
         description: '',

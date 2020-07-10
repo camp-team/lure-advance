@@ -26,6 +26,8 @@ export const addThing = functions
         'thingCount',
         admin.firestore.FieldValue.increment(1)
       );
+    } else {
+      console.log('User does not exist.');
     }
 
     return algolia.saveRecord({
@@ -82,10 +84,14 @@ export const incrementViewCount = functions
   .https.onCall(async (snap: Thing) => {
     const thingSnapShot = await db.doc(`things/${snap.id}`).get();
     if (thingSnapShot.exists) {
-      return thingSnapShot.ref.update(
+      const updateThingViewCount = thingSnapShot.ref.update(
         'viewCount',
         admin.firestore.FieldValue.increment(1)
       );
+      const updateUserViewCount = db
+        .doc(`users/${snap.designerId}`)
+        .update('viewCount', admin.firestore.FieldValue.increment(1));
+      return Promise.all([updateThingViewCount, updateUserViewCount]);
     } else {
       return;
     }

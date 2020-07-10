@@ -25,6 +25,10 @@ export const likeThing = functions
         thingId,
       });
 
+      await db
+        .doc(`users/${targetUid}`)
+        .update('likeCount', admin.firestore.FieldValue.increment(1));
+
       if (targetUid === likerUid) {
         console.log('My Thing is Liked.');
         return;
@@ -73,6 +77,11 @@ export const unLikeThing = functions
           'likeCount',
           admin.firestore.FieldValue.increment(-1)
         );
+        await db
+          .doc(`users/${targetUid}`)
+          .update('likeCount', admin.firestore.FieldValue.increment(-1));
+      } else {
+        console.log('Thing does not exist.');
       }
 
       return markEventTried(eventId);

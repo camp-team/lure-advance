@@ -9,6 +9,7 @@ export interface User {
   thingCount: number;
   downloadCount: number;
   viewCount: number;
+  likeCount: number;
   commentCount: number;
   description: string;
   weblink: string;
