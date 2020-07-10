@@ -3,9 +3,11 @@ import { FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Comment, CommentWithUser } from '@interfaces/comment';
+import { Thing } from '@interfaces/thing';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { CommentService } from 'src/app/services/comment.service';
+import { ThingService } from 'src/app/services/thing.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -17,6 +19,7 @@ export class CommentsComponent implements OnInit {
   constructor(
     private snackBar: MatSnackBar,
     private commentService: CommentService,
+    private thingService: ThingService,
     private userService: UserService,
     private route: ActivatedRoute
   ) {}
@@ -29,7 +32,6 @@ export class CommentsComponent implements OnInit {
   isEditing: boolean;
 
   isProcessing: boolean;
-
   comments$: Observable<CommentWithUser[]> = this.route.parent.paramMap.pipe(
     switchMap((map) => {
       this.id = map.get('thing');
@@ -37,7 +39,14 @@ export class CommentsComponent implements OnInit {
     })
   );
 
-  async addComment(): Promise<void> {
+  thing$: Observable<Thing> = this.route.parent.paramMap.pipe(
+    switchMap((map) => {
+      this.id = map.get('thing');
+      return this.thingService.getThingByID(this.id);
+    })
+  );
+
+  async addComment(thing: Thing): Promise<void> {
     this.isProcessing = true;
     const user = await this.userService.passUserWhenRequiredForm();
     if (user === null) {
@@ -46,7 +55,8 @@ export class CommentsComponent implements OnInit {
     }
     const value: string = this.commentForm.value;
     const comment: Omit<Comment, 'id' | 'updateAt'> = {
-      thingId: this.id,
+      thingId: thing.id,
+      designerId: thing.designerId,
       fromUid: user.uid,
       toUid: '',
       replyCount: 0,

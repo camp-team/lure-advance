@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,20 +17,22 @@ import { DeleteDialogComponent } from 'src/app/shared/delete-dialog/delete-dialo
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss'],
 })
-export class DetailComponent implements OnInit, OnDestroy {
+export class DetailComponent implements OnInit {
   thing$: Observable<ThingWithUser> = this.route.paramMap.pipe(
-    switchMap((map) =>
-      this.thingService.getThingWithUserById(map.get('thing'))
-    ),
+    switchMap((map) => {
+      this.isLoading = true;
+      return this.thingService.getThingWithUserById(map.get('thing'));
+    }),
     tap(async (thing) => {
+      this.isLoading = false;
       const uid = this.userService.uid;
-      this.isLiked = await this.thingService.isLiked(uid, thing.id);
-      this.isMypost = thing.designerId === uid;
+      this.isLiked = await this.thingService.isLiked(uid, thing?.id);
+      this.isMypost = thing?.designerId === uid;
       this.thingService.incrementViewCount(thing);
     }),
     take(1)
   );
-
+  isLoading: boolean;
   isMypost: boolean;
   index: number;
   config: SwiperConfigInterface = {
@@ -68,8 +70,6 @@ export class DetailComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     public categoryService: CategoryService
   ) {}
-
-  ngOnDestroy(): void {}
 
   delete(thing: Thing) {
     this.dialog.open(DeleteDialogComponent, {
@@ -109,9 +109,5 @@ export class DetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
-    this.thing$.pipe(take(1)).subscribe((thing) => {
-      this.thingService.incrementViewCount(thing);
-    });
-  }
+  ngOnInit(): void {}
 }

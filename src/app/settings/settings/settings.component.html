@@ -1,0 +1,27 @@
+<ng-container *ngIf="user$ | async as user">
+  <mat-sidenav-container dense>
+    <mat-sidenav
+      mode="side"
+      class="side"
+      opened
+      fixedInViewport
+      fixedTopGap="64"
+    >
+      <div mat-subheader class="side__header">設定</div>
+      <mat-nav-list>
+        <a mat-list-item class="side__item" routerLink="/settings/account">
+          <div>アカウント</div>
+        </a>
+        <a mat-list-item class="side__item" routerLink="/settings/billing">
+          <div>請求とお支払い</div>
+        </a>
+        <a mat-list-item class="side__item" routerLink="/settings/history">
+          <div>履歴</div>
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</ng-container>

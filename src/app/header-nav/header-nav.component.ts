@@ -9,6 +9,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { NotificationService } from '../services/notification.service';
 import { SearchService } from '../services/search.service';
 import { UserService } from '../services/user.service';
+import { DrawerService } from '../services/ui/drawer.service';
 
 @Component({
   selector: 'app-header-nav',
@@ -23,6 +24,8 @@ export class HeaderNavComponent implements OnInit {
 
   isProccesing: boolean;
 
+  isSideNavOpened: boolean;
+
   ctrl: FormControl = new FormControl('');
   constructor(
     private authService: AuthService,
@@ -30,18 +33,17 @@ export class HeaderNavComponent implements OnInit {
     private snackBar: MatSnackBar,
     private notificationService: NotificationService,
     private searchService: SearchService,
-    private router: Router
-  ) {
+    private router: Router,
+    private drawerService: DrawerService
+  ) {}
+
+  ngOnInit(): void {
     this.ctrl.valueChanges.pipe(startWith('')).subscribe((key) => {
       this.index.search(key).then((result) => {
         this.searchOptions = result.hits;
       });
     });
   }
-
-  @Output() activity: EventEmitter<boolean> = new EventEmitter();
-
-  ngOnInit(): void {}
 
   login() {
     this.isProccesing = true;
@@ -74,5 +76,9 @@ export class HeaderNavComponent implements OnInit {
 
   clearNotificationCount(uid: string): Promise<void> {
     return this.notificationService.clearNotification(uid);
+  }
+
+  toggle() {
+    this.drawerService.toggle();
   }
 }

@@ -1,8 +1,9 @@
 <div class="wrap">
-  <app-header-nav (activity)="rightNav.toggle()"></app-header-nav>
+  <app-header-nav></app-header-nav>
   <mat-sidenav-container>
     <mat-sidenav
-      fixedInViewport
+      [opened]="isOpen"
+      fixedInViewport="true"
       fixedTopGap="64"
       position="end"
       #rightNav

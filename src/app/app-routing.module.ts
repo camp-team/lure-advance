@@ -26,6 +26,11 @@ const routes: Routes = [
         canActivate: [GuestGuard],
       },
       {
+        path: 'settings',
+        loadChildren: () =>
+          import('./settings/settings.module').then((m) => m.SettingsModule),
+      },
+      {
         path: ':thing',
         loadChildren: () =>
           import('./detail/detail.module').then((m) => m.DetailModule),

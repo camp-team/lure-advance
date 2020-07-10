@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,12 +17,12 @@ import { NotifymsgPipe } from '../pipe/notifymsg.pipe';
 import { RelativetimePipe } from '../pipe/relativetime.pipe';
 import { ActivityComponent } from './activity/activity.component';
 import { ComonCommentComponent } from './comon-comment/comon-comment.component';
+import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 import { FilterComponent } from './filter/filter.component';
 import { ThingCardSmComponent } from './thing-card-sm/thing-card-sm.component';
 import { ThingCardWideComponent } from './thing-card-wide/thing-card-wide.component';
 import { ThingCardComponent } from './thing-card/thing-card.component';
-import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
-import { MatDialogModule } from '@angular/material/dialog';
+import { NotFoundComponent } from '../not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     FilterComponent,
     RelativetimePipe,
     DeleteDialogComponent,
+    NotFoundComponent,
   ],
   imports: [
     CommonModule,
@@ -61,6 +63,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     FilterComponent,
     DeleteDialogComponent,
     RelativetimePipe,
+    NotFoundComponent,
   ],
 })
 export class SharedModule {}

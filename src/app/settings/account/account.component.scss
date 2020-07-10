@@ -1,0 +1,55 @@
+:host {
+  display: block;
+  padding: 24px;
+}
+.title {
+  font-size: 16px;
+  color: rgba(black, 0.6);
+  margin: 0;
+  font-weight: 500;
+  &--main {
+    margin-bottom: 24px;
+  }
+  &--sub {
+    margin-bottom: 16px;
+  }
+}
+p {
+  margin: 0;
+}
+.profile {
+  display: flex;
+  align-items: center;
+  margin-bottom: 32px;
+  &__name {
+    font-size: 16px;
+    color: rgba(black, 0.6);
+    margin-bottom: 8px;
+  }
+  &__sub-body {
+    display: flex;
+    align-items: center;
+    color: rgba(black, 0.6);
+  }
+  &__score {
+    text-align: center;
+    & + & {
+      margin-left: 8px;
+    }
+  }
+  &__title {
+    font-size: 12px;
+    color: rgba(black, 0.6);
+  }
+  &__num {
+    font-size: 14x;
+    color: rgba(black, 0.6);
+  }
+  &__avatar {
+    margin-right: 16px;
+    height: 80px;
+    width: 80px;
+    background: center/cover;
+    border-radius: 50%;
+  }
+}

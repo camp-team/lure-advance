@@ -11,6 +11,10 @@
     height: 60px;
     padding-left: 12px;
   }
+  &__header {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .no-msg {

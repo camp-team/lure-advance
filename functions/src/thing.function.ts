@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { deleteCollection } from './utils/firebase-util';
+import { deleteCollectionByPath } from './utils/firebase-util';
 import { Algolia } from './utils/algolia-util';
 import { Thing } from './interfaces/thing';
 
@@ -26,6 +26,8 @@ export const addThing = functions
         'thingCount',
         admin.firestore.FieldValue.increment(1)
       );
+    } else {
+      console.log('User does not exist.');
     }
 
     return algolia.saveRecord({
@@ -69,8 +71,8 @@ export const deleteThing = functions
     await algolia.removeRecord('things', thingId);
 
     return Promise.all([
-      deleteCollection(`things/${thingId}/likeUsers`),
-      deleteCollection(`things/${thingId}/comments`),
+      deleteCollectionByPath(`things/${thingId}/likeUsers`),
+      deleteCollectionByPath(`things/${thingId}/comments`),
       storage.deleteFiles({
         directory: `things/${thingId}/files`,
       }),
@@ -82,11 +84,16 @@ export const incrementViewCount = functions
   .https.onCall(async (snap: Thing) => {
     const thingSnapShot = await db.doc(`things/${snap.id}`).get();
     if (thingSnapShot.exists) {
-      return thingSnapShot.ref.update(
+      const updateThingViewCount = thingSnapShot.ref.update(
         'viewCount',
         admin.firestore.FieldValue.increment(1)
       );
+      const updateUserViewCount = db
+        .doc(`users/${snap.designerId}`)
+        .update('viewCount', admin.firestore.FieldValue.increment(1));
+      return Promise.all([updateThingViewCount, updateUserViewCount]);
     } else {
+      console.log('Thing does not exist.');
       return;
     }
   });

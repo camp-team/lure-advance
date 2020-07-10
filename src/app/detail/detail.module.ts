@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { StlModelViewerModule } from 'angular-stl-model-viewer';
@@ -46,6 +47,8 @@ import { FilesComponent } from './files/files.component';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
+    SharedModule,
+    MatProgressSpinnerModule,
   ],
 })
 export class DetailModule {}

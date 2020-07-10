@@ -1,48 +1,49 @@
 <ng-container *ngIf="notifications$ | async as notifiacations; else noMsg">
-  <ng-template #view>
+  <div class="activity__header">
+    <button  (click) ="toggle()"mat-icon-button><mat-icon>close</mat-icon></button>
     <div mat-subheader>Notifications</div>
-    <mat-nav-list>
-      <mat-list-item
-        routerLink="/{{ notification.thingId }}"
-        class="activity"
-        *ngFor="let notification of notifiacations"
+  </div>
+  <mat-nav-list>
+    <mat-list-item
+      routerLink="/{{ notification.thingId }}"
+      class="activity"
+      *ngFor="let notification of notifiacations"
+    >
+      <button
+        mat-icon-button
+        mat-list-avatar
+        class="activity__avatar"
+        routerLink="/mypage/{{ notification.user.uid }}"
+        [style.background-image]="'url(' + notification.user.avatarURL + ')'"
+      ></button>
+      <div mat-line class="activity__message">
+        {{ notification | notifymsg }}
+      </div>
+      <div mat-line class="activity__updateAt">
+        {{ notification.updateAt.toDate() | date: 'yyyy年MM月dd日' }}
+      </div>
+
+      <img
+        class="activity__thumbnail"
+        [src]="getThumbnailUrl(notification)"
+        alt=""
+      />
+
+      <button
+        class="activity__edit-btn"
+        [mat-menu-trigger-for]="menu"
+        mat-icon-button
       >
-        <button
-          mat-icon-button
-          mat-list-avatar
-          class="activity__avatar"
-          routerLink="/mypage/{{ notification.user.uid }}"
-          [style.background-image]="'url(' + notification.user.avatarURL + ')'"
-        ></button>
-        <div mat-line class="activity__message">
-          {{ notification | notifymsg }}
-        </div>
-        <div mat-line class="activity__updateAt">
-          {{ notification.updateAt.toDate() | date: 'yyyy年MM月dd日' }}
-        </div>
-
-        <img
-          class="activity__thumbnail"
-          [src]="getThumbnailUrl(notification)"
-          alt=""
-        />
-
-        <button
-          class="activity__edit-btn"
-          [mat-menu-trigger-for]="menu"
-          mat-icon-button
-        >
-          <mat-icon>more_vert</mat-icon>
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu>
+        <button (click)="deleteItem(notification.id)" mat-menu-item>
+          <mat-icon>delete</mat-icon>
+          <span>削除</span>
         </button>
-        <mat-menu #menu>
-          <button (click)="deleteItem(notification.id)" mat-menu-item>
-            <mat-icon>delete</mat-icon>
-            <span>削除</span>
-          </button>
-        </mat-menu>
-      </mat-list-item>
-    </mat-nav-list>
-  </ng-template>
+      </mat-menu>
+    </mat-list-item>
+  </mat-nav-list>
 </ng-container>
 
 <ng-template #noMsg>

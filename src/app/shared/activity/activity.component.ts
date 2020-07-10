@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { CommentService } from 'src/app/services/comment.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { DrawerService } from 'src/app/services/ui/drawer.service';
 import { UserService } from 'src/app/services/user.service';
 @Component({
   selector: 'app-activity',
@@ -25,7 +26,8 @@ export class ActivityComponent implements OnInit {
     private notificationService: NotificationService,
     private userService: UserService,
     private snackBar: MatSnackBar,
-    private commentService: CommentService
+    private commentService: CommentService,
+    private drawerService: DrawerService
   ) {}
 
   deleteItem(id: string) {
@@ -54,6 +56,10 @@ export class ActivityComponent implements OnInit {
         notification.commentId
       );
     }
+  }
+
+  toggle() {
+    this.drawerService.toggle();
   }
 
   ngOnInit(): void {}

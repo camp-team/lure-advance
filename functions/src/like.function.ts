@@ -18,16 +18,16 @@ export const likeThing = functions
         .update('likeCount', admin.firestore.FieldValue.increment(1));
 
       const value = snap.data();
-      if (!value) {
-        console.log('Data is Empty.');
-        return;
-      }
       const targetUid: string = value.designerId;
       const likerUid: string = context.params.uid;
 
       await db.doc(`users/${targetUid}/likedThings/${thingId}`).set({
         thingId,
       });
+
+      await db
+        .doc(`users/${targetUid}`)
+        .update('likeCount', admin.firestore.FieldValue.increment(1));
 
       if (targetUid === likerUid) {
         console.log('My Thing is Liked.');
@@ -77,6 +77,11 @@ export const unLikeThing = functions
           'likeCount',
           admin.firestore.FieldValue.increment(-1)
         );
+        await db
+          .doc(`users/${targetUid}`)
+          .update('likeCount', admin.firestore.FieldValue.increment(-1));
+      } else {
+        console.log('Thing does not exist.');
       }
 
       return markEventTried(eventId);
