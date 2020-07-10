@@ -1,0 +1,14 @@
+.side {
+  width: 240px;
+  background-color: #fafafa;
+  &__header {
+    color: rgba(black, 0.38);
+    padding: 0 16px;
+    font-size: 12px;
+  }
+  &__item {
+    color: rgba(black, 0.6);
+    padding: 0 16x;
+    font-size: 12px;
+  }
+}

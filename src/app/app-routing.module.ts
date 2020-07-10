@@ -48,6 +48,11 @@ const routes: Routes = [
     component: IntlShellComponent,
     children: [
       {
+        path: 'settings',
+        loadChildren: () =>
+          import('./settings/settings.module').then((m) => m.SettingsModule),
+      },
+      {
         path: 'intl/legal',
         component: LegalComponent,
       },

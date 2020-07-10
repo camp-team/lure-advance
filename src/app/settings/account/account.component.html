@@ -1,0 +1,45 @@
+<ng-container *ngIf="user$ | async as user">
+  <h1 class="title title--main">アカウント</h1>
+  <h2 class="title title--sub">プロフィール</h2>
+  <div class="profile">
+    <div
+      class="profile__avatar"
+      [style.background-image]="'url(' + user.avatarURL + ')'"
+    ></div>
+    <div class="profile__body">
+      <p class="profile__name">{{ user.name }}</p>
+      <div class="profile__sub-body">
+        <div class="profile__score">
+          <p class="profile__title">投稿数</p>
+          <p class="profile__num">{{ user.thingCount }}</p>
+        </div>
+        <div class="profile__score">
+          <p class="profile__title">PV数</p>
+          <p class="profile__num">{{ user.viewCount }}</p>
+        </div>
+        <div class="profile__score">
+          <p class="profile__title">コメント数</p>
+          <p class="profile__num">{{ user.commentCount }}</p>
+        </div>
+        <div class="profile__score">
+          <p class="profile__title">DL数</p>
+          <p class="profile__num">{{ user.commentCount }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2 class="title title--sub">アカウントを削除する</h2>
+  <mat-form-field>
+    <mat-label>ユーザ名を入力</mat-label>
+    <input matInput autocomplete="off" #input />
+    <mat-hint>{{ user.name }}</mat-hint>
+  </mat-form-field>
+  <button
+    [disabled]="user.name !== input.value"
+    (click)="openDialog()"
+    mat-flat-button
+    color="warn"
+  >
+    Delete
+  </button>
+</ng-container>

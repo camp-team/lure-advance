@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>アカウントを削除しますか？</h2>
+<mat-dialog-content>
+  アカウントを削除すると全ての投稿データが消えます。
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>キャンセル</button>
+  <button
+    [mat-dialog-close]="true"
+    (click)="deleteUserAccount()"
+    mat-button
+    color="warn"
+  >
+    削除
+  </button>
+</mat-dialog-actions>
