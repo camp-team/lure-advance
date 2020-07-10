@@ -1,3 +1,5 @@
+import { firestore } from 'firebase-admin';
+
 export interface User {
   uid: string;
   email: string;
@@ -5,6 +7,10 @@ export interface User {
   name: string;
   notificationCount: number;
   thingCount: number;
-  description?: string;
-  weblink?: string;
+  downloadCount: number;
+  viewCount: number;
+  commentCount: number;
+  description: string;
+  weblink: string;
+  createdAt: firestore.Timestamp;
 }

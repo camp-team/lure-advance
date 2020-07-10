@@ -3,7 +3,7 @@ import * as admin from 'firebase-admin';
 import {
   shouldEventRun,
   markEventTried,
-  deleteCollection,
+  deleteCollectionByPath,
 } from './utils/firebase-util';
 import { Notification } from './interfaces/notification';
 
@@ -132,12 +132,14 @@ export const deleteComment = functions
           'commentCount',
           admin.firestore.FieldValue.increment(-1)
         );
+        console.log('Decrement Comment Count.');
       } else {
         console.log('Comment does not exist. Thing is Deleted.');
       }
 
       const path: string = `things/${thingId}/comments/${commentId}/replies`;
-      await deleteCollection(path);
+      await deleteCollectionByPath(path);
+      console.log('Deleting Comments were Successful');
 
       return markEventTried(eventId);
     } else {

@@ -18,10 +18,6 @@ export const likeThing = functions
         .update('likeCount', admin.firestore.FieldValue.increment(1));
 
       const value = snap.data();
-      if (!value) {
-        console.log('Data is Empty.');
-        return;
-      }
       const targetUid: string = value.designerId;
       const likerUid: string = context.params.uid;
 

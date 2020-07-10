@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { deleteCollection } from './utils/firebase-util';
+import { deleteCollectionByPath } from './utils/firebase-util';
 import { Algolia } from './utils/algolia-util';
 import { Thing } from './interfaces/thing';
 
@@ -69,8 +69,8 @@ export const deleteThing = functions
     await algolia.removeRecord('things', thingId);
 
     return Promise.all([
-      deleteCollection(`things/${thingId}/likeUsers`),
-      deleteCollection(`things/${thingId}/comments`),
+      deleteCollectionByPath(`things/${thingId}/likeUsers`),
+      deleteCollectionByPath(`things/${thingId}/comments`),
       storage.deleteFiles({
         directory: `things/${thingId}/files`,
       }),

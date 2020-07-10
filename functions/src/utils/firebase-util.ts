@@ -28,13 +28,27 @@ export function shouldEventRun(eventId: string) {
   });
 }
 
-export function deleteCollection(
+export function deleteCollectionByPath(
   collectionPath: string,
   batchSize: number = 450
 ) {
+  console.log(collectionPath, 'Deleting');
   const collectionRef = db.collection(collectionPath);
+
   const query = collectionRef.limit(batchSize);
 
+  return new Promise((resolve, reject) =>
+    deleteQueryBatch(query, batchSize, resolve, reject)
+  );
+}
+
+export function deleteCollectionByReference(
+  ref:
+    | FirebaseFirestore.Query<FirebaseFirestore.DocumentData>
+    | FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>,
+  batchSize: number = 450
+): Promise<void> {
+  const query = ref.limit(batchSize);
   return new Promise((resolve, reject) =>
     deleteQueryBatch(query, batchSize, resolve, reject)
   );
@@ -46,30 +60,26 @@ function deleteQueryBatch(
   resolve: any,
   reject: any
 ) {
+  const deletedData: string[] = [];
   query
     .get()
     .then((snapshot) => {
-      // When there are no documents left, we are done
       if (snapshot.size == 0) {
-        console.log('Collection is Empty');
         return 0;
       }
 
-      // Delete documents in a batch
       const batch = db.batch();
       snapshot.docs.forEach((doc) => batch.delete(doc.ref));
+      deletedData.push(snapshot.docs.toString());
 
       return batch.commit().then(() => snapshot.size);
     })
     .then((numDeleted) => {
       if (numDeleted === 0) {
         resolve();
-        console.log('Resolved!');
+        console.log(deletedData, 'Resolved!');
         return;
       }
-
-      // Recurse on the next process tick, to avoid
-      // exploding the stack.
       process.nextTick(() =>
         deleteQueryBatch(query, batchSize, resolve, reject)
       );
