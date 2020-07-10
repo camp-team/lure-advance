@@ -1,38 +1,40 @@
-<div class="grid">
-  <mat-card>
-    <form>
-      <mat-form-field appearance="outline">
-        <mat-label>コメント</mat-label>
-        <textarea
-          matInput
-          [formControl]="commentForm"
-          #textarea
-          matTextareaAutosize
-          required
-          autocomplete="off"
-          [disabled]="isProcessing"
-        ></textarea>
-        <button
-          (click)="addComment()"
-          matSuffix
-          [disabled]="commentForm.invalid || isProcessing"
-          mat-icon-button
-        >
-          <mat-icon>send</mat-icon>
-        </button>
-        <mat-error *ngIf="commentForm.hasError('maxlength')"
-          >{{ textarea.value.length }}は文字が多過ぎます</mat-error
-        >
-        <mat-hint align="end">{{ textarea.value.length }}/400</mat-hint>
-      </mat-form-field>
-    </form>
+<ng-container *ngIf="thing$ | async as thing">
+  <div class="grid">
+    <mat-card>
+      <form>
+        <mat-form-field appearance="outline">
+          <mat-label>コメント</mat-label>
+          <textarea
+            matInput
+            [formControl]="commentForm"
+            #textarea
+            matTextareaAutosize
+            required
+            autocomplete="off"
+            [disabled]="isProcessing"
+          ></textarea>
+          <button
+            (click)="addComment(thing)"
+            matSuffix
+            [disabled]="commentForm.invalid || isProcessing"
+            mat-icon-button
+          >
+            <mat-icon>send</mat-icon>
+          </button>
+          <mat-error *ngIf="commentForm.hasError('maxlength')"
+            >{{ textarea.value.length }}は文字が多過ぎます</mat-error
+          >
+          <mat-hint align="end">{{ textarea.value.length }}/400</mat-hint>
+        </mat-form-field>
+      </form>
 
-    <app-comon-comment
-      *ngFor="let comment of comments$ | async"
-      [comment]="comment"
-      [rootCommentId]="comment.id"
-      [thingId]="id"
-      [isRootComment]="true"
-    ></app-comon-comment>
-  </mat-card>
-</div>
+      <app-comon-comment
+        *ngFor="let comment of comments$ | async"
+        [comment]="comment"
+        [rootCommentId]="comment.id"
+        [thingId]="id"
+        [isRootComment]="true"
+      ></app-comon-comment>
+    </mat-card>
+  </div>
+</ng-container>

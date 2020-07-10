@@ -1,11 +1,11 @@
-import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import {
-  shouldEventRun,
-  markEventTried,
-  deleteCollectionByPath,
-} from './utils/firebase-util';
+import * as functions from 'firebase-functions';
 import { Notification } from './interfaces/notification';
+import {
+  deleteCollectionByPath,
+  markEventTried,
+  shouldEventRun,
+} from './utils/firebase-util';
 
 const db = admin.firestore();
 
@@ -16,17 +16,28 @@ export const addReply = functions
     const eventId = context.eventId;
     const thingId = context.params.thingId;
     const commentId = context.params.commentId;
+    const value = snap.data();
+
     const should = await shouldEventRun(eventId);
     if (should) {
       await db
         .doc(`things/${thingId}/comments/${commentId}`)
         .update('replyCount', admin.firestore.FieldValue.increment(1));
 
-      await db
-        .doc(`things/${thingId}`)
-        .update('commentCount', admin.firestore.FieldValue.increment(1));
+      const thingDoc = await db.doc(`things/${thingId}`).get();
 
-      const value = snap.data();
+      if (thingDoc.exists) {
+        await thingDoc.ref.update(
+          'commentCount',
+          admin.firestore.FieldValue.increment(1)
+        );
+        await db
+          .doc(`users/${value.designerId}`)
+          .update('commentCount', admin.firestore.FieldValue.increment(1));
+      } else {
+        console.log('Thing does not exist.');
+      }
+
       const targetUid: string = value.toUid;
       const replierUid: string = value.fromUid;
       const commentBody: string = value.body;
@@ -69,6 +80,7 @@ export const deleteReply = functions
     const eventId = context.eventId;
     const commentId = context.params.commentId;
     const should = await shouldEventRun(eventId);
+    const value = snap.data();
     if (should) {
       const commentSnap = await db.doc(`things/${thingId}`).get();
       if (commentSnap.exists) {
@@ -76,6 +88,9 @@ export const deleteReply = functions
           'commentCount',
           admin.firestore.FieldValue.increment(-1)
         );
+        await db
+          .doc(`users/${value.designerId}`)
+          .update('commentCount', admin.firestore.FieldValue.increment(-1));
       } else {
         console.log('Thing or Parent Comment is Deleted.');
       }
@@ -106,11 +121,21 @@ export const addComment = functions
     const thingId = context.params.thingId;
     const eventId = context.eventId;
     const should = await shouldEventRun(eventId);
+    const value = snap.data();
     if (should) {
-      await db
-        .doc(`things/${thingId}`)
-        .update('commentCount', admin.firestore.FieldValue.increment(1));
-
+      const thingDoc = await db.doc(`things/${thingId}`).get();
+      if (thingDoc.exists) {
+        await thingDoc.ref.update(
+          'commentCount',
+          admin.firestore.FieldValue.increment(1)
+        );
+        await db
+          .doc(`users/${value.designerId}`)
+          .update('commentCount', admin.firestore.FieldValue.increment(1));
+        console.log('Increment CommentCount.');
+      } else {
+        console.log('thing does not exsists.');
+      }
       return markEventTried(eventId);
     } else {
       return true;
@@ -125,6 +150,7 @@ export const deleteComment = functions
     const eventId = context.eventId;
     const commentId = context.params.commentId;
     const should = await shouldEventRun(eventId);
+    const value = snap.data();
     if (should) {
       const snapShot = await db.doc(`things/${thingId}`).get();
       if (snapShot.exists) {
@@ -132,6 +158,9 @@ export const deleteComment = functions
           'commentCount',
           admin.firestore.FieldValue.increment(-1)
         );
+        await db
+          .doc(`users/${value.designerId}`)
+          .update('commentCount', admin.firestore.FieldValue.increment(1));
         console.log('Decrement Comment Count.');
       } else {
         console.log('Comment does not exist. Thing is Deleted.');

@@ -3,9 +3,12 @@ import { FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Comment, CommentWithUser } from '@interfaces/comment';
+import { Thing } from '@interfaces/thing';
 import { User } from '@interfaces/user';
 import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { CommentService } from 'src/app/services/comment.service';
+import { ThingService } from 'src/app/services/thing.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -40,11 +43,19 @@ export class ComonCommentComponent implements OnInit {
 
   user$: Observable<User> = this.userService.user$;
 
+  thing$: Observable<Thing> = this.route.parent.paramMap.pipe(
+    switchMap((map) => {
+      const thingId = map.get('thing');
+      return this.thingService.getThingByID(thingId);
+    })
+  );
+
   constructor(
     private snackBar: MatSnackBar,
     private commentService: CommentService,
     private userService: UserService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private thingService: ThingService
   ) {}
 
   alterEditMode(): void {
@@ -52,7 +63,7 @@ export class ComonCommentComponent implements OnInit {
     this.inputComment.setValue(this.comment.body);
   }
 
-  async replyComment(): Promise<void> {
+  async replyComment(thing: Thing): Promise<void> {
     this.isProcessing = true;
     const user = await this.userService.passUserWhenRequiredForm();
     const value: string = this.replyCommentForm.value;
@@ -62,6 +73,7 @@ export class ComonCommentComponent implements OnInit {
     }
     const replyComment: Omit<Comment, 'id' | 'updateAt'> = {
       thingId: this.thingId,
+      designerId: thing.designerId,
       fromUid: user.uid,
       toUid: this.comment.fromUid,
       body: value,

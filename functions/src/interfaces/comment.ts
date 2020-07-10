@@ -3,6 +3,7 @@ import { User } from './user';
 
 export interface Comment {
   id: string;
+  designerId: string;
   fromUid: string;
   thingId: string;
   body: string;
