@@ -10,17 +10,6 @@ import { IntlShellComponent } from './intl-shell/intl-shell.component';
 const routes: Routes = [
   {
     path: '',
-    component: IntlShellComponent,
-    children: [
-      {
-        path: 'settings',
-        loadChildren: () =>
-          import('./settings/settings.module').then((m) => m.SettingsModule),
-      },
-    ],
-  },
-  {
-    path: '',
     component: ShellComponent,
     children: [
       {
@@ -35,6 +24,11 @@ const routes: Routes = [
           import('./editor/editor.module').then((m) => m.EditorModule),
 
         canActivate: [GuestGuard],
+      },
+      {
+        path: 'settings',
+        loadChildren: () =>
+          import('./settings/settings.module').then((m) => m.SettingsModule),
       },
       {
         path: ':thing',
