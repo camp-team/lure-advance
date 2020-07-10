@@ -19,6 +19,7 @@ import { DescriptionComponent } from './description/description.component';
 import { DetailRoutingModule } from './detail-routing.module';
 import { DetailComponent } from './detail/detail.component';
 import { FilesComponent } from './files/files.component';
+import { NotFoundComponent } from '../not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { FilesComponent } from './files/files.component';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
+    SharedModule,
   ],
 })
 export class DetailModule {}
