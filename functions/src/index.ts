@@ -5,3 +5,4 @@ export * from './user.function';
 export * from './like.function';
 export * from './comment.function';
 export * from './thing.function';
+export { scheduledFirestoreExport } from './backup.function';
