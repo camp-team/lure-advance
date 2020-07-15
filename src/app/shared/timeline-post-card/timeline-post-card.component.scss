@@ -24,13 +24,13 @@ p {
     font-size: 12px;
   }
   &__body {
-    max-width: 300px;
     white-space: pre-line;
     word-break: break-all;
     font-size: 14px;
     display: -webkit-box;
     -webkit-line-clamp: 30;
     -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   &__avatar {
     width: 40px;
@@ -60,5 +60,11 @@ p {
   }
   &__createdAt {
     font-size: 12px;
+  }
+  &__thumbnail {
+    opacity: 0.68;
+    border-radius: 8px;
+    background: center/cover;
+    padding-bottom: 52.5%;
   }
 }
