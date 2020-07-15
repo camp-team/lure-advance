@@ -1,5 +1,6 @@
 import { firestore } from 'firebase';
 import { User } from './user';
+import { Thing } from './thing';
 
 export interface Comment {
   id: string;
@@ -14,4 +15,8 @@ export interface Comment {
 
 export interface CommentWithUser extends Comment {
   user: User;
+}
+
+export interface CommentWithUserAndThing extends CommentWithUser {
+  thing: Thing;
 }
