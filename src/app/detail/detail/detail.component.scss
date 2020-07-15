@@ -11,10 +11,13 @@
     padding: 8px;
   }
   &__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: rgba(black, 0.6);
     font-size: 14px;
   }
   &__updateAt {
+    flex-shrink: 0;
     color: rgba(black, 0.6);
     font-size: 13px;
   }
