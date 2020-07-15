@@ -1,0 +1,64 @@
+p {
+  margin: 0;
+}
+
+.card {
+  background-color: rgba(#15202b, 0.6);
+  color: white;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 8px;
+  overflow: auto;
+  &__header {
+    display: flex;
+    align-items: center;
+  }
+  &__name {
+    margin-right: 4px;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  &__uid {
+    color: rgba(white, 0.6);
+    font-size: 12px;
+  }
+  &__body {
+    max-width: 300px;
+    white-space: pre-line;
+    word-break: break-all;
+    font-size: 14px;
+    display: -webkit-box;
+    -webkit-line-clamp: 30;
+    -webkit-box-orient: vertical;
+  }
+  &__avatar {
+    width: 40px;
+    height: 40px;
+    background: center/cover;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+  &__spacer {
+    flex: 1;
+  }
+  &__actions {
+    display: flex;
+    align-items: center;
+  }
+  &__like-btn {
+    &--liked {
+      color: #e0245e;
+    }
+    &--unliked {
+      color: white;
+    }
+    &--count {
+      line-height: 1;
+      font-size: 12px;
+    }
+  }
+  &__createdAt {
+    font-size: 12px;
+  }
+}

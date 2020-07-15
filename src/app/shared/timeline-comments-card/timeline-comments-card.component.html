@@ -1,0 +1,49 @@
+<div class="card">
+  <div
+    class="card__avatar"
+    [style.background-image]="'url(' + comment.user.avatarURL + ')'"
+  ></div>
+  <div class="card__container">
+    <div class="card__header">
+      <p class="card__name">{{ comment.user.name }}</p>
+      <!-- <p class="card__uid">{{ thing.user.uid.slice(0, 16) }}</p> -->
+      <span class="card__spacer"></span>
+      <p class="card__createdAt">
+        {{ comment.updateAt.toDate() | relativetime }}
+      </p>
+    </div>
+    <p class="card__body">
+      {{ comment.body }}
+    </p>
+    <p class="card__title">{{ comment.thing?.title || '' }}</p>
+    <ng-container *ngIf="(comment.thing?.imageUrls)[0] as thumbnailUrl">
+      <div
+        class="card__thumbnail"
+        [style.background-image]="'url(' + thumbnailUrl + ')'"
+      ></div>
+    </ng-container>
+    <div class="card__actions">
+      <button class="card__comment-btn" mat-icon-button>
+        <mat-icon inline>mode_comment</mat-icon>
+      </button>
+      <ng-container *ngIf="user$ | async as user">
+        <button
+          [mat-menu-trigger-for]="menu"
+          *ngIf="comment.fromUid === user.uid"
+          mat-icon-button
+        >
+          <mat-icon inline>more_vert</mat-icon>
+        </button>
+      </ng-container>
+      <mat-menu #menu>
+        <button routerLink="/{{ comment.thingId }}/edit" mat-menu-item>
+          <mat-icon>edit</mat-icon> <span>編集</span>
+        </button>
+        <button (click)="delete()" mat-menu-item>
+          <mat-icon>delete</mat-icon>
+          <span>削除</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+</div>

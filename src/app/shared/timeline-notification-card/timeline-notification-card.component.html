@@ -1,0 +1,172 @@
+<ng-container [ngSwitch]="notification.type">
+  <ng-container *ngSwitchCase="'like'">
+    <div class="card">
+      <div
+        class="card__avatar"
+        [style.background-image]="'url(' + notification.user.avatarURL + ')'"
+      ></div>
+      <div class="card__container">
+        <div class="card__header">
+          <p class="card__name">
+            {{ notification.user.name }}
+          </p>
+          <span class="card__spacer"></span>
+          <span>liked</span>
+          <p class="card__createdAt">
+            {{ notification.updateAt.toDate() | relativetime }}
+          </p>
+        </div>
+        <p class="card__title">{{ notification.thing?.title || 'no title' }}</p>
+        <ng-container
+          *ngIf="(notification.thing?.imageUrls)[0] as thumbnailUrl"
+        >
+          <div
+            class="card__thumbnail"
+            [style.background-image]="'url(' + thumbnailUrl + ')'"
+          ></div>
+        </ng-container>
+        <div class="card__actions">
+          <button class="card__notification-btn" mat-icon-button>
+            <mat-icon inline>mode_notification</mat-icon>
+          </button>
+          <button class="card__notification-btn" mat-icon-button>
+            <mat-icon inline>favorite</mat-icon>
+          </button>
+          <button class="card__notification-btn" mat-icon-button>
+            <mat-icon inline>mode_notification</mat-icon>
+          </button>
+
+          <ng-container *ngIf="user$ | async as user">
+            <button
+              [mat-menu-trigger-for]="menu"
+              *ngIf="notification.fromUid === user.uid"
+              mat-icon-button
+            >
+              <mat-icon inline>more_vert</mat-icon>
+            </button>
+          </ng-container>
+          <mat-menu #menu>
+            <button routerLink="/{{ notification.thingId }}/edit" mat-menu-item>
+              <mat-icon>edit</mat-icon> <span>編集</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon>delete</mat-icon>
+              <span>削除</span>
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngSwitchCase="'reply'">
+    <div class="card">
+      <div
+        class="card__avatar"
+        [style.background-image]="'url(' + notification.user.avatarURL + ')'"
+      ></div>
+      <div class="card__container">
+        <div class="card__header">
+          <p class="card__name">
+            {{ notification.user.name }}
+          </p>
+          <span class="card__notify-type">replied</span>
+          <span class="card__spacer"></span>
+          <p class="card__createdAt">
+            {{ notification.updateAt.toDate() | relativetime }}
+          </p>
+        </div>
+        <p class="card__body">
+          {{ notification.commentBody }}
+        </p>
+        <p class="card__title">{{ notification.thing?.title || 'no title' }}</p>
+        <ng-container
+          *ngIf="(notification.thing?.imageUrls)[0] as thumbnailUrl"
+        >
+          <div
+            class="card__thumbnail"
+            [style.background-image]="'url(' + thumbnailUrl + ')'"
+          ></div>
+        </ng-container>
+        <div class="card__actions">
+          <button class="card__notification-btn" mat-icon-button>
+            <mat-icon inline>mode_comment</mat-icon>
+          </button>
+
+          <ng-container *ngIf="user$ | async as user">
+            <button
+              [mat-menu-trigger-for]="menu"
+              *ngIf="notification.fromUid === user.uid"
+              mat-icon-button
+            >
+              <mat-icon inline>more_vert</mat-icon>
+            </button>
+          </ng-container>
+          <mat-menu #menu>
+            <button routerLink="/{{ notification.thingId }}/edit" mat-menu-item>
+              <mat-icon>edit</mat-icon> <span>編集</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon>delete</mat-icon>
+              <span>削除</span>
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngSwitchCase="'follow'">
+    <div class="card">
+      <div
+        class="card__avatar"
+        [style.background-image]="'url(' + notification.user.avatarURL + ')'"
+      ></div>
+      <div class="card__container">
+        <div class="card__header">
+          <p class="card__name">
+            {{ notification.user.name }} <span>followed</span>
+          </p>
+          <span class="card__spacer"></span>
+          <p class="card__createdAt">
+            {{ notification.updateAt.toDate() | relativetime }}
+          </p>
+        </div>
+        <p class="card__body">
+          {{ notification | notifymsg }}
+        </p>
+        <p class="card__title">{{ notification.thing?.title || 'no title' }}</p>
+        <ng-container
+          *ngIf="(notification.thing?.imageUrls)[0] as thumbnailUrl"
+        >
+          <div
+            class="card__thumbnail"
+            [style.background-image]="'url(' + thumbnailUrl + ')'"
+          ></div>
+        </ng-container>
+        <div class="card__actions">
+          <button class="card__notification-btn" mat-icon-button>
+            <mat-icon inline>mode_comment</mat-icon>
+          </button>
+
+          <ng-container *ngIf="user$ | async as user">
+            <button
+              [mat-menu-trigger-for]="menu"
+              *ngIf="notification.fromUid === user.uid"
+              mat-icon-button
+            >
+              <mat-icon inline>more_vert</mat-icon>
+            </button>
+          </ng-container>
+          <mat-menu #menu>
+            <button routerLink="/{{ notification.thingId }}/edit" mat-menu-item>
+              <mat-icon>edit</mat-icon> <span>編集</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon>delete</mat-icon>
+              <span>削除</span>
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>

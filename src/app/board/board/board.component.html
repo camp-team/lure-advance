@@ -1,0 +1,44 @@
+<ng-template #main_timeline>
+  <div class="board">
+    <div class="timeline timeline--home">
+      <app-timeline-card
+        class="card"
+        [thing]="thing"
+        *ngFor="let thing of dummy"
+      >
+      </app-timeline-card>
+    </div>
+
+    <div class="timeline timeline--comments">
+      <app-timeline-comments-card
+        class="card"
+        [comment]="comment"
+        *ngFor="let comment of comments$ | async"
+      >
+      </app-timeline-comments-card>
+    </div>
+
+    <div class="timeline timeline--notifications">
+      <app-timeline-notification-card
+        class="card"
+        [notification]="notification"
+        *ngFor="let notification of notifications$ | async"
+      >
+      </app-timeline-notification-card>
+    </div>
+  </div>
+</ng-template>
+<ng-container *ngIf="isDetail; else main_timeline"></ng-container>
+<div
+  infinite-scroll
+  [infiniteScrollDistance]="2"
+  [infiniteScrollThrottle]="20"
+  (scrolled)="onScroll()"
+></div>
+<mat-progress-spinner
+  class="loading"
+  *ngIf="loading"
+  mode="indeterminate"
+  color="primary"
+  [diameter]="40"
+></mat-progress-spinner>
