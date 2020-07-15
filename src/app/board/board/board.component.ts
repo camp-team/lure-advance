@@ -55,27 +55,6 @@ export class BoardComponent implements OnInit {
     })
   );
 
-  def: Thing = {
-    id: 'xxxx',
-    designerId: 'uidxxx',
-    title: 'ほげほげほげほ',
-    description:
-      'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eligendi temporibus' +
-      'inventore totam illum deleniti et velit! Quis doloribus velit laboriosam' +
-      'delectus consequuntur voluptas modi nam? Temporibus voluptas dolore soluta' +
-      'accusantium!category',
-    tags: [''],
-    imageUrls: [''],
-    stlRef: [],
-    category: [''],
-    commentCount: 1,
-    likeCount: 1,
-    viewCount: 1,
-    createdAt: firestore.Timestamp.now(),
-    updateAt: firestore.Timestamp.now(),
-  };
-  dummy: Thing[] = new Array(50).fill(this.def);
-
   async ngOnInit(): Promise<void> {
     this.route.queryParamMap.subscribe((map) => {
       this.things = [];
