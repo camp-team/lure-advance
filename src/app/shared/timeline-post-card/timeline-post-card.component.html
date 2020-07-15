@@ -1,71 +1,69 @@
-<ng-container *ngIf="user$ | async as user">
-  <div class="card">
-    <div
-      class="card__avatar"
-      [style.background-image]="'url(' + user.avatarURL + ')'"
-    ></div>
-    <div class="card__container">
-      <div class="card__header">
-        <p class="card__name">{{ user.name }}</p>
-        <span class="card__spacer"></span>
-        <p class="card__createdAt">
-          {{ thing.createdAt | relativetime }}
-        </p>
-      </div>
-      <p class="card__body">
-        {{ thing.description }}
+<div class="card">
+  <div
+    class="card__avatar"
+    [style.background-image]="'url(' + thing.user.avatarURL + ')'"
+  ></div>
+  <div class="card__container">
+    <div class="card__header">
+      <p class="card__name">{{ thing.user.name }}</p>
+      <span class="card__spacer"></span>
+      <p class="card__createdAt">
+        {{ thing.createdAt | relativetime }}
       </p>
-      <div
-        *ngIf="thing.imageUrls[0] as thumbnailUrl"
-        class="card__thumbnail"
-        [style.background-image]="'url(' + thumbnailUrl + ')'"
-      ></div>
-      <div class="card__actions">
-        <button class="card__comment-btn" mat-icon-button>
-          <mat-icon inline>mode_comment</mat-icon>
+    </div>
+    <p class="card__body">
+      {{ thing.description }}
+    </p>
+    <div
+      *ngIf="thing.imageUrls[0] as thumbnailUrl"
+      class="card__thumbnail"
+      [style.background-image]="'url(' + thumbnailUrl + ')'"
+    ></div>
+    <div class="card__actions">
+      <button class="card__comment-btn" mat-icon-button>
+        <mat-icon inline>mode_comment</mat-icon>
+      </button>
+      <button class="card__repeat-btn" mat-icon-button>
+        <mat-icon inline>repeat</mat-icon>
+      </button>
+      <ng-container *ngIf="isLiked; else unLiked">
+        <button
+          class="card__like-btn card__like-btn--liked"
+          (click)="unLikeThing()"
+          mat-icon-button
+        >
+          <mat-icon inline>favorite</mat-icon>
+          <span class="card__like-btn--count">{{ thing.likeCount }} </span>
         </button>
-        <button class="card__repeat-btn" mat-icon-button>
-          <mat-icon inline>repeat</mat-icon>
+      </ng-container>
+      <ng-template #unLiked>
+        <button
+          class="card__like-btn card__like-btn--unliked"
+          (click)="likeThing()"
+          mat-icon-button
+        >
+          <mat-icon inline>favorite_border</mat-icon>
+          <span class="card__like-btn--count">{{ thing.likeCount }}</span>
         </button>
-        <ng-container *ngIf="isLiked; else unLiked">
-          <button
-            class="card__like-btn card__like-btn--liked"
-            (click)="unLikeThing()"
-            mat-icon-button
-          >
-            <mat-icon inline>favorite</mat-icon>
-            <span class="card__like-btn--count">{{ thing.likeCount }} </span>
-          </button>
-        </ng-container>
-        <ng-template #unLiked>
-          <button
-            class="card__like-btn card__like-btn--unliked"
-            (click)="likeThing()"
-            mat-icon-button
-          >
-            <mat-icon inline>favorite_border</mat-icon>
-            <span class="card__like-btn--count">{{ thing.likeCount }}</span>
-          </button>
-        </ng-template>
-        <ng-container *ngIf="user$ | async as user">
-          <button
-            [mat-menu-trigger-for]="menu"
-            *ngIf="thing.designerId === user.uid"
-            mat-icon-button
-          >
-            <mat-icon inline>more_vert</mat-icon>
-          </button>
-        </ng-container>
-        <mat-menu #menu>
-          <button routerLink="/{{ thing.id }}/edit" mat-menu-item>
-            <mat-icon>edit</mat-icon> <span>編集</span>
-          </button>
-          <button (click)="delete(thing)" mat-menu-item>
-            <mat-icon>delete</mat-icon>
-            <span>削除</span>
-          </button>
-        </mat-menu>
-      </div>
+      </ng-template>
+      <ng-container *ngIf="user$ | async as user">
+        <button
+          [mat-menu-trigger-for]="menu"
+          *ngIf="thing.designerId === user.uid"
+          mat-icon-button
+        >
+          <mat-icon inline>more_vert</mat-icon>
+        </button>
+      </ng-container>
+      <mat-menu #menu>
+        <button routerLink="/{{ thing.id }}/edit" mat-menu-item>
+          <mat-icon>edit</mat-icon> <span>編集</span>
+        </button>
+        <button (click)="delete(thing)" mat-menu-item>
+          <mat-icon>delete</mat-icon>
+          <span>削除</span>
+        </button>
+      </mat-menu>
     </div>
   </div>
-</ng-container>
+</div>
