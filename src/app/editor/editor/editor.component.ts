@@ -175,7 +175,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   async save() {
     const thingId: string = this.thing ? this.thing.id : this.db.createId();
-    const res = await this.thingService.savenOnStorage(
+    const res = await this.thingService.saveOnStorage(
       thingId,
       this.stlFiles,
       this.imageFiles,

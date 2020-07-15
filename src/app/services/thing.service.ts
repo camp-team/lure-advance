@@ -153,7 +153,7 @@ export class ThingService {
     return this.db.doc<Thing>(`things/${thing.id}`).delete();
   }
 
-  async savenOnStorage(
+  async saveOnStorage(
     thingId: string,
     stlFiles: (File | ThingRef)[],
     imageFiles: (File | string)[],
