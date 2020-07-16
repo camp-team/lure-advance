@@ -22,7 +22,7 @@ export class TimelineCommentsCardComponent implements OnInit {
   isLiked: boolean;
   isProcessing: boolean;
 
-  navigateToProfile(thing: Thing) {
-    this.router.navigate(['/mypage', thing.designerId]);
+  navigateToProfile(uid: string) {
+    this.router.navigate(['/mypage', uid]);
   }
 }
