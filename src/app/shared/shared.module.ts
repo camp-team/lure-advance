@@ -23,6 +23,9 @@ import { ThingCardSmComponent } from './thing-card-sm/thing-card-sm.component';
 import { ThingCardWideComponent } from './thing-card-wide/thing-card-wide.component';
 import { ThingCardComponent } from './thing-card/thing-card.component';
 import { NotFoundComponent } from '../not-found/not-found.component';
+import { TimelinePostCardComponent } from './timeline-post-card/timeline-post-card.component';
+import { TimelineCommentsCardComponent } from './timeline-comments-card/timeline-comments-card.component';
+import { TimelineNotificationCardComponent } from './timeline-notification-card/timeline-notification-card.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +39,9 @@ import { NotFoundComponent } from '../not-found/not-found.component';
     RelativetimePipe,
     DeleteDialogComponent,
     NotFoundComponent,
+    TimelinePostCardComponent,
+    TimelineCommentsCardComponent,
+    TimelineNotificationCardComponent,
   ],
   imports: [
     CommonModule,
@@ -64,6 +70,9 @@ import { NotFoundComponent } from '../not-found/not-found.component';
     DeleteDialogComponent,
     RelativetimePipe,
     NotFoundComponent,
+    TimelinePostCardComponent,
+    TimelineCommentsCardComponent,
+    TimelineNotificationCardComponent,
   ],
 })
 export class SharedModule {}

@@ -1,0 +1,21 @@
+.board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 8px;
+  height: calc(100vh - 64px);
+  background-color: #15202b;
+}
+.timeline {
+  overflow-y: auto;
+}
+
+.timeline + .timeline {
+  border-left: solid 4px rgba(black, 0.6);
+}
+
+.card + .card {
+  border-top: solid 2px rgba(black, 0.6);
+}
+.loading {
+  margin: 40px auto;
+}

@@ -11,7 +11,7 @@
         <p class="thing__title">{{ thing.title }}</p>
         <span class="thing__spacer"></span>
         <p class="thing__updateAt">
-          {{ thing.updateAt.toDate() | relativetime }}
+          {{ thing.createdAt.toDate() | date: 'yyyy年MM月dd日' }}
         </p>
         <button [mat-menu-trigger-for]="menu" *ngIf="isMypost" mat-icon-button>
           <mat-icon>more_vert</mat-icon>

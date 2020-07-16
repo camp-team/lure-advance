@@ -1,17 +1,26 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore/';
-import { Observable, combineLatest, of } from 'rxjs';
+import {
+  Comment,
+  CommentWithUser,
+  CommentWithUserAndThing,
+} from '@interfaces/comment';
 import { Thing } from '@interfaces/thing';
-import { firestore } from 'firebase';
-import { Comment, CommentWithUser } from '@interfaces/comment';
-import { switchMap, map, takeWhile, filter } from 'rxjs/operators';
-import { UserService } from './user.service';
 import { User } from '@interfaces/user';
+import { firestore } from 'firebase';
+import { combineLatest, Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { ThingService } from './thing.service';
+import { UserService } from './user.service';
 @Injectable({
   providedIn: 'root',
 })
 export class CommentService {
-  constructor(private db: AngularFirestore, private userService: UserService) {}
+  constructor(
+    private db: AngularFirestore,
+    private userService: UserService,
+    private thingService: ThingService
+  ) {}
 
   getAllComments(thingId: string): Observable<CommentWithUser[]> {
     return this.db
@@ -20,7 +29,7 @@ export class CommentService {
       )
       .valueChanges()
       .pipe(
-        switchMap((comments) => {
+        switchMap((comments: Comment[]) => {
           if (comments.length) {
             const distinctUids: string[] = [
               ...new Set(comments.map((comment) => comment.fromUid)),
@@ -40,6 +49,62 @@ export class CommentService {
               return {
                 ...comment,
                 user: users.find((user) => comment.fromUid === user?.uid),
+              };
+            });
+          } else {
+            return [];
+          }
+        })
+      );
+  }
+
+  getCommentsByDesignerId(
+    designerId: string
+  ): Observable<CommentWithUserAndThing[]> {
+    if (designerId === undefined) {
+      return of(null);
+    }
+
+    return this.db
+      .collectionGroup<Comment>('comments', (ref) =>
+        ref.where('designerId', '==', designerId)
+      )
+      .valueChanges()
+      .pipe(
+        switchMap((comments: Comment[]) => {
+          if (comments.length) {
+            const distinctUids: string[] = Array.from(
+              new Set(comments.map((comment) => comment.fromUid))
+            );
+
+            const users$: Observable<User[]> = combineLatest(
+              distinctUids.map((uid) => this.userService.getUserByID(uid))
+            );
+
+            const distinctThingIds: string[] = Array.from(
+              new Set(comments.map((comment) => comment.thingId))
+            );
+
+            const things$: Observable<Thing[]> = combineLatest(
+              distinctThingIds.map((thingId) =>
+                this.thingService.getThingByID(thingId)
+              )
+            );
+
+            return combineLatest([of(comments), things$, users$]);
+          } else {
+            return of([]);
+          }
+        }),
+        map(([comments, things, users]) => {
+          if (comments?.length) {
+            return comments.map((comment: Comment) => {
+              return {
+                ...comment,
+                user: users.find((user: User) => comment.fromUid === user?.uid),
+                thing: things.find(
+                  (thing: Thing) => comment.thingId === thing?.id
+                ),
               };
             });
           } else {
