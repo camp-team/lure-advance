@@ -1,33 +1,89 @@
-<ng-template #main_timeline>
-  <div class="board">
-    <div class="timeline timeline--home">
-      <app-timeline-card
-        class="card"
-        [thing]="thing"
-        *ngFor="let thing of things"
-      >
-      </app-timeline-card>
-    </div>
+<div class="board">
+  <mat-nav-list class="nav">
+    <mat-list-item>
+      <button (click)="openCreateDialog()" mat-flat-button color="primary">
+        Post Your Design
+      </button>
+    </mat-list-item>
+    <mat-list-item>
+      <mat-icon mat-list-icon>home</mat-icon>
+      <span class="nav__text" matLine>HOME</span>
+    </mat-list-item>
+    <mat-list-item>
+      <mat-icon mat-list-icon>comment</mat-icon>
+      <span class="nav__text" matLine>Comments</span>
+    </mat-list-item>
+    <mat-list-item>
+      <mat-icon mat-list-icon>notifications</mat-icon>
+      <span class="nav__text" matLine>Notification</span>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+    <span class="nav__spacer"></span>
+    <a routerLink="/settings" mat-list-item>
+      <mat-icon mat-list-icon>settings</mat-icon>
+      <span class="nav__text" matLine>Settings</span>
+    </a>
+    <mat-list-item>
+      <ng-container *ngIf="user$ | async as user; else loginbtn">
+        <button
+          class="nav__avatar"
+          [style.background-image]="'url(' + user.avatarURL + ')'"
+          [matMenuTriggerFor]="menu"
+          mat-icon-button
+        ></button>
+        <mat-menu #menu>
+          <button
+            routerLinkActive="router-link-active"
+            mat-menu-item
+            routerLink="/mypage/{{ user.uid }}"
+          >
+            <mat-icon>account_box</mat-icon>
+            <span>マイページ</span>
+          </button>
 
-    <div class="timeline timeline--comments">
-      <app-timeline-comments-card
-        class="card"
-        [comment]="comment"
-        *ngFor="let comment of comments$ | async"
-      >
-      </app-timeline-comments-card>
-    </div>
+          <button mat-menu-item>
+            <mat-icon>input</mat-icon>
+            <span>ログアウト</span>
+          </button>
+          <mat-divider></mat-divider>
+        </mat-menu>
+      </ng-container>
+      <ng-template #loginbtn>
+        <button class="login" mat-raised-button color="primary"></button>
+      </ng-template>
+    </mat-list-item>
+  </mat-nav-list>
 
-    <div class="timeline timeline--notifications">
-      <app-timeline-notification-card
-        class="card"
-        [notification]="notification"
-        *ngFor="let notification of notifications$ | async"
-      >
-      </app-timeline-notification-card>
-    </div>
+  <div class="timeline timeline--home">
+    <app-timeline-card
+      (onClick)="alterDetailView()"
+      class="card"
+      [thing]="thing"
+      *ngFor="let thing of things"
+    >
+    </app-timeline-card>
   </div>
-</ng-template>
+
+  <div class="timeline timeline--comments">
+    <app-timeline-comments-card
+      class="card"
+      [comment]="comment"
+      *ngFor="let comment of comments$ | async"
+    >
+    </app-timeline-comments-card>
+  </div>
+
+  <div class="timeline timeline--notifications">
+    <app-timeline-notification-card
+      class="card"
+      [notification]="notification"
+      *ngFor="let notification of notifications$ | async"
+    >
+    </app-timeline-notification-card>
+  </div>
+</div>
+
+<!--
 <ng-container *ngIf="isDetail; else main_timeline"></ng-container>
 <div
   infinite-scroll
@@ -42,3 +98,4 @@
   color="primary"
   [diameter]="40"
 ></mat-progress-spinner>
+-->

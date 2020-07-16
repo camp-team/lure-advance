@@ -1,6 +1,9 @@
 p {
   margin: 0;
 }
+a {
+  text-decoration: none;
+}
 
 .card {
   background-color: rgba(#15202b, 0.6);
@@ -9,7 +12,6 @@ p {
   display: grid;
   grid-template-columns: 40px 1fr;
   gap: 8px;
-  overflow: auto;
   &__header {
     display: flex;
     align-items: center;
@@ -62,7 +64,6 @@ p {
     font-size: 12px;
   }
   &__thumbnail {
-    opacity: 0.68;
     border-radius: 8px;
     background: center/cover;
     padding-bottom: 52.5%;

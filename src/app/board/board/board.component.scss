@@ -19,3 +19,22 @@
 .loading {
   margin: 40px auto;
 }
+
+mat-icon {
+  color: white;
+}
+
+.nav {
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  &__text {
+    color: white;
+  }
+  &__spacer {
+    flex: 1;
+  }
+  &__avatar {
+    background: center/cover;
+  }
+}

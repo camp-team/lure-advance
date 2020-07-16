@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { ThingWithUser, Thing } from '@interfaces/thing';
-import { firestore } from 'firebase';
-import { take, switchMap } from 'rxjs/operators';
+import { CommentWithUser } from '@interfaces/comment';
+import { NotificationWithUserAndThing } from '@interfaces/notification';
+import { ThingWithUser } from '@interfaces/thing';
+import { User } from '@interfaces/user';
+import { Observable } from 'rxjs';
+import { switchMap, take } from 'rxjs/operators';
+import { CommentService } from 'src/app/services/comment.service';
+import { NotificationService } from 'src/app/services/notification.service';
 import { SearchService } from 'src/app/services/search.service';
 import { UserService } from 'src/app/services/user.service';
-import { User } from '@interfaces/user';
-import { CommentWithUser } from '@interfaces/comment';
-import { CommentService } from 'src/app/services/comment.service';
-import { Observable } from 'rxjs';
-import { NotificationWithUserAndThing } from '@interfaces/notification';
-import { NotificationService } from 'src/app/services/notification.service';
+import { CreateComponent } from 'src/app/create/create/create.component';
 
 @Component({
   selector: 'app-board',
@@ -38,7 +39,8 @@ export class BoardComponent implements OnInit {
     private route: ActivatedRoute,
     private userService: UserService,
     private notificationService: NotificationService,
-    private commentService: CommentService
+    private commentService: CommentService,
+    private dialog: MatDialog
   ) {}
 
   user$: Observable<User> = this.userService.user$;
@@ -97,5 +99,13 @@ export class BoardComponent implements OnInit {
   onScroll() {
     this.requestOptions.page++;
     this.search();
+  }
+
+  openCreateDialog() {
+    this.dialog.open(CreateComponent);
+  }
+
+  alterDetailView() {
+    this.isDetail = true;
   }
 }

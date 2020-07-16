@@ -13,8 +13,8 @@
           <p class="card__name">
             {{ notification.user.name }}
           </p>
+          <span class="card__notify-type">liked</span>
           <span class="card__spacer"></span>
-          <span>liked</span>
           <p class="card__createdAt">
             {{ notification.updateAt.toDate() | relativetime }}
           </p>
@@ -63,10 +63,12 @@
   </ng-container>
   <ng-container *ngSwitchCase="'reply'">
     <div class="card">
-      <div
+      <a
+        routerLink="/mypage/{{ notification.user.uid }}"
+        mat-icon-button
         class="card__avatar"
         [style.background-image]="'url(' + notification.user.avatarURL + ')'"
-      ></div>
+      ></a>
       <div class="card__container">
         <div class="card__header">
           <p class="card__name">

@@ -1,0 +1,115 @@
+<form class="post" [formGroup]="form">
+  <div class="post__actions">
+    <button mat-dialog-close mat-icon-button>
+      <mat-icon>close</mat-icon>
+    </button>
+    <button
+      [mat-dialog-close]="true"
+      mat-flat-button
+      color="primary"
+      [disabled]="form.invalid"
+    >
+      Post
+    </button>
+  </div>
+  <mat-form-field appearance="outline">
+    <mat-label>Description</mat-label>
+    <textarea
+      class="post__textarea"
+      matInput
+      formControlName="description"
+      #textarea
+      autocomplete="off"
+      matTextareaAutosize
+      matAutosizeMinRows="8"
+    >
+    </textarea>
+
+    <div
+      *ngIf="imageFiles.length"
+      class="post__images post__images--{{ imageFiles.length }}-column"
+    >
+      <div
+        *ngFor="let file of images; index as i"
+        class="post__image"
+        [style.background-image]="'url(' + file + ')'"
+      >
+        <button mat-icon-button (click)="deleteImage(i)" class="post__del-btn">
+          <mat-icon class="post__del-icon" inline>close</mat-icon>
+        </button>
+      </div>
+    </div>
+    <mat-hint align="end"
+      >{{ textarea.value.length }}/{{ MAX_LENGTH }}</mat-hint
+    >
+    <mat-error *ngIf="descriptionCtrl.hasError('maxlength')">{{
+      MAX_LENGTH - textarea.value.length
+    }}</mat-error>
+  </mat-form-field>
+  <div class="post__stls">
+    <div *ngFor="let stl of stls; index as i">
+      <button mat-icon-button (click)="deleteStl(i)" class="post__del-btn">
+        <mat-icon class="post__del-icon" inline>close</mat-icon>
+      </button>
+      <div class="stl-viewr-wrapper">
+        <stl-model-viewer
+          style="overflow: hidden;"
+          [stlModels]="[stl]"
+        ></stl-model-viewer>
+      </div>
+    </div>
+  </div>
+  <mat-form-field>
+    <mat-label>Tag</mat-label>
+    <mat-chip-list #chipList aria-label="tag selection">
+      <mat-chip
+        *ngFor="let tag of tags"
+        [selectable]="selectable"
+        [removable]="removable"
+        (removed)="remove(tag)"
+      >
+        {{ tag }}
+        <mat-icon matChipRemove>cancel</mat-icon>
+      </mat-chip>
+      <input
+        placeholder="New tag..."
+        [matChipInputFor]="chipList"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        [matChipInputAddOnBlur]="addOnBlur"
+        (matChipInputTokenEnd)="add($event)"
+        autocomplete="off"
+        formControlName="tags"
+        #tagsInput
+      />
+    </mat-chip-list>
+    <mat-hint align="end">{{ tagsLength }}/{{ MAX_TAG_LENGTH }}</mat-hint>
+    <mat-error *ngIf="tagsCtrl.hasError('maxlength')"
+      >{{ tagsInput.value.length }}は多すぎます</mat-error
+    >
+  </mat-form-field>
+  <ng-container>
+    <div class="post__files"></div>
+  </ng-container>
+
+  <input
+    class="post__file"
+    #inputFile
+    (change)="selectFiles($event)"
+    type="file"
+    multiple
+    style="display: none;"
+    accept=".jpeg, .jpg, .png, .stl "
+  />
+
+  <button
+    (click)="inputFile.click()"
+    mat-raised-button
+    type="button"
+    class="post__insert-btn"
+    mat-stroked-button
+    color="primary"
+  >
+    <mat-icon class="post__btn-icon">insert_photo</mat-icon>
+    <span class="post__btn-text">Add Image or Strl</span>
+  </button>
+</form>

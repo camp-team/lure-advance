@@ -29,6 +29,7 @@ p {
     display: -webkit-box;
     -webkit-line-clamp: 30;
     -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   &__avatar {
     width: 40px;

@@ -16,7 +16,7 @@ const routes: Routes = [
         path: '',
         pathMatch: 'full',
         loadChildren: () =>
-          import('./board/board.module').then((m) => m.TimelineModule),
+          import('./board/board.module').then((m) => m.BoardModule),
       },
       {
         path: 'home',
