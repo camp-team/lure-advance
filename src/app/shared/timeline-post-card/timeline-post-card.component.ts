@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { Thing, ThingWithUser } from '@interfaces/thing';
 import { User } from '@interfaces/user';
 import { Observable } from 'rxjs';
@@ -18,8 +17,7 @@ export class TimelinePostCardComponent implements OnInit {
   constructor(
     private thingService: ThingService,
     private userService: UserService,
-    private dialog: MatDialog,
-    private router: Router
+    private dialog: MatDialog
   ) {}
   @Input() thing: ThingWithUser;
 
@@ -62,9 +60,5 @@ export class TimelinePostCardComponent implements OnInit {
       restoreFocus: false,
       autoFocus: false,
     });
-  }
-
-  navigateToProfile(thing: Thing) {
-    this.router.navigate(['/mypage', thing.designerId]);
   }
 }

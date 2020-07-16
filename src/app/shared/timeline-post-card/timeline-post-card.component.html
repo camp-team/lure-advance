@@ -1,8 +1,10 @@
 <div class="card">
-  <div
+  <a
+    routerLink="/mypage/{{ thing.user.uid }}"
+    mat-icon-button
     class="card__avatar"
     [style.background-image]="'url(' + thing.user.avatarURL + ')'"
-  ></div>
+  ></a>
   <div class="card__container">
     <div class="card__header">
       <p class="card__name">{{ thing.user.name }}</p>

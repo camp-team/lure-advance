@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommentWithUserAndThing } from '@interfaces/comment';
-import { Thing } from '@interfaces/thing';
 import { User } from '@interfaces/user';
 import { Observable } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
@@ -18,11 +17,4 @@ export class TimelineCommentsCardComponent implements OnInit {
   user$: Observable<User> = this.userService.user$;
 
   ngOnInit(): void {}
-
-  isLiked: boolean;
-  isProcessing: boolean;
-
-  navigateToProfile(uid: string) {
-    this.router.navigate(['/mypage', uid]);
-  }
 }

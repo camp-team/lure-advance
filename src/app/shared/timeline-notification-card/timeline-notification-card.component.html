@@ -1,10 +1,13 @@
 <ng-container [ngSwitch]="notification.type">
   <ng-container *ngSwitchCase="'like'">
     <div class="card">
-      <div
+      <a
+        routerLink="/mypage/{{ notification.user.uid }}"
+        mat-icon-button
         class="card__avatar"
         [style.background-image]="'url(' + notification.user.avatarURL + ')'"
-      ></div>
+      ></a>
+
       <div class="card__container">
         <div class="card__header">
           <p class="card__name">

@@ -1,6 +1,6 @@
 <div class="card">
   <a
-    (click)="navigateToProfile(comment.user.uid)"
+    routerLink="/mypage/{{ comment.user.uid }}"
     mat-icon-button
     class="card__avatar"
     [style.background-image]="'url(' + comment.user.avatarURL + ')'"
