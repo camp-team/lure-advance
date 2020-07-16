@@ -22,14 +22,6 @@ export class TimelineCommentsCardComponent implements OnInit {
   isLiked: boolean;
   isProcessing: boolean;
 
-  delete() {
-    // this.dialog.open(DeleteDialogComponent, {
-    //   data: thing,
-    //   restoreFocus: false,
-    //   autoFocus: false,
-    // });
-  }
-
   navigateToProfile(thing: Thing) {
     this.router.navigate(['/mypage', thing.designerId]);
   }

@@ -1,12 +1,14 @@
 <div class="card">
-  <div
+  <a
+    (click)="navigateToProfile()"
+    mat-icon-button
     class="card__avatar"
     [style.background-image]="'url(' + comment.user.avatarURL + ')'"
-  ></div>
+  ></a>
+
   <div class="card__container">
     <div class="card__header">
       <p class="card__name">{{ comment.user.name }}</p>
-      <!-- <p class="card__uid">{{ thing.user.uid.slice(0, 16) }}</p> -->
       <span class="card__spacer"></span>
       <p class="card__createdAt">
         {{ comment.updateAt.toDate() | relativetime }}
@@ -39,7 +41,7 @@
         <button routerLink="/{{ comment.thingId }}/edit" mat-menu-item>
           <mat-icon>edit</mat-icon> <span>編集</span>
         </button>
-        <button (click)="delete()" mat-menu-item>
+        <button mat-menu-item>
           <mat-icon>delete</mat-icon>
           <span>削除</span>
         </button>
