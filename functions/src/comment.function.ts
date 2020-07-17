@@ -35,7 +35,7 @@ export const addReply = functions
           .doc(`users/${value.designerId}`)
           .update('commentCount', admin.firestore.FieldValue.increment(1));
       } else {
-        console.log('Thing does not exist.');
+        console.log(`Thing:${thingId} does not exist.`);
       }
 
       const targetUid: string = value.toUid;
@@ -43,7 +43,7 @@ export const addReply = functions
       const commentBody: string = value.body;
 
       if (targetUid === replierUid) {
-        console.log('Replying to My Comment.');
+        console.log(`User:${targetUid} Reply to My Comment.`);
         return;
       }
 
@@ -62,9 +62,16 @@ export const addReply = functions
 
       await docRef.set(notification);
 
-      await db
-        .doc(`users/${targetUid}`)
-        .update('notificationCount', admin.firestore.FieldValue.increment(1));
+      const userSnapShot = await db.doc(`users/${targetUid}`).get();
+
+      if (userSnapShot.exists) {
+        await userSnapShot.ref.update(
+          'notificationCount',
+          admin.firestore.FieldValue.increment(1)
+        );
+      } else {
+        console.log(`User:${targetUid} does not exsit.`);
+      }
 
       return markEventTried(eventId);
     } else {

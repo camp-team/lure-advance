@@ -13,9 +13,16 @@ export const likeThing = functions
     const thingId = context.params.thingId;
     const should = await shouldEventRun(eventId);
     if (should) {
-      await db
-        .doc(`things/${thingId}`)
-        .update('likeCount', admin.firestore.FieldValue.increment(1));
+      const thingSnapShot = await db.doc(`things/${thingId}`).get();
+
+      if (thingSnapShot.exists) {
+        await thingSnapShot.ref.update(
+          'likeCount',
+          admin.firestore.FieldValue.increment(1)
+        );
+      } else {
+        console.log(`Thing ${thingId} does not exsit.`);
+      }
 
       const value = snap.data();
       const targetUid: string = value.designerId;
@@ -25,12 +32,19 @@ export const likeThing = functions
         thingId,
       });
 
-      await db
-        .doc(`users/${targetUid}`)
-        .update('likeCount', admin.firestore.FieldValue.increment(1));
+      const useSnapShot = await db.doc(`users/${targetUid}`).get();
+      if (useSnapShot.exists) {
+        await useSnapShot.ref.update(
+          'likeCount',
+          admin.firestore.FieldValue.increment(1)
+        );
+      } else {
+        console.log(`User:${targetUid} does not exsit.`);
+      }
 
       if (targetUid === likerUid) {
-        console.log('My Thing is Liked.');
+        console.log(`User:${likerUid} like my thing.`);
+        console.log(`Function is completed.`);
         return;
       }
 
@@ -46,12 +60,18 @@ export const likeThing = functions
         commentId: '',
         updateAt: admin.firestore.Timestamp.now(),
       };
-
       await docRef.set(notification);
 
-      await db
-        .doc(`users/${targetUid}`)
-        .update('notificationCount', admin.firestore.FieldValue.increment(1));
+      const notificationSnapShot = await db.doc(`users/${targetUid}`).get();
+
+      if (notificationSnapShot.exists) {
+        await notificationSnapShot.ref.update(
+          'notificationCount',
+          admin.firestore.FieldValue.increment(1)
+        );
+      } else {
+        console.log(`User:${targetUid}'s notification does not exsit.`);
+      }
 
       return markEventTried(eventId);
     } else {
@@ -81,7 +101,7 @@ export const unLikeThing = functions
           .doc(`users/${targetUid}`)
           .update('likeCount', admin.firestore.FieldValue.increment(-1));
       } else {
-        console.log('Thing does not exist.');
+        console.log(`User:${targetUid} does not exist.`);
       }
 
       return markEventTried(eventId);

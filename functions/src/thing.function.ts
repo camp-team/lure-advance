@@ -27,7 +27,7 @@ export const addThing = functions
         admin.firestore.FieldValue.increment(1)
       );
     } else {
-      console.log('User does not exist.');
+      console.log(`User:${designerId} does not exist.`);
     }
 
     return algolia.saveRecord({
@@ -93,7 +93,7 @@ export const incrementViewCount = functions
         .update('viewCount', admin.firestore.FieldValue.increment(1));
       return Promise.all([updateThingViewCount, updateUserViewCount]);
     } else {
-      console.log('Thing does not exist.');
+      console.log(`Thing ${snap.id} does not exist.`);
       return;
     }
   });

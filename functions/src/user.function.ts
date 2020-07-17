@@ -2,10 +2,10 @@ import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import { User } from './interfaces/user';
 import {
+  deleteCollectionByPath,
+  deleteCollectionByReference,
   markEventTried,
   shouldEventRun,
-  deleteCollectionByReference,
-  deleteCollectionByPath,
 } from './utils/firebase-util';
 
 const db = admin.firestore();
@@ -43,7 +43,7 @@ export const createUser = functions
 export const deleteAfUser = functions
   .region('asia-northeast1')
   .https.onCall((snap: User, _) => {
-    console.log(snap.uid, 'UID');
+    console.log(`User:${snap.uid}'s Data Are Deleting.`);
     return admin.auth().deleteUser(snap.uid);
   });
 
@@ -57,7 +57,7 @@ export const deleteUserAccount = functions
     const deleleteUserStorage = storage.deleteFiles({
       directory: `users/${uid}`,
     });
-    console.log(uid, 'UID');
+
     return Promise.all([
       deleteCollectionByReference(myThingsRef),
       deleteCollectionByPath(`users/${uid}/likedThings`),
