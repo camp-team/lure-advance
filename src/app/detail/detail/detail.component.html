@@ -48,6 +48,7 @@
         <button
           *ngIf="isLiked; else unLiked"
           (click)="unLikeThing(thing)"
+          class="thing__like-btn"
           [class.thing__like-btn--liked]="isLiked"
           mat-icon-button
         >
