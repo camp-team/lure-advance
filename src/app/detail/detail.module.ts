@@ -12,14 +12,13 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
-import { StlModelViewerModule } from 'angular-stl-model-viewer';
 import { SwiperModule } from 'ngx-swiper-wrapper';
 import { SharedModule } from '../shared/shared.module';
+import { StlViewerModule } from '../stl-viewer/stl-viewer.module';
 import { CommentsComponent } from './comments/comments.component';
 import { DescriptionComponent } from './description/description.component';
 import { DetailRoutingModule } from './detail-routing.module';
 import { DetailComponent } from './detail/detail.component';
-import { StlViewerModule } from '../stl-viewer/stl-viewer.module';
 
 @NgModule({
   declarations: [DetailComponent, CommentsComponent, DescriptionComponent],
@@ -37,7 +36,6 @@ import { StlViewerModule } from '../stl-viewer/stl-viewer.module';
     MatChipsModule,
     MatDialogModule,
     SwiperModule,
-    StlModelViewerModule,
     RouterModule,
     MatIconModule,
     MatButtonModule,
