@@ -22,8 +22,9 @@ export class HomeComponent implements OnInit {
   categoriFilter: string[];
   sort: string;
   loading: boolean;
-
+  url: string = `https://firebasestorage.googleapis.com/v0/b/lure-advance-1296d.appspot.com/o/things%2FqGq8QzLkOvFpK7gIcycz%2Fstls%2FVIe9gzMtQAHryLiZdnCu%2Fsample_lure.STL?alt=media&token=a7816e3a-adc9-42e6-8703-1b79b2a14c30`;
   things: ThingWithUser[];
+  container = document.getElementById('ht');
   constructor(
     private searchService: SearchService,
     private route: ActivatedRoute
@@ -35,7 +36,7 @@ export class HomeComponent implements OnInit {
       this.query = map.get('searchQuery') || '';
       this.requestOptions = {
         page: 0,
-        hitsPerPage: 6,
+        hitsPerPage: 12,
       };
       this.tagFilter = (map.get('tags') || '').split(',');
       this.categoriFilter = (map.get('categories') || '').split(',');

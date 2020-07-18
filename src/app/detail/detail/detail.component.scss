@@ -1,10 +1,7 @@
-:host {
-  display: block;
-  padding: 48px 0;
-}
 .thing {
   border-radius: 5px;
   box-shadow: 0 2px 5px #ccc;
+  max-width: 700px;
   &__header {
     display: flex;
     align-items: center;
@@ -35,13 +32,21 @@
   &__swiper-wrapper {
     height: 400px;
   }
+  &__stl-viewer {
+    height: 100%;
+  }
   &__thumbnail {
     background: center/cover;
   }
   &__actions {
     display: flex;
     align-items: center;
-    padding: 12px;
+    padding: 8px;
+  }
+  &__like-btn {
+    &--liked {
+      color: #eb154c;
+    }
   }
 }
 .loading {

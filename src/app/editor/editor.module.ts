@@ -29,6 +29,7 @@ import { EditorComponent } from './editor/editor.component';
     MatButtonModule,
     StlModelViewerModule,
     MatCheckboxModule,
+    StlModelViewerModule,
   ],
 })
 export class EditorModule {}

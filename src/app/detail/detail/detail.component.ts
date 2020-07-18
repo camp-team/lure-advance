@@ -11,6 +11,8 @@ import { CategoryService } from 'src/app/services/category.service';
 import { ThingService } from 'src/app/services/thing.service';
 import { UserService } from 'src/app/services/user.service';
 import { DeleteDialogComponent } from 'src/app/shared/delete-dialog/delete-dialog.component';
+import { ThingReferenceService } from 'src/app/services/thing-reference.service';
+import { ThingReference } from '@interfaces/thing-reference';
 
 @Component({
   selector: 'app-thing-detail',
@@ -32,6 +34,13 @@ export class DetailComponent implements OnInit {
     }),
     take(1)
   );
+
+  thingRef$: Observable<ThingReference> = this.route.paramMap.pipe(
+    switchMap((map) => {
+      return this.thingRefService.getThingRefById(map.get('thing'));
+    })
+  );
+
   isLoading: boolean;
   isMypost: boolean;
   index: number;
@@ -54,14 +63,11 @@ export class DetailComponent implements OnInit {
       path: 'comments',
       label: 'Comments',
     },
-    {
-      path: 'files',
-      label: 'Files',
-    },
   ];
 
   constructor(
     private thingService: ThingService,
+    private thingRefService: ThingReferenceService,
     private route: ActivatedRoute,
     private userService: UserService,
     private authService: AuthService,

@@ -26,6 +26,7 @@
           </button>
         </mat-menu>
       </div>
+
       <div class="thing__swiper-wrapper">
         <swiper [config]="config" [(index)]="index">
           <div
@@ -33,19 +34,21 @@
             *ngFor="let url of thing.imageUrls"
             [style.background-image]="'url(' + url + ')'"
           ></div>
-          <ng-container *ngFor="let ref of thing.stlRef">
-            <stl-model-viewer
-              style="overflow: hidden;"
-              [stlModels]="[ref.downloadUrl]"
-            ></stl-model-viewer>
-          </ng-container>
+          <div class="thing__stl-viewer">
+            <app-stl-viewer
+              *ngIf="thingRef$ | async as ref"
+              [stlUrl]="ref.downloadUrl"
+            ></app-stl-viewer>
+          </div>
         </swiper>
       </div>
+
       <div class="pager"></div>
       <div class="thing__actions">
         <button
           *ngIf="isLiked; else unLiked"
           (click)="unLikeThing(thing)"
+          [class.thing__like-btn--liked]="isLiked"
           mat-icon-button
         >
           <mat-icon>favorite</mat-icon>

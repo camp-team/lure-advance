@@ -19,15 +19,10 @@ import { CommentsComponent } from './comments/comments.component';
 import { DescriptionComponent } from './description/description.component';
 import { DetailRoutingModule } from './detail-routing.module';
 import { DetailComponent } from './detail/detail.component';
-import { FilesComponent } from './files/files.component';
+import { StlViewerModule } from '../stl-viewer/stl-viewer.module';
 
 @NgModule({
-  declarations: [
-    DetailComponent,
-    CommentsComponent,
-    DescriptionComponent,
-    FilesComponent,
-  ],
+  declarations: [DetailComponent, CommentsComponent, DescriptionComponent],
   imports: [
     CommonModule,
     DetailRoutingModule,
@@ -49,6 +44,7 @@ import { FilesComponent } from './files/files.component';
     MatCardModule,
     SharedModule,
     MatProgressSpinnerModule,
+    StlViewerModule,
   ],
 })
 export class DetailModule {}
