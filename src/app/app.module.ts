@@ -30,7 +30,6 @@ import { LegalComponent } from './footer/legal/legal.component';
 import { PrivacypolicyComponent } from './footer/privacypolicy/privacypolicy.component';
 import { HeaderNavComponent } from './header-nav/header-nav.component';
 import { IntlShellComponent } from './intl-shell/intl-shell.component';
-import { NotFoundComponent } from './not-found/not-found.component';
 import { SharedModule } from './shared/shared.module';
 import { ShellComponent } from './shell/shell.component';
 
