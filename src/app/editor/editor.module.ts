@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { EditorRoutingModule } from './editor-routing.module';
 import { EditorComponent } from './editor/editor.component';
+import { StlViewerModule } from '../stl-viewer/stl-viewer.module';
 
 @NgModule({
   declarations: [EditorComponent],
@@ -27,6 +28,7 @@ import { EditorComponent } from './editor/editor.component';
     MatMenuModule,
     MatButtonModule,
     MatCheckboxModule,
+    StlViewerModule,
   ],
 })
 export class EditorModule {}

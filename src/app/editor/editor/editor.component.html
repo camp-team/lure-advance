@@ -31,12 +31,16 @@
       [style.background-image]="'url(' + file + ')'"
     >
       <button (click)="deleteImage(i)" class="upload__del-btn">
-        <mat-icon class="upload__del-icon" inline> delete</mat-icon>
+        <mat-icon class="upload__del-icon" inline>delete</mat-icon>
       </button>
     </div>
+    <ng-container *ngIf="stl">
+      <div class="upload upload--stl">
+        <app-stl-viewer [stlUrl]="stl"></app-stl-viewer>
+      </div>
+    </ng-container>
   </div>
 
-  <!-- <app-stl-viewer></app-stl-viewer> -->
   <p>詳細</p>
   <form [formGroup]="form" class="details" (ngSubmit)="save()">
     <mat-form-field appearance="outline">

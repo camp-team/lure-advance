@@ -1,5 +1,11 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, HostListener, OnInit } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  OnInit,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import {
   FormBuilder,
@@ -17,12 +23,15 @@ import { switchMap, take, tap } from 'rxjs/operators';
 import { ThingReferenceService } from 'src/app/services/thing-reference.service';
 import { ThingService } from 'src/app/services/thing.service';
 import { UserService } from 'src/app/services/user.service';
+import { StlViewerComponent } from 'src/app/stl-viewer/stl-viewer/stl-viewer.component';
 @Component({
   selector: 'app-thing-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
 })
-export class EditorComponent implements OnInit {
+export class EditorComponent implements OnInit, AfterViewInit {
+  @ViewChild(StlViewerComponent) stlviewer: StlViewerComponent;
+
   MAX_DESCRIPTION_LENGTH: number = 300;
   MAX_TITLE_LENGTH: number = 80;
   MAX_IMAGE_FILE_LENGTH: number = 4;
@@ -37,7 +46,9 @@ export class EditorComponent implements OnInit {
     tap((thing) => (this.thing = thing))
   );
 
-  thingRef$: Observable<ThingReference> = this.route.parent.paramMap.pipe(
+  private thingRef$: Observable<
+    ThingReference
+  > = this.route.parent.paramMap.pipe(
     switchMap((map) => {
       const thingId = map.get('thing');
       return this.thingRefService.getThingRefById(thingId);
@@ -119,7 +130,9 @@ export class EditorComponent implements OnInit {
     const fr: FileReader = new FileReader();
     fr.onload = (e) => {
       if (this.isStl(file)) {
-        this.stl = e.target.result;
+        this.stl = e.target.result as string;
+        const stlUrl = e.target.result as any;
+        this.stlviewer.start(stlUrl);
         this.stlFile = file;
       } else {
         this.images.push(e.target.result);
@@ -152,6 +165,7 @@ export class EditorComponent implements OnInit {
     private userService: UserService,
     private thingRefService: ThingReferenceService
   ) {}
+  ngAfterViewInit(): void {}
 
   ngOnInit(): void {
     this.thing$.pipe(take(1)).subscribe(async (thing) => {

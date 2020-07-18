@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  AfterViewInit,
+} from '@angular/core';
 import * as THREE from 'three';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
 import * as trackballControls from 'three-trackballcontrols';
@@ -8,17 +15,23 @@ import * as trackballControls from 'three-trackballcontrols';
   templateUrl: './stl-viewer.component.html',
   styleUrls: ['./stl-viewer.component.scss'],
 })
-export class StlViewerComponent implements OnInit {
+export class StlViewerComponent implements OnInit, AfterViewInit {
   constructor() {}
 
   @Input() stlUrl: string;
   @Output() onLoadCompleted: EventEmitter<boolean> = new EventEmitter();
 
-  container: HTMLElement;
+  containerClassName: string = 'container-viewer';
+  private scene: THREE.Scene;
+  private container: HTMLElement;
+
   ngOnInit(): void {
-    this.container = document.getElementById('containerViewer');
-    this.start(this.container, this.stlUrl);
-    this.onLoadCompleted.emit(true);
+    this.container = document.getElementById(this.containerClassName);
+    this.start(this.stlUrl);
+  }
+
+  ngAfterViewInit(): void {
+    this.scene?.dispose();
   }
 
   createRender(
@@ -37,17 +50,16 @@ export class StlViewerComponent implements OnInit {
     return animate;
   }
 
-  async start(container: HTMLElement, url: string) {
+  async start(url: string) {
     if (url === undefined) {
       throw Error('url is undefined.');
     }
-    if (!container.clientWidth) return;
-    if (!container.clientHeight) return;
+    if (!this.container.clientWidth) return;
+    if (!this.container.clientHeight) return;
 
-    const canvasWidth: number = container.clientWidth;
-    const canvasHeight: number = container.clientHeight;
-
-    const scene = new THREE.Scene();
+    const canvasWidth: number = this.container.clientWidth;
+    const canvasHeight: number = this.container.clientHeight;
+    this.scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(
       60,
@@ -57,10 +69,10 @@ export class StlViewerComponent implements OnInit {
     );
 
     const topLight = new THREE.DirectionalLight(0x999999);
-    scene.add(topLight);
+    this.scene.add(topLight);
     const headLight = new THREE.DirectionalLight(0x666666);
-    scene.add(headLight);
-    scene.add(new THREE.AmbientLight(0x333333));
+    this.scene.add(headLight);
+    this.scene.add(new THREE.AmbientLight(0x333333));
 
     const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -90,12 +102,15 @@ export class StlViewerComponent implements OnInit {
         camera.position.set(0, 0, sphere.radius * mesh.scale.z * 3);
       }
 
-      scene.add(mesh);
+      this.scene.add(mesh);
 
-      container.appendChild(renderer.domElement);
+      this.container.appendChild(renderer.domElement);
+      if (this.container.children.length > 1) {
+        this.container.firstChild.remove();
+      }
       const controls = new trackballControls(camera, renderer.domElement);
 
-      const render = this.createRender(renderer, scene, camera);
+      const render = this.createRender(renderer, this.scene, camera);
       const animate = this.createAnimate(() => {
         controls.update();
         topLight.position.copy(camera.up);
@@ -105,5 +120,10 @@ export class StlViewerComponent implements OnInit {
       animate();
       render();
     });
+    this.onLoadCompleted.emit(true);
+  }
+
+  reunder() {
+    this.start(this.stlUrl);
   }
 }
