@@ -10,6 +10,8 @@
   &__title {
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
     color: rgba(black, 0.6);
     font-size: 14px;
   }
@@ -32,14 +34,18 @@
     flex-shrink: 0;
   }
   &__thumbnail {
-    height: 300px;
-    max-width: 100%;
+    height: 225px;
     background: center/cover;
-  }
-  &__thumbnail:hover {
-    cursor: pointer;
+    &:hover {
+      cursor: pointer;
+    }
   }
   &__actions {
-    padding: 12px;
+    padding: 8px;
+  }
+  &__like-btn {
+    &--liked {
+      color: #eb154c;
+    }
   }
 }

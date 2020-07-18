@@ -22,8 +22,6 @@ export class ThingCardComponent implements OnInit {
   constructor(
     private thingService: ThingService,
     private userService: UserService,
-    private authService: AuthService,
-    private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private router: Router
   ) {}
