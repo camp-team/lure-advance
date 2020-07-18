@@ -122,8 +122,4 @@ export class StlViewerComponent implements OnInit, AfterViewInit {
     });
     this.onLoadCompleted.emit(true);
   }
-
-  reunder() {
-    this.start(this.stlUrl);
-  }
 }
