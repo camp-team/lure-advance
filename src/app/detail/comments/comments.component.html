@@ -21,12 +21,22 @@
           >
             <mat-icon>send</mat-icon>
           </button>
+          <mat-hint align="end"
+            >{{ textarea.value.length }}/{{ MAX_COMMENT_LENGTH }}
+          </mat-hint>
           <mat-error *ngIf="commentForm.hasError('maxlength')"
-            >{{ textarea.value.length }}は文字が多過ぎます</mat-error
+            >Your input is {{ textarea.value.length }} length. Too may
+            letters.</mat-error
           >
-          <mat-hint align="end">{{ textarea.value.length }}/400</mat-hint>
         </mat-form-field>
       </form>
+      <mat-progress-spinner
+        class="loading"
+        *ngIf="isProcessing"
+        mode="indeterminate"
+        color="primary"
+        [diameter]="40"
+      ></mat-progress-spinner>
 
       <app-comon-comment
         *ngFor="let comment of comments$ | async"

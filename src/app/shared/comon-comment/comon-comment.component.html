@@ -18,7 +18,13 @@
             {{ comment.updateAt.toDate() | relativetime }}
           </p>
         </div>
-        <p class="comment__body">{{ comment.body.trim() }}</p>
+        <p
+          class="comment__body"
+          [class.comment__body--root]="isRootComment"
+          [class.comment__body--reply]="isReplyComment"
+        >
+          {{ comment.body.trim() }}
+        </p>
         <div class="comment__actions">
           <button (click)="isReplying = true" mat-icon-button>
             <mat-icon>reply</mat-icon>
@@ -28,7 +34,7 @@
           <mat-form-field appearance="outline">
             <mat-label>Reply</mat-label>
             <textarea
-              #commentInput
+              #replyInput
               matInput
               matTextareaAutosize
               required
@@ -36,13 +42,17 @@
               autocomplete="off"
               [formControl]="replyCommentForm"
             ></textarea>
+            <mat-hint align="end"
+              >{{ replyInput.value.length }}/{{ MAX_COMMENT_LENGTH }}
+            </mat-hint>
             <mat-error *ngIf="replyCommentForm.hasError('maxlength')"
-              >文字が多過ぎます</mat-error
-            >
+              >Your input is {{ replyInput.value.length }} length. Too many
+              latters
+            </mat-error>
           </mat-form-field>
           <div class="comment__edit-actions">
             <button (click)="isReplying = false" mat-flat-button>
-              キャンセル
+              Cancel
             </button>
             <button
               [disabled]="isProcessing || replyCommentForm.invalid"
@@ -67,9 +77,13 @@
             autocomplete="off"
             [formControl]="inputComment"
           ></textarea>
+          <mat-hint align="end"
+            >{{ inputComment.value.length }}/{{ MAX_COMMENT_LENGTH }}
+          </mat-hint>
           <mat-error *ngIf="inputComment.hasError('maxlength')"
-            >文字が多過ぎます</mat-error
-          >
+            >Your input is {{ inputComment.value.length }} length. Too many
+            letters.
+          </mat-error>
         </mat-form-field>
         <div class="comment__edit-actions">
           <button (click)="isEditing = false" mat-flat-button>
@@ -104,23 +118,21 @@
     </div>
   </div>
   <div class="replies">
-    <ng-container *ngIf="comment?.replyCount">
-      <button
-        (click)="loadReplyComments()"
-        *ngIf="!isShowReplies; else replies"
-        mat-icon-button
-      >
-        <mat-icon>keyboard_arrow_down</mat-icon>
-        <span>{{ comment.replyCount }}件の返信を表示</span>
-      </button>
-      <ng-template #replies>
-        <button (click)="isShowReplies = false" mat-icon-button>
+    <ng-container *ngIf="staticCommentCount">
+      <ng-container *ngIf="isRepliesVisible; else viewReplies">
+        <button (click)="isRepliesVisible = false" mat-icon-button>
           <mat-icon>keyboard_arrow_up</mat-icon>
-          <span>{{ comment.replyCount }}件の返信を非表示</span>
+          <span>View {{ staticCommentCount }} Replies</span>
+        </button>
+      </ng-container>
+      <ng-template #viewReplies>
+        <button (click)="loadReplyComments()" mat-icon-button>
+          <mat-icon>keyboard_arrow_down</mat-icon>
+          <span>View {{ staticCommentCount }} Replies</span>
         </button>
       </ng-template>
     </ng-container>
-    <ng-container *ngIf="isShowReplies">
+    <ng-container *ngIf="isRepliesVisible">
       <app-comon-comment
         *ngFor="let reply of replyComments$ | async"
         [comment]="reply"

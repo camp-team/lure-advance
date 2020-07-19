@@ -26,6 +26,7 @@ import { NotFoundComponent } from '../not-found/not-found.component';
 import { TimelinePostCardComponent } from './timeline-post-card/timeline-post-card.component';
 import { TimelineCommentsCardComponent } from './timeline-comments-card/timeline-comments-card.component';
 import { TimelineNotificationCardComponent } from './timeline-notification-card/timeline-notification-card.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { TimelineNotificationCardComponent } from './timeline-notification-card/
     MatExpansionModule,
     MatChipsModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
   ],
   exports: [
     ComonCommentComponent,

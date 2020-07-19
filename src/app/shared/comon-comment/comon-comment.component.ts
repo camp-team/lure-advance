@@ -23,23 +23,28 @@ export class ComonCommentComponent implements OnInit {
   @Input() isRootComment: boolean;
   @Input() isReplyComment: boolean;
 
+  MAX_COMMENT_LENGTH: number = 150;
+
   inputComment = new FormControl('', [
     Validators.required,
-    Validators.maxLength(400),
+    Validators.maxLength(this.MAX_COMMENT_LENGTH),
   ]);
   replyCommentForm = new FormControl('', [
     Validators.required,
     ,
-    Validators.maxLength(400),
+    Validators.maxLength(this.MAX_COMMENT_LENGTH),
   ]);
 
   isEditing: boolean;
   isReplying: boolean;
+  isLoadingReplies: boolean;
 
-  isShowReplies: boolean;
+  isRepliesVisible: boolean;
 
   isProcessing: boolean;
   replyComments$: Observable<Comment[]>;
+
+  staticCommentCount: number;
 
   user$: Observable<User> = this.userService.user$;
 
@@ -81,8 +86,9 @@ export class ComonCommentComponent implements OnInit {
     };
     this.commentService
       .replyComment(this.rootCommentId, replyComment)
-      .then(() => this.snackBar.open('コメントに返信しました。'))
+      .then(() => this.snackBar.open('You Replied Comment.'))
       .then(() => (this.isProcessing = false))
+      .then(() => this.staticCommentCount++)
       .finally(() => this.replyCommentForm.setValue(''));
   }
 
@@ -91,7 +97,7 @@ export class ComonCommentComponent implements OnInit {
       this.thingId,
       this.rootCommentId
     );
-    this.isShowReplies = true;
+    this.isRepliesVisible = true;
   }
 
   saveComment(): void {
@@ -105,12 +111,12 @@ export class ComonCommentComponent implements OnInit {
     if (this.rootCommentId === this.comment.id) {
       this.commentService
         .updateComment(newValue)
-        .then(() => this.snackBar.open('コメントを編集しました。'));
+        .then(() => this.snackBar.open('Save your comment.'));
       //返信
     } else {
       this.commentService
         .updateReply(this.rootCommentId, newValue)
-        .then(() => this.snackBar.open('コメントを編集しました。'));
+        .then(() => this.snackBar.open('Save your comment.'));
     }
   }
 
@@ -122,13 +128,16 @@ export class ComonCommentComponent implements OnInit {
     if (this.rootCommentId === this.comment.id) {
       this.commentService
         .deleteComment(this.comment)
-        .then(() => this.snackBar.open('コメントを削除しました。'));
+        .then(() => this.snackBar.open('Deleting Comment is Successful.'));
     } else {
       this.commentService
         .deleteReply(this.rootCommentId, this.comment)
-        .then(() => this.snackBar.open('コメントを削除しました。'));
+        .then(() => this.staticCommentCount--)
+        .then(() => this.snackBar.open('Deleting Comment is Successful.'));
     }
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.staticCommentCount = this.comment.replyCount;
+  }
 }

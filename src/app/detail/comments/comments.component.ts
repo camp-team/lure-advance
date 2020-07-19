@@ -23,9 +23,11 @@ export class CommentsComponent implements OnInit {
     private userService: UserService,
     private route: ActivatedRoute
   ) {}
+
+  MAX_COMMENT_LENGTH: number = 150;
   commentForm = new FormControl('', [
     Validators.required,
-    Validators.maxLength(400),
+    Validators.maxLength(this.MAX_COMMENT_LENGTH),
   ]);
 
   id: string;
@@ -35,7 +37,7 @@ export class CommentsComponent implements OnInit {
   comments$: Observable<CommentWithUser[]> = this.route.parent.paramMap.pipe(
     switchMap((map) => {
       this.id = map.get('thing');
-      return this.commentService.getAllComments(this.id);
+      return this.commentService.getCommentByThingId(this.id);
     })
   );
 
@@ -64,7 +66,7 @@ export class CommentsComponent implements OnInit {
     };
     this.commentService
       .addComment(comment)
-      .then(() => this.snackBar.open('コメントを追加しました。'))
+      .then(() => this.snackBar.open('Added Your Comment.'))
       .then(() => (this.isProcessing = false))
       .finally(() => this.commentForm.setValue('', { emitEvent: false }));
   }
