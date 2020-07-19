@@ -29,12 +29,16 @@ export class ThingReferenceService {
     thingId: string,
     ref: Omit<ThingReference, 'createdAt' | 'updatedAt'>
   ): Promise<void> {
+    if (ref === undefined) {
+      return;
+    }
+    const id: string = this.db.createId();
     const newValue: ThingReference = {
       ...ref,
       updatedAt: firestore.Timestamp.now(),
       createdAt: firestore.Timestamp.now(),
     };
-    return this.db.doc(`things/${thingId}/stls/${ref}`).set(newValue);
+    return this.db.doc(`things/${thingId}/stls/${id}`).set(newValue);
   }
 
   async saveOnStorage(
