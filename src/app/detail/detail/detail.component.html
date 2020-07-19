@@ -13,9 +13,15 @@
         <p class="thing__updateAt">
           {{ thing.createdAt.toDate() | date: 'yyyy年MM月dd日' }}
         </p>
-        <button [mat-menu-trigger-for]="menu" *ngIf="isMypost" mat-icon-button>
-          <mat-icon>more_vert</mat-icon>
-        </button>
+        <ng-container *ngIf="user$ | async as user">
+          <button
+            *ngIf="user.uid === thing.designerId"
+            [mat-menu-trigger-for]="menu"
+            mat-icon-button
+          >
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </ng-container>
         <mat-menu #menu>
           <button routerLink="/{{ thing.id }}/edit" mat-menu-item>
             <mat-icon>edit</mat-icon> <span>編集</span>
