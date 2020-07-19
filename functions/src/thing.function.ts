@@ -76,8 +76,9 @@ export const deleteThing = functions
     return Promise.all([
       deleteCollectionByPath(`things/${thingId}/likeUsers`),
       deleteCollectionByPath(`things/${thingId}/comments`),
+      deleteCollectionByPath(`things/${thingId}/stls`),
       storage.deleteFiles({
-        directory: `things/${thingId}/files`,
+        directory: `things/${thingId}`,
       }),
     ]);
   });
