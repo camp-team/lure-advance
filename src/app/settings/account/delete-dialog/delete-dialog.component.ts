@@ -4,6 +4,7 @@ import { UserService } from 'src/app/services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { User } from '@interfaces/user';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-delete-dialog',

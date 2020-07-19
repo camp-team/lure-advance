@@ -12,6 +12,12 @@ const routes: Routes = [
     path: '',
     component: ShellComponent,
     children: [
+      // {
+      //   path: '',
+      //   pathMatch: 'full',
+      //   loadChildren: () =>
+      //     import('./board/board.module').then((m) => m.TimelineModule),
+      // },
       {
         path: '',
         pathMatch: 'full',

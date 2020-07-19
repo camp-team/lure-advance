@@ -1,15 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { Thing, ThingWithUser } from '@interfaces/thing';
 import { User } from '@interfaces/user';
 import { Observable } from 'rxjs';
-import { AuthService } from 'src/app/services/auth.service';
+import { tap } from 'rxjs/operators';
 import { ThingService } from 'src/app/services/thing.service';
 import { UserService } from 'src/app/services/user.service';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
-import { tap } from 'rxjs/operators';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-thing-card',
@@ -34,6 +32,9 @@ export class ThingCardComponent implements OnInit {
     })
   );
 
+  //It take time to delete data from Algolia.
+  //Component is invisible After dialog closed
+  visible: boolean = true;
   isLiked: boolean;
   isProcessing: boolean;
 
@@ -60,11 +61,18 @@ export class ThingCardComponent implements OnInit {
   }
 
   delete(thing: Thing) {
-    this.dialog.open(DeleteDialogComponent, {
-      data: thing,
-      restoreFocus: false,
-      autoFocus: false,
-    });
+    this.dialog
+      .open(DeleteDialogComponent, {
+        data: thing,
+        restoreFocus: false,
+        autoFocus: false,
+      })
+      .afterClosed()
+      .subscribe((status) => {
+        if (status) {
+          this.visible = false;
+        }
+      });
   }
 
   navigateToProfile(thing: Thing) {
