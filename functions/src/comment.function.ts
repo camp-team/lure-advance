@@ -172,7 +172,7 @@ export const deleteComment = functions
         );
         await db
           .doc(`users/${value.designerId}`)
-          .update('commentCount', admin.firestore.FieldValue.increment(1));
+          .update('commentCount', admin.firestore.FieldValue.increment(-1));
         console.log('Decrement Comment Count.');
       } else {
         console.log(
