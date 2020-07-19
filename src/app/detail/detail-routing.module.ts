@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CommentsComponent } from './comments/comments.component';
 import { DescriptionComponent } from './description/description.component';
-import { FilesComponent } from './files/files.component';
 import { DetailComponent } from './detail/detail.component';
 
 const routes: Routes = [
@@ -17,10 +16,6 @@ const routes: Routes = [
       {
         path: 'comments',
         component: CommentsComponent,
-      },
-      {
-        path: 'files',
-        component: FilesComponent,
       },
     ],
   },

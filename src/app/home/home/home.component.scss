@@ -1,27 +1,14 @@
 :host {
   display: block;
-  padding: 24px 160px;
-}
-.grid {
-  margin-top: 16px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  gap: 24px;
+  margin: 24px 120px;
 }
 
-.thing {
-  max-width: 400px;
-  &__header {
-    font-size: 13px;
-    font-weight: 500;
-    color: rgba(black, 0.38);
-  }
-  &__thumbnail:hover {
-    cursor: pointer;
-  }
-  &__avator {
-    background: center/cover;
-  }
+.grid {
+  max-width: 1600px;
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
 }
 .loading {
   margin: 40px auto;

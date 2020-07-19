@@ -28,7 +28,6 @@
     "@angular/platform-browser-dynamic": "~9.1.4",
     "@angular/router": "~9.1.4",
     "algoliasearch": "^4.3.0",
-    "angular-stl-model-viewer": "^1.0.0",
     "file-saver": "^2.0.2",
     "firebase": "^7.14.2",
     "jszip": "^3.5.0",
@@ -39,6 +38,7 @@
     "ngx-swiper-wrapper": "^9.0.1",
     "rxjs": "~6.5.4",
     "three": "^0.117.1",
+    "three-trackballcontrols": "0.0.8",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
   },

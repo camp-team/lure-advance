@@ -13,7 +13,7 @@
     <button
       type="button"
       class="file__up-btn"
-      [disabled]="images.length >= MAX_FILE_LENGTH"
+      [disabled]="images.length >= MAX_IMAGE_FILE_LENGTH"
       (click)="file_input.click()"
       mat-flat-button
       autocomplete="off"
@@ -31,22 +31,14 @@
       [style.background-image]="'url(' + file + ')'"
     >
       <button (click)="deleteImage(i)" class="upload__del-btn">
-        <mat-icon class="upload__del-icon" inline> delete</mat-icon>
-      </button>
-    </div>
-  </div>
-
-  <p *ngIf="stls.length">STL</p>
-  <div class="grid">
-    <div *ngFor="let stl of stls; index as i">
-      <button (click)="deleteStl(i)" class="upload__del-btn">
         <mat-icon class="upload__del-icon" inline>delete</mat-icon>
       </button>
-      <stl-model-viewer
-        class="upload upload--stl"
-        [stlModels]="[stl]"
-      ></stl-model-viewer>
     </div>
+    <ng-container *ngIf="stl">
+      <div class="upload upload--stl">
+        <app-stl-viewer [stlUrl]="stl"></app-stl-viewer>
+      </div>
+    </ng-container>
   </div>
 
   <p>詳細</p>
@@ -54,9 +46,11 @@
     <mat-form-field appearance="outline">
       <mat-label>タイトル</mat-label>
       <input matInput autocomplete="off" #input formControlName="title" />
-      <mat-hint align="end">{{ input.value.length }}/100</mat-hint>
+      <mat-hint align="end"
+        >{{ input.value.length }}/{{ MAX_TITLE_LENGTH }}</mat-hint
+      >
       <mat-error *ngIf="titleControl.hasError('maxlength')"
-        >長過ぎます</mat-error
+        >{{ input.value.length }}は長過ぎます</mat-error
       >
       <mat-error *ngIf="titleControl.hasError('required')"
         >必須入力です</mat-error
@@ -72,20 +66,13 @@
         matTextareaAutosize
       >
       </textarea>
-      <mat-hint align="end">{{ textarea.value.length }}/5000</mat-hint>
+      <mat-hint align="end"
+        >{{ textarea.value.length }}/{{ MAX_DESCRIPTION_LENGTH }}</mat-hint
+      >
       <mat-error *ngIf="descriptionControl.hasError('maxlength')"
-        >長過ぎます</mat-error
+        >{{ textarea.value.length }}長過ぎます</mat-error
       >
     </mat-form-field>
-    <div *ngIf="categories" class="categories" [formGroup]="categoriesForm">
-      <p>CATEGORIES</p>
-      <mat-checkbox
-        *ngFor="let category of categories"
-        [formControlName]="category.value"
-        class="categories__check"
-        >{{ category.name }}
-      </mat-checkbox>
-    </div>
     <mat-form-field>
       <mat-label>タグ</mat-label>
       <mat-chip-list #chipList aria-label="tag selection">
@@ -110,7 +97,9 @@
       </mat-chip-list>
     </mat-form-field>
     <div class="details__actions">
-      <button type="button" (click)="cancel()" mat-button>キャンセル</button>
+      <button type="button" (click)="cancel()" mat-button>
+        キャンセル
+      </button>
       <button [disabled]="form.invalid" mat-flat-button color="primary">
         保存
       </button>

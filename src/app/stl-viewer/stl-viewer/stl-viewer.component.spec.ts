@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FilesComponent } from './files.component';
+import { StlViewerComponent } from './stl-viewer.component';
 
-describe('FilesComponent', () => {
-  let component: FilesComponent;
-  let fixture: ComponentFixture<FilesComponent>;
+describe('StlViewerComponent', () => {
+  let component: StlViewerComponent;
+  let fixture: ComponentFixture<StlViewerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [FilesComponent],
+      declarations: [StlViewerComponent],
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FilesComponent);
+    fixture = TestBed.createComponent(StlViewerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

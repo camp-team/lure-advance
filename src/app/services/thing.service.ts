@@ -7,7 +7,7 @@ import { AngularFireStorage } from '@angular/fire/storage';
 import { map, take, switchMap, tap, filter } from 'rxjs/operators';
 import { User } from '@interfaces/user';
 import { UserService } from './user.service';
-import { ThingRef } from '@interfaces/thing-ref';
+import { ThingReference } from '@interfaces/thing-reference';
 import { AngularFireFunctions } from '@angular/fire/functions';
 @Injectable({
   providedIn: 'root',
@@ -155,92 +155,38 @@ export class ThingService {
 
   async saveOnStorage(
     thingId: string,
-    stlFiles: (File | ThingRef)[],
     imageFiles: (File | string)[],
-    defaultImageLength: number = 0,
-    defaultStlLength: number = 0
-  ) {
-    await this.deleteUploadedFile(thingId, stlFiles, defaultStlLength, 'stl');
-
-    await this.deleteUploadedFile(
-      thingId,
-      imageFiles,
-      defaultImageLength,
-      'image'
-    );
-
-    const stlRef = await this.uploadStlFiles(thingId, stlFiles);
-
-    const imageUrls: string[] = await this.getPromiseAllDwonLoadUrls(
-      thingId,
-      imageFiles,
-      'image'
-    );
-
-    return { stlRef, imageUrls };
+    defaultImageLength: number = 0
+  ): Promise<string[]> {
+    await this.deleteUploadedFile(thingId, imageFiles, defaultImageLength);
+    return this.getPromiseAllDwonLoadUrls(thingId, imageFiles);
   }
 
   private deleteUploadedFile(
     thingId: string,
-    files: (File | string | ThingRef)[],
-    defaultLength: number,
-    type: string
+    files: (File | string | ThingReference)[],
+    defaultLength: number
   ): Promise<any> {
     if (defaultLength > files.length) {
       const deleteCount = defaultLength - files.length;
       return Promise.all(
         new Array(deleteCount).fill(null).map(async (_, index) => {
           const i = defaultLength - index - 1;
-          const path = `things/${thingId}/files/${thingId}-${type}-${i}`;
+          const path = `things/${thingId}/images/${thingId}-${i}`;
           return this.storage.ref(path).delete().toPromise();
         })
       );
     }
   }
 
-  getFileNameByUrl(url: string): string {
-    return this.storage.storage.refFromURL(url).name;
-  }
-
   private getPromiseAllDwonLoadUrls(
     thingId: string,
-    files: (File | string)[],
-    type: string
+    files: (File | string)[]
   ): Promise<string[]> {
     return Promise.all(
       files.map(async (file, index) => {
         if (file instanceof File) {
-          return await this.uploadAndgetDownLoadUrl(thingId, file, type, index);
-        } else {
-          return file;
-        }
-      })
-    );
-  }
-
-  uploadStlFiles(
-    thingId: string,
-    files: (File | ThingRef)[]
-  ): Promise<ThingRef[]> {
-    return Promise.all(
-      files.map(async (file, index) => {
-        if (file instanceof File) {
-          const path = `things/${thingId}/files/${thingId}-stl-${index}`;
-          await this.storage.upload(path, file);
-
-          const url: string = await this.storage
-            .ref(path)
-            .getDownloadURL()
-            .toPromise();
-
-          const ref: ThingRef = {
-            downloadUrl: url,
-            fileName: file.name,
-            fileSize: file.size,
-            downloadCount: 0,
-            updatedAt: firestore.Timestamp.now(),
-          };
-          return ref;
+          return await this.uploadAndgetDownLoadUrl(thingId, file, index);
         } else {
           return file;
         }
@@ -251,10 +197,9 @@ export class ThingService {
   private async uploadAndgetDownLoadUrl(
     thingId: string,
     file: File,
-    type: string,
     index: number
   ): Promise<string> {
-    const path: string = `things/${thingId}/files/${thingId}-${type}-${index}`;
+    const path: string = `things/${thingId}/images/${thingId}-${index}`;
     const ref = this.storage.ref(path);
     await this.storage.upload(path, file);
     return await ref.getDownloadURL().toPromise();

@@ -1,5 +1,11 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, OnDestroy, OnInit, HostListener } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  OnInit,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import {
   FormBuilder,
@@ -11,30 +17,41 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Thing } from '@interfaces/thing';
-import { ThingRef } from '@interfaces/thing-ref';
-import { Observable, Subscription } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
-import { Category } from 'src/app/interfaces/category';
-import { CategoryService } from 'src/app/services/category.service';
+import { ThingReference } from '@interfaces/thing-reference';
+import { Observable } from 'rxjs';
+import { switchMap, take, tap } from 'rxjs/operators';
+import { ThingReferenceService } from 'src/app/services/thing-reference.service';
 import { ThingService } from 'src/app/services/thing.service';
 import { UserService } from 'src/app/services/user.service';
+import { StlViewerComponent } from 'src/app/stl-viewer/stl-viewer/stl-viewer.component';
 @Component({
   selector: 'app-thing-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
 })
-export class EditorComponent implements OnInit, OnDestroy {
-  MAX_FILE_LENGTH = 5;
+export class EditorComponent implements OnInit, AfterViewInit {
+  @ViewChild(StlViewerComponent) stlviewer: StlViewerComponent;
 
-  private thing: Thing;
-  private subscriptin: Subscription;
+  MAX_DESCRIPTION_LENGTH: number = 300;
+  MAX_TITLE_LENGTH: number = 80;
+  MAX_IMAGE_FILE_LENGTH: number = 4;
+  MAX_STL_FILE_LENGTH: number = 1;
+
+  thing: Thing;
   private thing$: Observable<Thing> = this.route.parent.paramMap.pipe(
     switchMap((map) => {
       const thingId = map.get('thing');
       return this.thingService.getThingByID(thingId);
     }),
-    tap((thing) => {
-      this.thing = thing;
+    tap((thing) => (this.thing = thing))
+  );
+
+  private thingRef$: Observable<
+    ThingReference
+  > = this.route.parent.paramMap.pipe(
+    switchMap((map) => {
+      const thingId = map.get('thing');
+      return this.thingRefService.getThingRefById(thingId);
     })
   );
 
@@ -42,13 +59,15 @@ export class EditorComponent implements OnInit, OnDestroy {
   imageFiles: (File | string)[] = [];
   defaultImageLength: number;
 
-  stls: (string | ArrayBuffer)[] = [];
-  stlFiles: (File | ThingRef)[] = [];
-  defaultStlLength: number;
+  stl: string | ArrayBuffer;
+  stlFile: File;
 
   form: FormGroup = this.fb.group({
-    title: ['', [Validators.required, Validators.maxLength(100)]],
-    description: ['', [Validators.maxLength(5000)]],
+    title: [
+      '',
+      [Validators.required, Validators.maxLength(this.MAX_TITLE_LENGTH)],
+    ],
+    description: ['', [Validators.maxLength(this.MAX_DESCRIPTION_LENGTH)]],
     tags: [],
   });
 
@@ -69,17 +88,29 @@ export class EditorComponent implements OnInit, OnDestroy {
   removable = true;
   addOnBlur = true;
 
-  categories: Category[];
-  categoriesForm: FormGroup;
-  selectedCategories: string[] = [];
-
   selectFiles(event) {
     const files: File[] = Object.values(event.target.files);
-    if (files.length + this.images.length > this.MAX_FILE_LENGTH) {
-      this.snackBar.open('最大ファイル数は5つです');
+    this.seletFileValidator(files);
+    files.forEach((file) => this.readFile(file));
+  }
+
+  private seletFileValidator(files: File[]) {
+    const stlFileLength: number = files.filter((file) => this.isStl(file))
+      .length;
+
+    if (stlFileLength > this.MAX_STL_FILE_LENGTH) {
+      this.snackBar.open(
+        `You can't attach more than ${this.MAX_STL_FILE_LENGTH} stls.`
+      );
       return;
     }
-    files.forEach((file) => this.readFile(file));
+
+    if (files.length + this.images.length > this.MAX_IMAGE_FILE_LENGTH) {
+      this.snackBar.open(
+        `You can't attach more than ${this.MAX_IMAGE_FILE_LENGTH} images.`
+      );
+      return;
+    }
   }
 
   add(event: MatChipInputEvent): void {
@@ -99,8 +130,10 @@ export class EditorComponent implements OnInit, OnDestroy {
     const fr: FileReader = new FileReader();
     fr.onload = (e) => {
       if (this.isStl(file)) {
-        this.stlFiles.push(file);
-        this.stls.push(e.target.result);
+        this.stl = e.target.result as string;
+        const stlUrl = e.target.result as any;
+        this.stlviewer.start(stlUrl);
+        this.stlFile = file;
       } else {
         this.images.push(e.target.result);
         this.imageFiles.push(file);
@@ -128,23 +161,14 @@ export class EditorComponent implements OnInit, OnDestroy {
     private router: Router,
     private thingService: ThingService,
     private snackBar: MatSnackBar,
-    private categoryService: CategoryService,
     private db: AngularFirestore,
-    private userService: UserService
+    private userService: UserService,
+    private thingRefService: ThingReferenceService
   ) {}
-
-  ngOnDestroy(): void {
-    this.subscriptin.unsubscribe();
-  }
+  ngAfterViewInit(): void {}
 
   ngOnInit(): void {
-    this.subscriptin = this.thing$.subscribe(async (thing) => {
-      this.categoriesForm = await this.buidCategoriesForm(
-        thing?.category || []
-      );
-      this.categoriesForm.valueChanges.subscribe((value) => {
-        this.selectedCategories = this.toValuesFromSelected(value);
-      });
+    this.thing$.pipe(take(1)).subscribe(async (thing) => {
       if (thing === undefined) {
         //+ボタン押下時
         return;
@@ -160,41 +184,44 @@ export class EditorComponent implements OnInit, OnDestroy {
       this.images.push(...thing.imageUrls);
       this.imageFiles.push(...thing.imageUrls);
       this.defaultImageLength = thing.imageUrls.length;
-
-      this.stls = [];
-      this.stls.push(...thing.stlRef.map((ref) => ref.downloadUrl));
-      this.stlFiles.push(...thing.stlRef);
-      this.defaultStlLength = thing.stlRef.length;
+    });
+    this.thingRef$.pipe(take(1)).subscribe((ref) => {
+      this.stl = ref?.downloadUrl;
     });
   }
 
   cancel() {
-    const path = this.thing ? '/' + this.thing.id : '/';
+    const path: string = this.thing ? '/' + this.thing.id : '/';
     this.router.navigateByUrl(path);
   }
 
   async save() {
     const thingId: string = this.thing ? this.thing.id : this.db.createId();
-    const res = await this.thingService.saveOnStorage(
+
+    const result = await this.thingRefService.saveOnStorage(
       thingId,
-      this.stlFiles,
-      this.imageFiles,
-      this.defaultImageLength,
-      this.defaultStlLength
+      this.stlFile
     );
+
+    await this.thingRefService.createThingRef(thingId, result);
+
+    const imageUrls: string[] = await this.thingService.saveOnStorage(
+      thingId,
+      this.imageFiles,
+      this.defaultImageLength
+    );
+
     const formValue = this.form.value;
     const newValue: Thing = {
       ...this.thing,
-      stlRef: res.stlRef,
-      imageUrls: res.imageUrls,
+      imageUrls: imageUrls,
       title: formValue.title,
-      category: this.selectedCategories,
       description: formValue.description,
       tags: this.tags,
     };
     if (this.thing) {
       this.thingService.updateThing(newValue).then(() => {
-        this.snackBar.open('保存しました');
+        this.snackBar.open('更新しました');
         this.isCompleted = true;
         this.router.navigateByUrl(`/${this.thing.id}`);
       });
@@ -205,9 +232,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         title: newValue.title,
         description: newValue.description,
         designerId: uid,
-        imageUrls: res.imageUrls,
-        stlRef: res.stlRef,
-        category: newValue.category,
+        imageUrls: imageUrls,
         commentCount: 0,
         likeCount: 0,
         viewCount: 0,
@@ -225,30 +250,6 @@ export class EditorComponent implements OnInit, OnDestroy {
   deleteImage(index: number) {
     this.images.splice(index, 1);
     this.imageFiles.splice(index, 1);
-  }
-
-  deleteStl(index: number) {
-    this.stls.splice(index, 1);
-    this.stlFiles.splice(index, 1);
-  }
-
-  private async buidCategoriesForm(values: string[]): Promise<FormGroup> {
-    const result = await this.categoryService.getCategoriesLatest();
-    this.categories = result;
-
-    const formControls = {};
-    this.categories.forEach(
-      (category) =>
-        (formControls[category.value] = values.includes(category.value))
-    );
-
-    return this.fb.group(formControls);
-  }
-
-  private toValuesFromSelected(selectedValue: any): string[] {
-    return Object.entries(selectedValue)
-      .filter(([_, value]) => value)
-      .map(([key, _]) => key);
   }
 
   @HostListener('window:beforeunload', ['$event'])

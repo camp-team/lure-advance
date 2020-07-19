@@ -1,8 +1,8 @@
-import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { deleteCollectionByPath } from './utils/firebase-util';
-import { Algolia } from './utils/algolia-util';
+import * as functions from 'firebase-functions';
 import { Thing } from './interfaces/thing';
+import { Algolia } from './utils/algolia-util';
+import { deleteCollectionByPath } from './utils/firebase-util';
 
 const storage = admin.storage().bucket();
 const algolia = new Algolia();

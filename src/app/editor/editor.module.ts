@@ -9,9 +9,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { StlModelViewerModule } from 'angular-stl-model-viewer';
 import { EditorRoutingModule } from './editor-routing.module';
 import { EditorComponent } from './editor/editor.component';
+import { StlViewerModule } from '../stl-viewer/stl-viewer.module';
 
 @NgModule({
   declarations: [EditorComponent],
@@ -27,8 +27,8 @@ import { EditorComponent } from './editor/editor.component';
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
-    StlModelViewerModule,
     MatCheckboxModule,
+    StlViewerModule,
   ],
 })
 export class EditorModule {}
