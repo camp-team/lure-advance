@@ -66,6 +66,9 @@ export const deleteThing = functions
         'thingCount',
         admin.firestore.FieldValue.increment(-1)
       );
+      console.log('Increment Thing Count.');
+    } else {
+      console.log(`Thing ${thingId} does not exsist.`);
     }
 
     await algolia.removeRecord('things', thingId);

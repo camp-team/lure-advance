@@ -59,6 +59,7 @@ export const deleteUserAccount = functions
     });
 
     return Promise.all([
+      deleteCollectionByPath(`users/${uid}/mythings`),
       deleteCollectionByReference(myThingsRef),
       deleteCollectionByPath(`users/${uid}/likedThings`),
       deleteCollectionByPath(`users/${uid}/notifications`),

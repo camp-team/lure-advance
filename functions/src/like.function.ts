@@ -38,6 +38,7 @@ export const likeThing = functions
           'likeCount',
           admin.firestore.FieldValue.increment(1)
         );
+        console.log('Increment LikeCount.');
       } else {
         console.log(`User:${targetUid} does not exsit.`);
       }
@@ -69,6 +70,7 @@ export const likeThing = functions
           'notificationCount',
           admin.firestore.FieldValue.increment(1)
         );
+        console.log('Decrement NotificationCount.');
       } else {
         console.log(`User:${targetUid}'s notification does not exsit.`);
       }
@@ -100,6 +102,7 @@ export const unLikeThing = functions
         await db
           .doc(`users/${targetUid}`)
           .update('likeCount', admin.firestore.FieldValue.increment(-1));
+        console.log('Decrement LikeCount.');
       } else {
         console.log(`User:${targetUid} does not exist.`);
       }
