@@ -28,7 +28,7 @@ export class CommentService {
     }
     return this.db
       .collection<Comment>(`things/${thingId}/comments`, (ref) =>
-        ref.orderBy('updateAt')
+        ref.orderBy('createdAt')
       )
       .valueChanges()
       .pipe(
@@ -138,11 +138,14 @@ export class CommentService {
       );
   }
 
-  addComment(comment: Omit<Comment, 'id' | 'updateAt'>): Promise<void> {
+  addComment(
+    comment: Omit<Comment, 'id' | 'updateAt' | 'createdAt'>
+  ): Promise<void> {
     const id: string = this.db.createId();
     const newValue: Comment = {
       ...comment,
       id,
+      createdAt: firestore.Timestamp.now(),
       updateAt: firestore.Timestamp.now(),
     };
     return this.db
@@ -150,12 +153,16 @@ export class CommentService {
       .set(newValue);
   }
 
-  replyComment(rootCommentId: string, reply: Omit<Comment, 'id' | 'updateAt'>) {
+  replyComment(
+    rootCommentId: string,
+    reply: Omit<Comment, 'id' | 'updateAt' | 'createdAt'>
+  ) {
     const id: string = this.db.createId();
     const newValue: Comment = {
       ...reply,
       id,
       replyCount: 0,
+      createdAt: firestore.Timestamp.now(),
       updateAt: firestore.Timestamp.now(),
     };
 
@@ -173,7 +180,7 @@ export class CommentService {
     return this.db
       .collection<Comment>(
         `things/${thingId}/comments/${rootCommentId}/replies`,
-        (ref) => ref.orderBy('updateAt')
+        (ref) => ref.orderBy('createdAt')
       )
       .valueChanges()
       .pipe(

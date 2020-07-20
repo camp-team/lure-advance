@@ -19,7 +19,7 @@ import { UserService } from 'src/app/services/user.service';
 export class ComonCommentComponent implements OnInit {
   @Input() rootCommentId: string;
   @Input() comment: CommentWithUser;
-  @Input() thingId: string;
+  @Input() thing: Thing;
   @Input() isRootComment: boolean;
   @Input() isReplyComment: boolean;
 
@@ -39,7 +39,7 @@ export class ComonCommentComponent implements OnInit {
   isReplying: boolean;
   isLoadingReplies: boolean;
 
-  isRepliesVisible: boolean;
+  isOpen: boolean;
 
   isProcessing: boolean;
   replyComments$: Observable<Comment[]>;
@@ -48,19 +48,10 @@ export class ComonCommentComponent implements OnInit {
 
   user$: Observable<User> = this.userService.user$;
 
-  thing$: Observable<Thing> = this.route.parent.paramMap.pipe(
-    switchMap((map) => {
-      const thingId = map.get('thing');
-      return this.thingService.getThingByID(thingId);
-    })
-  );
-
   constructor(
     private snackBar: MatSnackBar,
     private commentService: CommentService,
-    private userService: UserService,
-    private route: ActivatedRoute,
-    private thingService: ThingService
+    private userService: UserService
   ) {}
 
   alterEditMode(): void {
@@ -76,8 +67,8 @@ export class ComonCommentComponent implements OnInit {
       this.isProcessing = false;
       return;
     }
-    const replyComment: Omit<Comment, 'id' | 'updateAt'> = {
-      thingId: this.thingId,
+    const replyComment: Omit<Comment, 'id' | 'updateAt' | 'createdAt'> = {
+      thingId: this.thing.id,
       designerId: thing.designerId,
       fromUid: user.uid,
       toUid: this.comment.fromUid,
@@ -94,17 +85,17 @@ export class ComonCommentComponent implements OnInit {
 
   loadReplyComments(): void {
     this.replyComments$ = this.commentService.getRepliesByCommentId(
-      this.thingId,
+      this.thing.id,
       this.rootCommentId
     );
-    this.isRepliesVisible = true;
+    this.isOpen = true;
   }
 
   saveComment(): void {
     this.isEditing = true;
     const newValue: Comment = {
       ...this.comment,
-      thingId: this.thingId,
+      thingId: this.thing.id,
       body: this.inputComment.value,
     };
     //コメント

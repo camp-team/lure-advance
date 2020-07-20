@@ -3,7 +3,7 @@
     <mat-card>
       <form>
         <mat-form-field appearance="outline">
-          <mat-label>コメント</mat-label>
+          <mat-label>Comment</mat-label>
           <textarea
             matInput
             [formControl]="commentForm"
@@ -37,12 +37,11 @@
         color="primary"
         [diameter]="40"
       ></mat-progress-spinner>
-
       <app-comon-comment
         *ngFor="let comment of comments$ | async"
         [comment]="comment"
         [rootCommentId]="comment.id"
-        [thingId]="id"
+        [thing]="thing"
         [isRootComment]="true"
       ></app-comon-comment>
     </mat-card>

@@ -56,7 +56,7 @@ export class CommentsComponent implements OnInit {
       return;
     }
     const value: string = this.commentForm.value;
-    const comment: Omit<Comment, 'id' | 'updateAt'> = {
+    const comment: Omit<Comment, 'id' | 'updateAt' | 'createdAt'> = {
       thingId: thing.id,
       designerId: thing.designerId,
       fromUid: user.uid,
