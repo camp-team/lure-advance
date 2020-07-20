@@ -1,14 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
 import { Comment, CommentWithUser } from '@interfaces/comment';
 import { Thing } from '@interfaces/thing';
 import { User } from '@interfaces/user';
 import { Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 import { CommentService } from 'src/app/services/comment.service';
-import { ThingService } from 'src/app/services/thing.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({

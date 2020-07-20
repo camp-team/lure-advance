@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import {
+  FormControl,
+  Validators,
+  FormGroup,
+  FormBuilder,
+} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Comment, CommentWithUser } from '@interfaces/comment';
@@ -21,14 +26,26 @@ export class CommentsComponent implements OnInit {
     private commentService: CommentService,
     private thingService: ThingService,
     private userService: UserService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private fb: FormBuilder
   ) {}
 
   MAX_COMMENT_LENGTH: number = 150;
-  commentForm = new FormControl('', [
-    Validators.required,
-    Validators.maxLength(this.MAX_COMMENT_LENGTH),
-  ]);
+
+  form: FormGroup = this.fb.group({
+    commentCtrl: [
+      '',
+      [Validators.required, Validators.maxLength(this.MAX_COMMENT_LENGTH)],
+    ],
+  });
+  // commentCtrl = new FormControl('', [
+  //   Validators.required,
+  //   Validators.maxLength(this.MAX_COMMENT_LENGTH),
+  // ]);
+
+  get commentCtrl(): FormControl {
+    return this.form.get('commentCtrl') as FormControl;
+  }
 
   id: string;
   isEditing: boolean;
@@ -55,7 +72,7 @@ export class CommentsComponent implements OnInit {
       this.isProcessing = false;
       return;
     }
-    const value: string = this.commentForm.value;
+    const value: string = this.commentCtrl.value;
     const comment: Omit<Comment, 'id' | 'updateAt' | 'createdAt'> = {
       thingId: thing.id,
       designerId: thing.designerId,
@@ -68,7 +85,7 @@ export class CommentsComponent implements OnInit {
       .addComment(comment)
       .then(() => this.snackBar.open('Added Your Comment.'))
       .then(() => (this.isProcessing = false))
-      .finally(() => this.commentForm.setValue('', { emitEvent: false }));
+      .finally(() => this.commentCtrl.setValue('', { emitEvent: false }));
   }
 
   ngOnInit(): void {}

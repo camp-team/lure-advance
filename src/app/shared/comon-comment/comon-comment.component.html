@@ -97,7 +97,7 @@
   <div class="comment__edit-btn">
     <ng-container *ngIf="user$ | async as user">
       <button
-        *ngIf="comment.fromUid === user?.uid"
+        *ngIf="comment.fromUid === user?.uid || thing.designerId === user?.uid"
         [matMenuTriggerFor]="commentEditor"
         mat-icon-button
       >
