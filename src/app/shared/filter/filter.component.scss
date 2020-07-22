@@ -1,11 +1,10 @@
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 }
 .filter {
   &__title {
-    text-align: center;
     margin: 0;
     font-size: 14px;
     color: rgba(black, 0.6);
