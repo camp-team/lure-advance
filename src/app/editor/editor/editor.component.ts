@@ -46,13 +46,15 @@ export class EditorComponent implements OnInit, AfterViewInit {
     tap((thing) => (this.thing = thing))
   );
 
+  private thingRef: ThingReference;
   private thingRef$: Observable<
     ThingReference
   > = this.route.parent.paramMap.pipe(
     switchMap((map) => {
       const thingId = map.get('thing');
       return this.thingRefService.getThingRefById(thingId);
-    })
+    }),
+    tap((ref) => (this.thingRef = ref))
   );
 
   images: any[] = [];
@@ -131,9 +133,9 @@ export class EditorComponent implements OnInit, AfterViewInit {
     fr.onload = (e) => {
       if (this.isStl(file)) {
         this.stl = e.target.result as string;
-        const stlUrl = e.target.result as any;
-        this.stlviewer.start(stlUrl);
+        const stlUrl = e.target.result as string;
         this.stlFile = file;
+        this.stlviewer.start(stlUrl);
       } else {
         this.images.push(e.target.result);
         this.imageFiles.push(file);
@@ -199,11 +201,10 @@ export class EditorComponent implements OnInit, AfterViewInit {
     const thingId: string = this.thing ? this.thing.id : this.db.createId();
 
     const result = await this.thingRefService.saveOnStorage(
+      this.thingRef,
       thingId,
       this.stlFile
     );
-
-    await this.thingRefService.createThingRef(thingId, result);
 
     const imageUrls: string[] = await this.thingService.saveOnStorage(
       thingId,
@@ -219,7 +220,15 @@ export class EditorComponent implements OnInit, AfterViewInit {
       description: formValue.description,
       tags: this.tags,
     };
+
+    const newRef: ThingReference = {
+      ...this.thingRef,
+      downloadUrl: result?.downloadUrl || this.thingRef.downloadUrl,
+      fileName: result?.fileName || this.thingRef.fileName,
+      fileSize: result?.fileSize || this.thingRef.fileSize,
+    };
     if (this.thing) {
+      await this.thingRefService.updateThingRef(thingId, newRef);
       this.thingService.updateThing(newValue).then(() => {
         this.snackBar.open('更新しました');
         this.isCompleted = true;
@@ -227,6 +236,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
       });
     } else {
       const uid = this.userService.uid;
+      await this.thingRefService.createThingRef(thingId, newRef);
       const thing: Omit<Thing, 'updateAt' | 'createdAt'> = {
         id: thingId,
         title: newValue.title,

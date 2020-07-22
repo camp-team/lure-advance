@@ -27,7 +27,7 @@ export class ThingReferenceService {
 
   createThingRef(
     thingId: string,
-    ref: Omit<ThingReference, 'createdAt' | 'updatedAt'>
+    ref: Omit<ThingReference, 'id' | 'createdAt' | 'updatedAt'>
   ): Promise<void> {
     if (ref === undefined) {
       return;
@@ -35,19 +35,33 @@ export class ThingReferenceService {
     const id: string = this.db.createId();
     const newValue: ThingReference = {
       ...ref,
+      id,
       updatedAt: firestore.Timestamp.now(),
       createdAt: firestore.Timestamp.now(),
     };
     return this.db.doc(`things/${thingId}/stls/${id}`).set(newValue);
   }
 
+  updateThingRef(thingId: string, ref: ThingReference): Promise<void> {
+    if (ref === undefined) {
+      return;
+    }
+    const newValue: ThingReference = {
+      ...ref,
+      updatedAt: firestore.Timestamp.now(),
+    };
+    return this.db.doc(`things/${thingId}/stls/${ref.id}`).set(newValue);
+  }
+
   async saveOnStorage(
+    ref: ThingReference,
     thingId: string,
     file: File
   ): Promise<Omit<ThingReference, 'createdAt' | 'updatedAt'>> {
     if (file === undefined) {
-      return;
+      return null;
     }
+
     const id = this.db.createId();
     const path: string = `things/${thingId}/stls/${id}/${file.name}`;
     const task = await this.storage.ref(path).put(file);
