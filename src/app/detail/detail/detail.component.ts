@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Thing, ThingWithUser } from '@interfaces/thing';
 import { ThingReference } from '@interfaces/thing-reference';
 import { User } from '@interfaces/user';
 import { SwiperConfigInterface } from 'ngx-swiper-wrapper';
 import { Observable } from 'rxjs';
-import { switchMap, take, tap } from 'rxjs/operators';
-import { AuthService } from 'src/app/services/auth.service';
+import { switchMap, take, tap, first } from 'rxjs/operators';
 import { CategoryService } from 'src/app/services/category.service';
 import { ThingReferenceService } from 'src/app/services/thing-reference.service';
 import { ThingService } from 'src/app/services/thing.service';
@@ -35,7 +33,8 @@ export class DetailComponent implements OnInit {
     take(1)
   );
 
-  thingRef$: Observable<ThingReference> = this.route.paramMap.pipe(
+  thingRef: ThingReference;
+  private thingRef$: Observable<ThingReference> = this.route.paramMap.pipe(
     switchMap((map) => {
       return this.thingRefService.getThingRefById(map.get('thing'));
     })
@@ -73,9 +72,10 @@ export class DetailComponent implements OnInit {
     private route: ActivatedRoute,
     private userService: UserService,
     private dialog: MatDialog,
-    private router: Router,
     public categoryService: CategoryService
-  ) {}
+  ) {
+    this.thingRef$.pipe(first()).subscribe((ref) => (this.thingRef = ref));
+  }
 
   delete(thing: Thing) {
     this.dialog.open(DeleteDialogComponent, {
@@ -105,14 +105,6 @@ export class DetailComponent implements OnInit {
     thing.likeCount--;
     this.isLiked = false;
     return this.thingService.unLikeThing(thing.id, uid);
-  }
-
-  navigateByTag(tag: string) {
-    this.router.navigate([''], {
-      queryParams: {
-        tags: tag,
-      },
-    });
   }
 
   ngOnInit(): void {}
