@@ -38,10 +38,6 @@ export class CommentsComponent implements OnInit {
       [Validators.required, Validators.maxLength(this.MAX_COMMENT_LENGTH)],
     ],
   });
-  // commentCtrl = new FormControl('', [
-  //   Validators.required,
-  //   Validators.maxLength(this.MAX_COMMENT_LENGTH),
-  // ]);
 
   get commentCtrl(): FormControl {
     return this.form.get('commentCtrl') as FormControl;

@@ -32,8 +32,6 @@ export class ThingCardComponent implements OnInit {
     })
   );
 
-  //It take time to delete data from Algolia.
-  //Component is invisible After dialog closed
   deleted: boolean;
   isLiked: boolean;
   isProcessing: boolean;

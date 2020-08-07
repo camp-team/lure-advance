@@ -38,7 +38,5 @@ export class MainComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
 
-  ngOnInit(): void {
-    this.popularPosts$.pipe(tap((posts) => console.log(posts)));
-  }
+  ngOnInit(): void {}
 }

@@ -199,7 +199,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
   get tagElementLength(): number {
     const error = this.tagsContorol.getError('maxTextLength');
     const isOver = this.tags.length > this.MAX_TAGS_NUM_LENGTH;
-    // this.tagsContorol.setErrors(isOver ? { maxElementLength: isOver } : null);
     return this.tags.length;
   }
 
