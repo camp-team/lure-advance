@@ -43,7 +43,7 @@ export const createUser = functions
 export const deleteAfUser = functions
   .region('asia-northeast1')
   .https.onCall((snap: User, _) => {
-    console.log(`User:${snap.uid}'s Data Are Deleting.`);
+    functions.logger.info(`User:${snap.uid}'s Data Are Deleting.`);
     return admin.auth().deleteUser(snap.uid);
   });
 

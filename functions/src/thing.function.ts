@@ -27,7 +27,7 @@ export const addThing = functions
         admin.firestore.FieldValue.increment(1)
       );
     } else {
-      console.log(`User:${designerId} does not exist.`);
+      functions.logger.info(`User:${designerId} does not exist.`);
     }
 
     return algolia.saveRecord({
@@ -66,9 +66,9 @@ export const deleteThing = functions
         'thingCount',
         admin.firestore.FieldValue.increment(-1)
       );
-      console.log('Increment Thing Count.');
+      functions.logger.info('Increment Thing Count.');
     } else {
-      console.log(`Thing ${thingId} does not exsist.`);
+      functions.logger.info(`Thing ${thingId} does not exsist.`);
     }
 
     await algolia.removeRecord('things', thingId);
@@ -87,7 +87,7 @@ export const incrementViewCount = functions
   .region('asia-northeast1')
   .https.onCall(async (snap: Thing) => {
     if (snap === null) {
-      console.log('Snap is null.');
+      functions.logger.info('Snap is null.');
       return;
     }
     const thingSnapShot = await db.doc(`things/${snap.id}`).get();
@@ -101,7 +101,7 @@ export const incrementViewCount = functions
         .update('viewCount', admin.firestore.FieldValue.increment(1));
       return Promise.all([updateThingViewCount, updateUserViewCount]);
     } else {
-      console.log(`Thing ${snap.id} does not exist.`);
+      functions.logger.info(`Thing ${snap.id} does not exist.`);
       return;
     }
   });
