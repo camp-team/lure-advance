@@ -4,7 +4,7 @@
       <button mat-dialog-close mat-icon-button>
         <mat-icon>close</mat-icon>
       </button>
-      <p class="actions__title">プロフィール編集</p>
+      <p class="actions__title">Editing Profile</p>
       <button
         (click)="save(user)"
         [mat-dialog-close]="true"
@@ -12,7 +12,7 @@
         color="primary"
         [disabled]="form.invalid"
       >
-        保存
+        Save
       </button>
     </div>
     <div>
@@ -32,38 +32,44 @@
       </div>
     </div>
     <mat-form-field>
-      <mat-label>名前</mat-label>
+      <mat-label>Name</mat-label>
       <input #name autocomplete="off" formControlName="name" matInput />
-      <mat-hint align="end">{{ name.value.length }}/50</mat-hint>
+      <mat-hint align="end"
+        >{{ name.value.length }}/{{ MAX_NAME_LENGTH }}</mat-hint
+      >
       <mat-error *ngIf="nameControl.hasError('maxlength')">
-        {{ name.value.length }}は文字が多すぎます</mat-error
+        {{ MAX_NAME_LENGTH }}-{{ name.value.length }}</mat-error
       >
       <mat-error *ngIf="nameControl.hasError('required')">
-        必須入力です</mat-error
+        Name is Required</mat-error
       >
     </mat-form-field>
     <mat-form-field>
-      <mat-label>自己紹介</mat-label>
+      <mat-label>Description</mat-label>
       <textarea
         autocomplete="off"
         formControlName="description"
         #description
         matInput
       ></textarea>
-      <mat-hint align="end">{{ description.value.length }}/160</mat-hint>
+      <mat-hint align="end"
+        >{{ description.value.length }}/{{ MAX_DESCRIPTION_LENGTH }}</mat-hint
+      >
       <mat-error *ngIf="descriptionControl.hasError('maxlength')">
-        {{ description.value.length }}は文字が多すぎます</mat-error
+        {{ MAX_DESCRIPTION_LENGTH }}-{{ description.value.length }}</mat-error
       >
     </mat-form-field>
     <mat-form-field>
-      <mat-label>ウェブサイト</mat-label>
+      <mat-label>WebPage</mat-label>
       <input autocomplete="off" formControlName="weblink" #weblink matInput />
-      <mat-hint align="end">{{ weblink.value.length }}/100</mat-hint>
+      <mat-hint align="end"
+        >{{ weblink.value.length }}/{{ MAX_URL_LENGTH }}</mat-hint
+      >
       <mat-error *ngIf="weblinkControl.hasError('maxlength')">
-        {{ weblink.value.length }}は文字が多すぎます</mat-error
+        {{ MAX_URL_LENGTH }}-{{ weblink.value.length }}</mat-error
       >
       <mat-error *ngIf="weblinkControl.hasError('pattern')">
-        urlが不正です</mat-error
+        URL is invalid</mat-error
       >
     </mat-form-field>
   </form>
