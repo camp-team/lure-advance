@@ -21,3 +21,8 @@ h2 {
     grid-template-columns: repeat(5, 1fr);
   }
 }
+.not_found {
+  margin: 0;
+  font-size: 14px;
+  color: rbga(black, 0.6);
+}

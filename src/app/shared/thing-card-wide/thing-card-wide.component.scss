@@ -2,25 +2,29 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   padding: 0;
-  :hover {
+  max-width: 480px;
+  height: 180px;
+  &:hover {
     cursor: pointer;
   }
   p {
     margin: 0;
   }
   &__thumbnail {
-    flex-shrink: 0;
+    width: 240px;
     background: center/cover;
-    height: 180px;
   }
   &__body {
-    height: 180px;
+    max-width: calc(480px / 2);
     box-sizing: border-box;
     padding: 8px;
   }
   &__title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 14px;
-    font-weight: 500;
+    color: rgba(black, 0.6);
   }
   &__sub-body {
     display: flex;
@@ -34,11 +38,17 @@
   }
   &__likeCount {
     margin-right: 8px;
+    span {
+      font-size: 10px;
+    }
   }
   &__description {
+    text-overflow: ellipsis;
+    word-break: break-all;
     display: -webkit-box;
     overflow: hidden;
-    -webkit-line-clamp: 6;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
   }
 }
