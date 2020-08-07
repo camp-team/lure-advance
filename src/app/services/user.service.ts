@@ -32,17 +32,13 @@ export class UserService {
 
   async passUserWhenRequiredForm(): Promise<User> {
     const user = await this.getUserWithSnapShot();
-    let isLoginDialogColesed: boolean;
     if (user) {
       return user;
     } else {
       await this.authService.login().catch((err) => {
         console.error(err);
-        isLoginDialogColesed = true;
-      });
-      if (isLoginDialogColesed) {
         return null;
-      }
+      });
       return await this.getUserWithSnapShot();
     }
   }
