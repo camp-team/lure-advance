@@ -1,6 +1,9 @@
 .thing {
   border-radius: 5px;
   box-shadow: 0 2px 5px #ccc;
+  &--deleted {
+    display: none;
+  }
   &__header {
     height: 48px;
     display: flex;
@@ -47,5 +50,17 @@
     &--liked {
       color: #eb154c;
     }
+  }
+  &__view-count {
+    display: flex;
+    align-items: center;
+  }
+  &__actions {
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+  }
+  &__spacer {
+    flex: 1;
   }
 }

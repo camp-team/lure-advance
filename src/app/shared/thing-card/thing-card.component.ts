@@ -34,7 +34,7 @@ export class ThingCardComponent implements OnInit {
 
   //It take time to delete data from Algolia.
   //Component is invisible After dialog closed
-  visible: boolean = true;
+  deleted: boolean;
   isLiked: boolean;
   isProcessing: boolean;
 
@@ -70,7 +70,7 @@ export class ThingCardComponent implements OnInit {
       .afterClosed()
       .subscribe((status) => {
         if (status) {
-          this.visible = false;
+          this.deleted = true;
         }
       });
   }
