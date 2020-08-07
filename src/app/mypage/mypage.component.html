@@ -9,7 +9,7 @@
         <p class="profile__name">{{ user.name }}</p>
         <button *ngIf="isMypage" (click)="openEditor()" mat-icon-button>
           <mat-icon>settings</mat-icon>
-          <span>プロフィールを編集する</span>
+          <span>Edit Profile</span>
         </button>
       </div>
     </div>
@@ -17,9 +17,9 @@
       {{ user.description }}
     </p>
     <div class="profile__sns">
-      <button mat-icon-button>
+      <button *ngIf="user.weblink as url" mat-icon-button>
         <mat-icon>insert_link </mat-icon>
-        <a href="{{ user.weblink }}" target="_blank"> {{ user.weblink }}</a>
+        <a href="{{ url }}" target="_blank"> {{ user.weblink | url }}</a>
       </button>
     </div>
   </mat-card>
@@ -37,6 +37,5 @@
       {{ link.label }}
     </a>
   </nav>
-
   <router-outlet></router-outlet>
 </div>

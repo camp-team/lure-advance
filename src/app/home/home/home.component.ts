@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ThingWithUser } from '@interfaces/thing';
-import { SearchService } from 'src/app/services/search.service';
 import { ActivatedRoute } from '@angular/router';
+import { ThingWithUser } from '@interfaces/thing';
 import { take } from 'rxjs/operators';
-import * as moment from 'moment';
+import { SearchService } from 'src/app/services/search.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -22,7 +21,6 @@ export class HomeComponent implements OnInit {
   categoriFilter: string[];
   sort: string;
   loading: boolean;
-  url: string = `https://firebasestorage.googleapis.com/v0/b/lure-advance-1296d.appspot.com/o/things%2FqGq8QzLkOvFpK7gIcycz%2Fstls%2FVIe9gzMtQAHryLiZdnCu%2Fsample_lure.STL?alt=media&token=a7816e3a-adc9-42e6-8703-1b79b2a14c30`;
   things: ThingWithUser[];
   container = document.getElementById('ht');
   constructor(

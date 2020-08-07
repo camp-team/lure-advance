@@ -15,9 +15,14 @@ h2 {
     grid-template-columns: repeat(2, 1fr);
   }
   &--popular {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(5, 240px);
   }
   &--favorite {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(5, 240px);
   }
+}
+.not_found {
+  margin: 0;
+  font-size: 14px;
+  color: rbga(black, 0.6);
 }

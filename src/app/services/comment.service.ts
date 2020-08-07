@@ -22,10 +22,13 @@ export class CommentService {
     private thingService: ThingService
   ) {}
 
-  getAllComments(thingId: string): Observable<CommentWithUser[]> {
+  getCommentByThingId(thingId: string): Observable<CommentWithUser[]> {
+    if (thingId === undefined) {
+      return of(null);
+    }
     return this.db
       .collection<Comment>(`things/${thingId}/comments`, (ref) =>
-        ref.orderBy('updateAt', 'desc')
+        ref.orderBy('createdAt')
       )
       .valueChanges()
       .pipe(
@@ -45,10 +48,10 @@ export class CommentService {
         }),
         map(([comments, users]) => {
           if (comments?.length) {
-            return comments.map((comment) => {
+            return comments.map((comment: Comment) => {
               return {
                 ...comment,
-                user: users.find((user) => comment.fromUid === user?.uid),
+                user: users.find((user: User) => comment.fromUid === user?.uid),
               };
             });
           } else {
@@ -135,11 +138,14 @@ export class CommentService {
       );
   }
 
-  addComment(comment: Omit<Comment, 'id' | 'updateAt'>): Promise<void> {
+  addComment(
+    comment: Omit<Comment, 'id' | 'updateAt' | 'createdAt'>
+  ): Promise<void> {
     const id: string = this.db.createId();
     const newValue: Comment = {
       ...comment,
       id,
+      createdAt: firestore.Timestamp.now(),
       updateAt: firestore.Timestamp.now(),
     };
     return this.db
@@ -147,14 +153,19 @@ export class CommentService {
       .set(newValue);
   }
 
-  replyComment(rootCommentId: string, reply: Omit<Comment, 'id' | 'updateAt'>) {
+  replyComment(
+    rootCommentId: string,
+    reply: Omit<Comment, 'id' | 'updateAt' | 'createdAt'>
+  ) {
     const id: string = this.db.createId();
     const newValue: Comment = {
       ...reply,
       id,
       replyCount: 0,
+      createdAt: firestore.Timestamp.now(),
       updateAt: firestore.Timestamp.now(),
     };
+
     return this.db
       .doc<Comment>(
         `things/${reply.thingId}/comments/${rootCommentId}/replies/${newValue.id}`
@@ -169,7 +180,7 @@ export class CommentService {
     return this.db
       .collection<Comment>(
         `things/${thingId}/comments/${rootCommentId}/replies`,
-        (ref) => ref.orderBy('updateAt', 'desc')
+        (ref) => ref.orderBy('createdAt')
       )
       .valueChanges()
       .pipe(
@@ -188,10 +199,10 @@ export class CommentService {
         }),
         map(([replies, users]) => {
           if (replies?.length) {
-            return replies.map((rep) => {
+            return replies.map((rep: Comment) => {
               return {
                 ...rep,
-                user: users.find((user) => user.uid === rep.fromUid),
+                user: users.find((user: User) => user.uid === rep.fromUid),
               };
             });
           } else {

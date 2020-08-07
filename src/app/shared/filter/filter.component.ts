@@ -72,18 +72,6 @@ export class FilterComponent implements OnInit {
     });
   }
 
-  buildQueryParameterByCategories(event: MatSelectionListChange) {
-    const options: MatListOption[] = event.source.selectedOptions.selected;
-    const categoriesFilter =
-      options.map((option) => option.value).join(',') || null;
-    this.router.navigate([''], {
-      queryParams: {
-        categories: categoriesFilter,
-      },
-      queryParamsHandling: 'merge',
-    });
-  }
-
   buildQueryParameterBySort(event: MatSelectionListChange) {
     const key: MatListOption = event.source.selectedOptions.selected[0].value;
     this.router.navigate([''], {

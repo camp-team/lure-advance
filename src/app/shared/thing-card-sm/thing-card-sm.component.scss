@@ -8,15 +8,20 @@
     margin: 0;
   }
   &__thumbnail {
-    img {
-      max-width: 100%;
-      vertical-align: bottom;
-    }
+    margin: 0;
+    background: center/cover;
+    padding-bottom: 75%;
   }
   &__body {
+    box-sizing: border-box;
     padding: 8px;
   }
   &__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
+    color: rgba(black, 0.6);
     font-size: 14px;
     font-weight: 500;
   }
@@ -32,6 +37,9 @@
   }
   &__likeCount {
     margin-right: 8px;
+    span {
+      font-size: 10px;
+    }
   }
   &__description {
     font-size: 14px;

@@ -1,133 +1,151 @@
-<ng-container *ngIf="thing$ | async as thing">
+<div
+  class="comment"
+  [class.comment--root]="isRootComment"
+  [class.comment--reply]="isReplyComment"
+>
   <div
-    class="comment"
-    [class.comment--root]="isRootComment"
-    [class.comment--reply]="isReplyComment"
-  >
-    <div
-      class="comment__avatar"
-      [class.comment__avatar--root]="isRootComment"
-      [class.comment__avatar--reply]="isReplyComment"
-      [style.background-image]="'url(' + getAavatarUrl(comment.user) + ')'"
-    ></div>
-    <div class="comment__body">
-      <ng-template #view>
-        <div class="comment__header">
-          <p class="comment__name">{{ comment.user.name }}</p>
-          <p class="comment__updateAt">
-            {{ comment.updateAt.toDate() | relativetime }}
-          </p>
-        </div>
-        <p class="comment__body">{{ comment.body.trim() }}</p>
-        <div class="comment__actions">
-          <button (click)="isReplying = true" mat-icon-button>
-            <mat-icon>reply</mat-icon>
-          </button>
-        </div>
-        <ng-container *ngIf="isReplying">
-          <mat-form-field appearance="outline">
-            <mat-label>Reply</mat-label>
-            <textarea
-              #commentInput
-              matInput
-              matTextareaAutosize
-              required
-              autofocus
-              autocomplete="off"
-              [formControl]="replyCommentForm"
-            ></textarea>
-            <mat-error *ngIf="replyCommentForm.hasError('maxlength')"
-              >文字が多過ぎます</mat-error
-            >
-          </mat-form-field>
-          <div class="comment__edit-actions">
-            <button (click)="isReplying = false" mat-flat-button>
-              キャンセル
-            </button>
-            <button
-              [disabled]="isProcessing || replyCommentForm.invalid"
-              (click)="replyComment(thing)"
-              mat-flat-button
-              color="primary"
-            >
-              Reply
-            </button>
-          </div>
-        </ng-container>
-      </ng-template>
-      <ng-container *ngIf="isEditing; else view">
+    class="comment__avatar"
+    [class.comment__avatar--root]="isRootComment"
+    [class.comment__avatar--reply]="isReplyComment"
+    [style.background-image]="'url(' + getAavatarUrl(comment.user) + ')'"
+  ></div>
+  <div class="comment__body">
+    <ng-template #view>
+      <div class="comment__header">
+        <p class="comment__name">{{ comment.user.name }}</p>
+        <p class="comment__updateAt">
+          {{ comment.updateAt.toDate() | relativetime }}
+        </p>
+      </div>
+      <p
+        class="comment__body"
+        [class.comment__body--root]="isRootComment"
+        [class.comment__body--reply]="isReplyComment"
+      >
+        {{ comment.body.trim() }}
+      </p>
+      <div class="comment__actions">
+        <button (click)="isReplying = true" mat-icon-button>
+          <mat-icon>reply</mat-icon>
+        </button>
+      </div>
+      <ng-container *ngIf="isReplying">
         <mat-form-field appearance="outline">
           <mat-label>Reply</mat-label>
           <textarea
-            #commentInput
+            #replyInput
             matInput
             matTextareaAutosize
             required
             autofocus
             autocomplete="off"
-            [formControl]="inputComment"
+            [formControl]="replyCommentForm"
           ></textarea>
-          <mat-error *ngIf="inputComment.hasError('maxlength')"
-            >文字が多過ぎます</mat-error
-          >
+          <mat-hint align="end"
+            >{{ replyInput.value.length }}/{{ MAX_COMMENT_LENGTH }}
+          </mat-hint>
+          <mat-error *ngIf="replyCommentForm.hasError('maxlength')"
+            >Your input is {{ replyInput.value.length }} length. Too many
+            latters
+          </mat-error>
         </mat-form-field>
         <div class="comment__edit-actions">
-          <button (click)="isEditing = false" mat-flat-button>
+          <button (click)="isReplying = false" mat-flat-button>
             Cancel
           </button>
-          <button (click)="saveComment()" mat-flat-button color="primary">
-            Save
+          <button
+            [disabled]="isProcessing || replyCommentForm.invalid"
+            (click)="replyComment(thing)"
+            mat-flat-button
+            color="primary"
+          >
+            Reply
           </button>
         </div>
       </ng-container>
-    </div>
-    <div class="comment__edit-btn">
-      <ng-container *ngIf="user$ | async as user">
-        <button
-          *ngIf="comment.fromUid === user?.uid"
-          [matMenuTriggerFor]="commentEditor"
-          mat-icon-button
-        >
-          <mat-icon>more_vert</mat-icon>
+    </ng-template>
+    <ng-container *ngIf="isEditing; else view">
+      <mat-form-field appearance="outline">
+        <mat-label>Reply</mat-label>
+        <textarea
+          #commentInput
+          matInput
+          matTextareaAutosize
+          required
+          autofocus
+          autocomplete="off"
+          [formControl]="inputComment"
+        ></textarea>
+        <mat-hint align="end"
+          >{{ inputComment.value.length }}/{{ MAX_COMMENT_LENGTH }}
+        </mat-hint>
+        <mat-error *ngIf="inputComment.hasError('maxlength')"
+          >Your input is {{ inputComment.value.length }} length. Too many
+          letters.
+        </mat-error>
+      </mat-form-field>
+      <div class="comment__edit-actions">
+        <button (click)="isEditing = false" mat-flat-button>
+          Cancel
         </button>
-        <mat-menu #commentEditor="matMenu">
-          <button (click)="alterEditMode()" mat-menu-item>
-            <mat-icon>edit</mat-icon>
-            <span>Edit</span>
-          </button>
-          <button (click)="deleteComment()" mat-menu-item>
-            <mat-icon>delete</mat-icon>
-            <span>Delete</span>
-          </button>
-        </mat-menu>
-      </ng-container>
-    </div>
+        <button (click)="saveComment()" mat-flat-button color="primary">
+          Save
+        </button>
+      </div>
+    </ng-container>
   </div>
-  <div class="replies">
-    <ng-container *ngIf="comment?.replyCount">
+  <div class="comment__edit-btn">
+    <ng-container *ngIf="user$ | async as user">
       <button
+        *ngIf="comment.fromUid === user?.uid || thing.designerId === user?.uid"
+        [matMenuTriggerFor]="commentEditor"
+        mat-icon-button
+      >
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #commentEditor="matMenu">
+        <button (click)="alterEditMode()" mat-menu-item>
+          <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>
+        <button (click)="deleteComment()" mat-menu-item>
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+      </mat-menu>
+    </ng-container>
+  </div>
+</div>
+<div class="replies">
+  <ng-container *ngIf="staticCommentCount">
+    <ng-container *ngIf="isOpen; else viewReplies">
+      <button
+        class="comment__close-replies-btn"
+        (click)="isOpen = false"
+        mat-icon-button
+      >
+        <mat-icon>keyboard_arrow_up</mat-icon>
+        <span>View {{ staticCommentCount }} Replies</span>
+      </button>
+    </ng-container>
+    <ng-template #viewReplies>
+      <button
+        class="comment__open-replies-btn"
         (click)="loadReplyComments()"
-        *ngIf="!isShowReplies; else replies"
         mat-icon-button
       >
         <mat-icon>keyboard_arrow_down</mat-icon>
-        <span>{{ comment.replyCount }}件の返信を表示</span>
+        <span>View {{ staticCommentCount }} Replies</span>
       </button>
-      <ng-template #replies>
-        <button (click)="isShowReplies = false" mat-icon-button>
-          <mat-icon>keyboard_arrow_up</mat-icon>
-          <span>{{ comment.replyCount }}件の返信を非表示</span>
-        </button>
-      </ng-template>
-    </ng-container>
-    <ng-container *ngIf="isShowReplies">
-      <app-comon-comment
-        *ngFor="let reply of replyComments$ | async"
-        [comment]="reply"
-        [thingId]="thingId"
-        [rootCommentId]="rootCommentId"
-        [isReplyComment]="true"
-      ></app-comon-comment>
-    </ng-container>
-  </div>
-</ng-container>
+    </ng-template>
+  </ng-container>
+  <ng-container *ngIf="isOpen">
+    <app-comon-comment
+      *ngFor="let reply of replyComments$ | async"
+      [comment]="reply"
+      [thing]="thing"
+      [rootCommentId]="rootCommentId"
+      [isReplyComment]="true"
+    ></app-comon-comment>
+  </ng-container>
+</div>

@@ -32,11 +32,6 @@
         >notifications</mat-icon
       >
     </button>
-    <ng-template #veiw>
-      <button mat-icon-button>
-        <mat-icon>notifications</mat-icon>
-      </button>
-    </ng-template>
     <button
       class="avatar"
       [style.background-image]="'url(' + user.avatarURL + ')'"
@@ -50,17 +45,17 @@
         routerLink="/mypage/{{ user.uid }}"
       >
         <mat-icon>account_box</mat-icon>
-        <span>マイページ</span>
+        <span>MyPage</span>
       </button>
 
       <button mat-menu-item (click)="logout()">
         <mat-icon>input</mat-icon>
-        <span>ログアウト</span>
+        <span>Sign Out</span>
       </button>
       <mat-divider></mat-divider>
       <button routerLink="/settings" mat-menu-item>
         <mat-icon>settings</mat-icon>
-        <span>設定</span>
+        <span>Settings</span>
       </button>
     </mat-menu>
   </ng-container>
@@ -72,7 +67,7 @@
       mat-raised-button
       color="primary"
     >
-      {{ isProccesing ? 'ログイン中' : 'ログイン' }}
+      {{ isProccesing ? 'isProcceing' : 'Sign in' }}
     </button>
   </ng-template>
 </mat-toolbar>

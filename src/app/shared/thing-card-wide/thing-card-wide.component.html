@@ -9,10 +9,10 @@
     <div class="post__sub-body">
       <p class="post__likeCount">
         {{ post.likeCount }}
-        <span>いいね</span>
+        <span>Likes</span>
       </p>
       <p class="post__updateAt">
-        {{ post.updateAt.toDate() | date: 'yyyy年MM月dd日' }}
+        {{ post.updateAt.toDate() | date: 'MMM dd yyyy' }}
       </p>
     </div>
     <p class="post__description">

@@ -27,7 +27,7 @@ export const addThing = functions
         admin.firestore.FieldValue.increment(1)
       );
     } else {
-      console.log(`User:${designerId} does not exist.`);
+      functions.logger.info(`User:${designerId} does not exist.`);
     }
 
     return algolia.saveRecord({
@@ -66,6 +66,9 @@ export const deleteThing = functions
         'thingCount',
         admin.firestore.FieldValue.increment(-1)
       );
+      functions.logger.info('Increment Thing Count.');
+    } else {
+      functions.logger.info(`Thing ${thingId} does not exsist.`);
     }
 
     await algolia.removeRecord('things', thingId);
@@ -73,8 +76,9 @@ export const deleteThing = functions
     return Promise.all([
       deleteCollectionByPath(`things/${thingId}/likeUsers`),
       deleteCollectionByPath(`things/${thingId}/comments`),
+      deleteCollectionByPath(`things/${thingId}/stls`),
       storage.deleteFiles({
-        directory: `things/${thingId}/files`,
+        directory: `things/${thingId}`,
       }),
     ]);
   });
@@ -82,6 +86,10 @@ export const deleteThing = functions
 export const incrementViewCount = functions
   .region('asia-northeast1')
   .https.onCall(async (snap: Thing) => {
+    if (snap === null) {
+      functions.logger.info('Snap is null.');
+      return;
+    }
     const thingSnapShot = await db.doc(`things/${snap.id}`).get();
     if (thingSnapShot.exists) {
       const updateThingViewCount = thingSnapShot.ref.update(
@@ -93,7 +101,7 @@ export const incrementViewCount = functions
         .update('viewCount', admin.firestore.FieldValue.increment(1));
       return Promise.all([updateThingViewCount, updateUserViewCount]);
     } else {
-      console.log(`Thing ${snap.id} does not exist.`);
+      functions.logger.info(`Thing ${snap.id} does not exist.`);
       return;
     }
   });

@@ -35,7 +35,7 @@ export const addReply = functions
           .doc(`users/${value.designerId}`)
           .update('commentCount', admin.firestore.FieldValue.increment(1));
       } else {
-        console.log(`Thing:${thingId} does not exist.`);
+        functions.logger.info(`Thing:${thingId} does not exist.`);
       }
 
       const targetUid: string = value.toUid;
@@ -43,7 +43,7 @@ export const addReply = functions
       const commentBody: string = value.body;
 
       if (targetUid === replierUid) {
-        console.log(`User:${targetUid} Reply to My Comment.`);
+        functions.logger.info(`User:${targetUid} Reply to My Comment.`);
         return;
       }
 
@@ -70,7 +70,7 @@ export const addReply = functions
           admin.firestore.FieldValue.increment(1)
         );
       } else {
-        console.log(`User:${targetUid} does not exsit.`);
+        functions.logger.info(`User:${targetUid} does not exsit.`);
       }
 
       return markEventTried(eventId);
@@ -98,8 +98,11 @@ export const deleteReply = functions
         await db
           .doc(`users/${value.designerId}`)
           .update('commentCount', admin.firestore.FieldValue.increment(-1));
+        functions.logger.info('Decrement CommentCount.');
       } else {
-        console.log('Thing or Parent Comment is Deleted.');
+        functions.logger.info(
+          `Thing ${thingId}\nor\nParent Comment ${commentId} is Deleted.`
+        );
       }
 
       const replySnap = await db
@@ -112,7 +115,9 @@ export const deleteReply = functions
           admin.firestore.FieldValue.increment(-1)
         );
       } else {
-        console.log('Thing or Parent Comment is Deleted.');
+        functions.logger.info(
+          `Thing ${thingId}\nor\nParent Comment ${commentId} is Deleted.`
+        );
       }
 
       return markEventTried(eventId);
@@ -139,9 +144,9 @@ export const addComment = functions
         await db
           .doc(`users/${value.designerId}`)
           .update('commentCount', admin.firestore.FieldValue.increment(1));
-        console.log('Increment CommentCount.');
+        functions.logger.info('Increment CommentCount.');
       } else {
-        console.log('thing does not exsists.');
+        functions.logger.info(`Thing ${thingId} does not exsists.`);
       }
       return markEventTried(eventId);
     } else {
@@ -167,15 +172,17 @@ export const deleteComment = functions
         );
         await db
           .doc(`users/${value.designerId}`)
-          .update('commentCount', admin.firestore.FieldValue.increment(1));
-        console.log('Decrement Comment Count.');
+          .update('commentCount', admin.firestore.FieldValue.increment(-1));
+        functions.logger.info('Decrement Comment Count.');
       } else {
-        console.log('Comment does not exist. Thing is Deleted.');
+        functions.logger.info(
+          `Comment ${commentId} does not exist. Thing ${thingId} is Deleted.`
+        );
       }
 
       const path: string = `things/${thingId}/comments/${commentId}/replies`;
       await deleteCollectionByPath(path);
-      console.log('Deleting Comments were Successful');
+      functions.logger.info(`Comment ${commentId} is Deleted`);
 
       return markEventTried(eventId);
     } else {

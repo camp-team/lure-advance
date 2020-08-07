@@ -1,4 +1,4 @@
-<div class="thing">
+<div class="thing" [class.thing--deleted]="deleted">
   <div class="thing__header">
     <button
       class="thing__avatar"
@@ -8,9 +8,6 @@
     ></button>
     <p class="thing__title">{{ thing.title }}</p>
     <span class="thing__spacer"></span>
-    <p class="thing__updateAt">
-      {{ thing.updateAt | relativetime }}
-    </p>
     <ng-container *ngIf="user$ | async as user">
       <button
         [mat-menu-trigger-for]="menu"
@@ -22,11 +19,11 @@
     </ng-container>
     <mat-menu #menu>
       <button routerLink="/{{ thing.id }}/edit" mat-menu-item>
-        <mat-icon>edit</mat-icon> <span>編集</span>
+        <mat-icon>edit</mat-icon> <span>Edit</span>
       </button>
       <button (click)="delete(thing)" mat-menu-item>
         <mat-icon>delete</mat-icon>
-        <span>削除</span>
+        <span>Delete</span>
       </button>
     </mat-menu>
   </div>
@@ -60,5 +57,13 @@
       <mat-icon fontSet="material-icons-outlined"> mode_comment</mat-icon
       ><span>{{ thing.commentCount }}</span>
     </button>
+    <div class="thing__view-count">
+      <mat-icon>visibility</mat-icon>
+      <span>{{ thing.viewCount }}</span>
+    </div>
+    <span class="thing__spacer"></span>
+    <p class="thing__updateAt">
+      {{ thing.updateAt | relativetime }}
+    </p>
   </div>
 </div>

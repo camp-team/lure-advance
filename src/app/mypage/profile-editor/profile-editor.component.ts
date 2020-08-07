@@ -9,9 +9,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { User } from '@interfaces/user';
 import { Observable } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user.service';
 import { AvatarEditorComponent } from './avatar-editor/avatar-editor.component';
-import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile-editor',
@@ -25,15 +25,24 @@ export class ProfileEditorComponent implements OnInit {
     private dialog: MatDialog,
     private userService: UserService
   ) {}
+  MAX_NAME_LENGTH: number = 40;
+  MAX_DESCRIPTION_LENGTH: number = 150;
+  MAX_URL_LENGTH: number = 100;
 
   user$: Observable<User> = this.userService.user$;
 
   form: FormGroup = this.fb.group({
-    name: ['', [Validators.required, Validators.maxLength(40)]],
-    description: ['', [Validators.maxLength(150)]],
+    name: [
+      '',
+      [Validators.required, Validators.maxLength(this.MAX_NAME_LENGTH)],
+    ],
+    description: ['', [Validators.maxLength(this.MAX_DESCRIPTION_LENGTH)]],
     weblink: [
       '',
-      [Validators.maxLength(100), Validators.pattern(/https?:\/\/(www\.)?.+/)],
+      [
+        Validators.maxLength(this.MAX_URL_LENGTH),
+        Validators.pattern(/https?:\/\/(www\.)?.+/),
+      ],
     ],
   });
 

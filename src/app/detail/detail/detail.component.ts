@@ -1,18 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Thing, ThingWithUser } from '@interfaces/thing';
+import { ThingReference } from '@interfaces/thing-reference';
+import { User } from '@interfaces/user';
 import { SwiperConfigInterface } from 'ngx-swiper-wrapper';
 import { Observable } from 'rxjs';
-import { switchMap, take, tap } from 'rxjs/operators';
-import { AuthService } from 'src/app/services/auth.service';
+import { switchMap, take, tap, first } from 'rxjs/operators';
 import { CategoryService } from 'src/app/services/category.service';
+import { ThingReferenceService } from 'src/app/services/thing-reference.service';
 import { ThingService } from 'src/app/services/thing.service';
 import { UserService } from 'src/app/services/user.service';
 import { DeleteDialogComponent } from 'src/app/shared/delete-dialog/delete-dialog.component';
-import { ThingReferenceService } from 'src/app/services/thing-reference.service';
-import { ThingReference } from '@interfaces/thing-reference';
 
 @Component({
   selector: 'app-thing-detail',
@@ -29,20 +28,21 @@ export class DetailComponent implements OnInit {
       this.isLoading = false;
       const uid = this.userService.uid;
       this.isLiked = await this.thingService.isLiked(uid, thing?.id);
-      this.isMypost = thing?.designerId === uid;
       this.thingService.incrementViewCount(thing);
     }),
     take(1)
   );
 
-  thingRef$: Observable<ThingReference> = this.route.paramMap.pipe(
+  thingRef: ThingReference;
+  private thingRef$: Observable<ThingReference> = this.route.paramMap.pipe(
     switchMap((map) => {
       return this.thingRefService.getThingRefById(map.get('thing'));
     })
   );
 
+  user$: Observable<User> = this.userService.user$;
+
   isLoading: boolean;
-  isMypost: boolean;
   index: number;
   config: SwiperConfigInterface = {
     loop: true,
@@ -54,6 +54,7 @@ export class DetailComponent implements OnInit {
   };
 
   isLiked: boolean;
+  isProcessing: boolean;
   navLinks = [
     {
       path: 'description',
@@ -70,12 +71,11 @@ export class DetailComponent implements OnInit {
     private thingRefService: ThingReferenceService,
     private route: ActivatedRoute,
     private userService: UserService,
-    private authService: AuthService,
     private dialog: MatDialog,
-    private router: Router,
-    private snackBar: MatSnackBar,
     public categoryService: CategoryService
-  ) {}
+  ) {
+    this.thingRef$.pipe(first()).subscribe((ref) => (this.thingRef = ref));
+  }
 
   delete(thing: Thing) {
     this.dialog.open(DeleteDialogComponent, {
@@ -86,18 +86,18 @@ export class DetailComponent implements OnInit {
   }
 
   async likeThing(thing: Thing): Promise<void> {
-    let uid: string = this.userService.uid;
-    if (uid === undefined) {
-      await this.authService
-        .login()
-        .then(() => this.snackBar.open('ログインしました'));
-      const user = await this.userService.getUserWithSnapShot();
-      uid = user.uid;
+    this.isProcessing = true;
+    const user: User = await this.userService.passUserWhenRequiredForm();
+    if (user === null) {
+      this.isProcessing = false;
+      return;
     }
     thing.likeCount++;
     this.isLiked = true;
 
-    return this.thingService.likeThing(thing, uid);
+    return this.thingService
+      .likeThing(thing, user.uid)
+      .finally(() => (this.isProcessing = false));
   }
 
   unLikeThing(thing: Thing): Promise<void> {
@@ -105,14 +105,6 @@ export class DetailComponent implements OnInit {
     thing.likeCount--;
     this.isLiked = false;
     return this.thingService.unLikeThing(thing.id, uid);
-  }
-
-  navigateByTag(tag: string) {
-    this.router.navigate([''], {
-      queryParams: {
-        tags: tag,
-      },
-    });
   }
 
   ngOnInit(): void {}

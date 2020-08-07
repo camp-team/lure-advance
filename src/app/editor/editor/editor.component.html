@@ -1,63 +1,99 @@
 <div class="container">
-  <h1 *ngIf="form.value.title">「{{ form.value.title }}」を編集</h1>
-  <label class="file">
-    <input
-      class="file__input"
-      (change)="selectFiles($event)"
-      #file_input
-      type="file"
-      multiple
-      accept=".jpeg, .jpg, .png, .stl "
-    />
-    <mat-icon class="file__icon" inline>backup</mat-icon>
-    <button
-      type="button"
-      class="file__up-btn"
-      [disabled]="images.length >= MAX_IMAGE_FILE_LENGTH"
-      (click)="file_input.click()"
-      mat-flat-button
-      autocomplete="off"
-      color="primary"
-    >
-      ファイルを選択する
-    </button>
-  </label>
-
-  <p *ngIf="images.length">Image</p>
-  <div class="grid">
-    <div
-      class="upload upload--image"
-      *ngFor="let file of images; index as i"
-      [style.background-image]="'url(' + file + ')'"
-    >
-      <button (click)="deleteImage(i)" class="upload__del-btn">
-        <mat-icon class="upload__del-icon" inline>delete</mat-icon>
+  <h1 *ngIf="form.value.title">「{{ form.value.title }} 」is Editing</h1>
+  <div class="file-grid">
+    <label class="file file--image">
+      <input
+        class="file__input"
+        (change)="selectFiles($event)"
+        #file_input_image
+        type="file"
+        multiple
+        accept=".jpeg, .jpg, .png "
+      />
+      <mat-icon class="file__icon file__icon--image" inline
+        >insert_photo</mat-icon
+      >
+      <button
+        type="button"
+        class="file__up-btn"
+        [disabled]="images.length >= MAX_IMAGE_FILE_LENGTH"
+        (click)="file_input_image.click()"
+        mat-flat-button
+        color="primary"
+      >
+        Add Images
       </button>
-    </div>
-    <ng-container *ngIf="stl">
-      <div class="upload upload--stl">
+    </label>
+    <ng-template #file_select>
+      <label class="file file--stl">
+        <input
+          class="file__input"
+          (change)="selectStlFile($event)"
+          #file_input_stl
+          type="file"
+          accept=".stl "
+        />
+        <mat-icon class="file__icon file__icon--stl" inline
+          >attach_file</mat-icon
+        >
+        <button
+          type="button"
+          class="file__up-btn"
+          (click)="file_input_stl.click()"
+          mat-flat-button
+          autocomplete="off"
+          color="primary"
+        >
+          SELECT STL
+        </button>
+      </label>
+    </ng-template>
+    <ng-container *ngIf="isVewing; else file_select">
+      <div class="file__stl-preview">
+        <button
+          (click)="cancelFile()"
+          class="file__stl-close-btn"
+          mat-icon-button
+        >
+          <mat-icon class="file__stl-del-icon">close</mat-icon>
+        </button>
         <app-stl-viewer [stlUrl]="stl"></app-stl-viewer>
       </div>
     </ng-container>
   </div>
+  <mat-error *ngIf="images.length === 0"
+    >Thumbnail Image is Required.</mat-error
+  >
+  <div class="upload-grid">
+    <div
+      class="upload"
+      *ngFor="let file of images; index as i"
+      [style.background-image]="'url(' + file + ')'"
+    >
+      <button mat-icon-button (click)="deleteImage(i)" class="upload__del-btn">
+        <mat-icon class="upload__del-icon upload__del-icon--image" inline
+          >close</mat-icon
+        >
+      </button>
+    </div>
+  </div>
 
-  <p>詳細</p>
   <form [formGroup]="form" class="details" (ngSubmit)="save()">
     <mat-form-field appearance="outline">
-      <mat-label>タイトル</mat-label>
+      <mat-label>Title</mat-label>
       <input matInput autocomplete="off" #input formControlName="title" />
       <mat-hint align="end"
         >{{ input.value.length }}/{{ MAX_TITLE_LENGTH }}</mat-hint
       >
-      <mat-error *ngIf="titleControl.hasError('maxlength')"
-        >{{ input.value.length }}は長過ぎます</mat-error
-      >
+      <mat-error *ngIf="titleControl.hasError('maxlength')">{{
+        MAX_TITLE_LENGTH - input.value.length
+      }}</mat-error>
       <mat-error *ngIf="titleControl.hasError('required')"
-        >必須入力です</mat-error
+        >Title is Required.</mat-error
       >
     </mat-form-field>
     <mat-form-field appearance="outline">
-      <mat-label>説明</mat-label>
+      <mat-label>Description</mat-label>
       <textarea
         matInput
         formControlName="description"
@@ -69,12 +105,12 @@
       <mat-hint align="end"
         >{{ textarea.value.length }}/{{ MAX_DESCRIPTION_LENGTH }}</mat-hint
       >
-      <mat-error *ngIf="descriptionControl.hasError('maxlength')"
-        >{{ textarea.value.length }}長過ぎます</mat-error
-      >
+      <mat-error *ngIf="descriptionControl.hasError('maxlength')">{{
+        MAX_DESCRIPTION_LENGTH - textarea.value.length
+      }}</mat-error>
     </mat-form-field>
     <mat-form-field>
-      <mat-label>タグ</mat-label>
+      <mat-label>Tags</mat-label>
       <mat-chip-list #chipList aria-label="tag selection">
         <mat-chip
           *ngFor="let tag of tags"
@@ -87,6 +123,7 @@
         </mat-chip>
         <input
           placeholder="New tag..."
+          #tagsInput
           [matChipInputFor]="chipList"
           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
           [matChipInputAddOnBlur]="addOnBlur"
@@ -94,14 +131,31 @@
           autocomplete="off"
           formControlName="tags"
         />
+
+        <mat-error *ngIf="tagsContorol.hasError('maxElementLength')">
+          Tag is Over +{{ tagElementLength - MAX_TAGS_NUM_LENGTH }}</mat-error
+        >
       </mat-chip-list>
+
+      <mat-hint align="end">
+        <span class="hint"
+          >TagTextLength:{{ tagTextLength }}/{{ MAX_TAGS_TEXT_LENGTH }}</span
+        >
+        <span class="hint"
+          >Tags : {{ tagElementLength }} of {{ MAX_TAGS_NUM_LENGTH }}</span
+        >
+      </mat-hint>
     </mat-form-field>
     <div class="details__actions">
       <button type="button" (click)="cancel()" mat-button>
-        キャンセル
+        Cancel
       </button>
-      <button [disabled]="form.invalid" mat-flat-button color="primary">
-        保存
+      <button
+        [disabled]="form.invalid || images.length === 0"
+        mat-flat-button
+        color="primary"
+      >
+        Save
       </button>
     </div>
   </form>

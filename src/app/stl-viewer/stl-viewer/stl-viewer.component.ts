@@ -28,6 +28,7 @@ export class StlViewerComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.container = document.getElementById(this.containerClassName);
     this.start(this.stlUrl);
+    console.log(this.stlUrl);
   }
 
   ngAfterViewInit(): void {
@@ -52,8 +53,9 @@ export class StlViewerComponent implements OnInit, AfterViewInit {
 
   async start(url: string) {
     if (url === undefined) {
-      throw Error('url is undefined.');
+      return;
     }
+
     if (!this.container.clientWidth) return;
     if (!this.container.clientHeight) return;
 
@@ -109,7 +111,7 @@ export class StlViewerComponent implements OnInit, AfterViewInit {
         this.container.firstChild.remove();
       }
       const controls = new trackballControls(camera, renderer.domElement);
-
+      this.onLoadCompleted.emit(true);
       const render = this.createRender(renderer, this.scene, camera);
       const animate = this.createAnimate(() => {
         controls.update();
@@ -120,6 +122,9 @@ export class StlViewerComponent implements OnInit, AfterViewInit {
       animate();
       render();
     });
-    this.onLoadCompleted.emit(true);
+  }
+
+  clear() {
+    this.scene.dispose();
   }
 }

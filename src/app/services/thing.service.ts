@@ -87,7 +87,7 @@ export class ThingService {
   getThingsLatestByDesignerID(uid: string): Observable<Thing[]> {
     return this.db
       .collection<Thing>(`things`, (ref) =>
-        ref.where('designerId', '==', uid).orderBy('updateAt', 'desc').limit(1)
+        ref.where('designerId', '==', uid).orderBy('updateAt', 'desc').limit(2)
       )
       .valueChanges();
   }
@@ -101,6 +101,9 @@ export class ThingService {
   }
 
   getLikedThings(uid: string): Observable<Thing[]> {
+    if (uid === undefined) {
+      return null;
+    }
     return this.db
       .collectionGroup<{
         thingId: string;
@@ -110,9 +113,13 @@ export class ThingService {
       .valueChanges()
       .pipe(
         switchMap((likeThings) => {
-          return combineLatest(
-            likeThings.map((item) => this.getThingByID(item.thingId))
-          );
+          if (likeThings.length) {
+            return combineLatest(
+              likeThings.map((item) => this.getThingByID(item.thingId))
+            );
+          } else {
+            return of(null);
+          }
         })
       );
   }
@@ -120,7 +127,13 @@ export class ThingService {
   getLikedThingIdsWithPromise(uid: string): Promise<string[]> {
     return this.getLikedThings(uid)
       .pipe(
-        map((things) => things.filter(Boolean).map((thing) => thing.id)),
+        map((things) => {
+          if (things === null) {
+            return [];
+          } else {
+            return things.filter(Boolean).map((thing) => thing.id);
+          }
+        }),
         take(1)
       )
       .toPromise();
@@ -134,6 +147,9 @@ export class ThingService {
   }
 
   createThing(thing: Omit<Thing, 'updateAt' | 'createdAt'>): Promise<void> {
+    if (thing.imageUrls.length <= 0) {
+      throw new Error('image file is required.');
+    }
     const value: Thing = {
       ...thing,
       createdAt: firestore.Timestamp.now(),

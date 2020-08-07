@@ -10,6 +10,7 @@ export interface Comment {
   body: string;
   toUid: string;
   replyCount: number;
+  createdAt: firestore.Timestamp;
   updateAt: firestore.Timestamp;
 }
 

@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import {
+  FormControl,
+  Validators,
+  FormGroup,
+  FormBuilder,
+} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Comment, CommentWithUser } from '@interfaces/comment';
@@ -21,12 +26,22 @@ export class CommentsComponent implements OnInit {
     private commentService: CommentService,
     private thingService: ThingService,
     private userService: UserService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private fb: FormBuilder
   ) {}
-  commentForm = new FormControl('', [
-    Validators.required,
-    Validators.maxLength(400),
-  ]);
+
+  MAX_COMMENT_LENGTH: number = 150;
+
+  form: FormGroup = this.fb.group({
+    commentCtrl: [
+      '',
+      [Validators.required, Validators.maxLength(this.MAX_COMMENT_LENGTH)],
+    ],
+  });
+
+  get commentCtrl(): FormControl {
+    return this.form.get('commentCtrl') as FormControl;
+  }
 
   id: string;
   isEditing: boolean;
@@ -35,7 +50,7 @@ export class CommentsComponent implements OnInit {
   comments$: Observable<CommentWithUser[]> = this.route.parent.paramMap.pipe(
     switchMap((map) => {
       this.id = map.get('thing');
-      return this.commentService.getAllComments(this.id);
+      return this.commentService.getCommentByThingId(this.id);
     })
   );
 
@@ -53,8 +68,8 @@ export class CommentsComponent implements OnInit {
       this.isProcessing = false;
       return;
     }
-    const value: string = this.commentForm.value;
-    const comment: Omit<Comment, 'id' | 'updateAt'> = {
+    const value: string = this.commentCtrl.value;
+    const comment: Omit<Comment, 'id' | 'updateAt' | 'createdAt'> = {
       thingId: thing.id,
       designerId: thing.designerId,
       fromUid: user.uid,
@@ -64,9 +79,9 @@ export class CommentsComponent implements OnInit {
     };
     this.commentService
       .addComment(comment)
-      .then(() => this.snackBar.open('コメントを追加しました。'))
+      .then(() => this.snackBar.open('Added Your Comment.'))
       .then(() => (this.isProcessing = false))
-      .finally(() => this.commentForm.setValue('', { emitEvent: false }));
+      .finally(() => this.commentCtrl.setValue('', { emitEvent: false }));
   }
 
   ngOnInit(): void {}

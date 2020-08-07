@@ -11,18 +11,24 @@
         <p class="thing__title">{{ thing.title }}</p>
         <span class="thing__spacer"></span>
         <p class="thing__updateAt">
-          {{ thing.createdAt.toDate() | date: 'yyyy年MM月dd日' }}
+          {{ thing.createdAt.toDate() | date: 'MMM dd yyyy' }}
         </p>
-        <button [mat-menu-trigger-for]="menu" *ngIf="isMypost" mat-icon-button>
-          <mat-icon>more_vert</mat-icon>
-        </button>
+        <ng-container *ngIf="user$ | async as user">
+          <button
+            *ngIf="user.uid === thing.designerId"
+            [mat-menu-trigger-for]="menu"
+            mat-icon-button
+          >
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </ng-container>
         <mat-menu #menu>
           <button routerLink="/{{ thing.id }}/edit" mat-menu-item>
-            <mat-icon>edit</mat-icon> <span>編集</span>
+            <mat-icon>edit</mat-icon><span>Edit</span>
           </button>
           <button (click)="delete(thing)" mat-menu-item>
             <mat-icon>delete</mat-icon>
-            <span>削除</span>
+            <span>Delete</span>
           </button>
         </mat-menu>
       </div>
@@ -34,15 +40,14 @@
             *ngFor="let url of thing.imageUrls"
             [style.background-image]="'url(' + url + ')'"
           ></div>
-          <div class="thing__stl-viewer">
+          <div *ngIf="thingRef?.downloadUrl as url" class="thing__stl-viewer">
             <app-stl-viewer
-              *ngIf="thingRef$ | async as ref"
-              [stlUrl]="ref.downloadUrl"
+              class="thing__stl-viewer"
+              [stlUrl]="url"
             ></app-stl-viewer>
           </div>
         </swiper>
       </div>
-
       <div class="pager"></div>
       <div class="thing__actions">
         <button
@@ -56,7 +61,11 @@
           <span>{{ thing.likeCount }}</span>
         </button>
         <ng-template #unLiked>
-          <button (click)="likeThing(thing)" mat-icon-button>
+          <button
+            (click)="likeThing(thing)"
+            [disabled]="isProcessing"
+            mat-icon-button
+          >
             <mat-icon>favorite_border</mat-icon>
             <span>{{ thing.likeCount }}</span>
           </button>
@@ -67,11 +76,13 @@
         </button>
         <span class="thing__spacer"></span>
         <mat-chip-list>
-          <mat-chip
-            (click)="navigateByTag(tag)"
+          <a
             *ngFor="let tag of thing.tags"
-            >{{ tag }}</mat-chip
+            routerLink=""
+            [queryParams]="{ tags: tag }"
           >
+            <mat-chip>{{ tag }}</mat-chip>
+          </a>
         </mat-chip-list>
       </div>
     </div>

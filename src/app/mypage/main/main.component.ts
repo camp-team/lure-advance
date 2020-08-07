@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Thing } from '@interfaces/thing';
-import { firestore } from 'firebase';
+import { Observable } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 import { ThingService } from 'src/app/services/thing.service';
-import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-main',
@@ -10,34 +11,31 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./main.component.scss'],
 })
 export class MainComponent implements OnInit {
-  def: Thing = {
-    id: 'xxxx',
-    designerId: 'xxxxxxxx',
-    title: 'テスト投稿',
-    description:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod maxime amet, perspiciatis commodi at ut repudiandae eum dolore eos ea necessitatibus expedita saepe veniam velit laboriosam aliquam nulla alias vitae.',
-    tags: ['ルアー', 'ミノー', 'トラウト'],
-    imageUrls: ['https://placehold.jp/400x300.png'],
-    commentCount: 5,
-    likeCount: 6,
-    viewCount: 0,
-    createdAt: firestore.Timestamp.now(),
-    updateAt: firestore.Timestamp.now(),
-  };
+  private paramMap: Observable<ParamMap> = this.route.paramMap;
+  latestPosts$: Observable<Thing[]> = this.paramMap.pipe(
+    switchMap((map) => {
+      const uid = map.get('uid');
+      return this.thingService.getThingsLatestByDesignerID(uid);
+    })
+  );
 
-  data: Thing[] = new Array(5).fill(this.def);
+  popularPosts$: Observable<Thing[]> = this.paramMap.pipe(
+    switchMap((map) => {
+      const uid = map.get('uid');
+      return this.thingService.getThingsOrderByLikeCount(uid);
+    })
+  );
 
-  uid = this.userService.uid;
-  latestPosts: Thing[] = this.data.slice(0, 2);
-  //TODO データ準備 https://github.com/camp-team/lure-advance/issues/68
-  //  this.thingService.getThingsLatestByDesignerID(this.uid);
-  popularPosts: Thing[] = this.data.slice(0, 5);
-  // this.thingService.getThingsOrderByLikeCount(this.uid);
-  likedPosts: Thing[] = this.data.slice(0, 5);
-  // this.thingService.getLikedThings(this.uid);
+  likedPosts$: Observable<Thing[]> = this.paramMap.pipe(
+    switchMap((map) => {
+      const uid = map.get('uid');
+      return this.thingService.getLikedThings(uid);
+    })
+  );
+
   constructor(
-    private userService: UserService,
-    private thingService: ThingService
+    private thingService: ThingService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {}

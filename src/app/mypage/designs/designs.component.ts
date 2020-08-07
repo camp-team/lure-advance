@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Thing } from '@interfaces/thing';
+import { Observable } from 'rxjs';
 import { ThingService } from 'src/app/services/thing.service';
-import { AuthService } from 'src/app/services/auth.service';
-import { firestore } from 'firebase';
 import { UserService } from 'src/app/services/user.service';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-designs',
@@ -13,27 +14,16 @@ import { UserService } from 'src/app/services/user.service';
 export class DesignsComponent implements OnInit {
   constructor(
     private userService: UserService,
-    private thingService: ThingService
+    private thingService: ThingService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {}
-  def: Thing = {
-    id: 'xxxx',
-    designerId: 'xxxxxxxx',
-    title: 'テスト投稿',
-    description:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod maxime amet, perspiciatis commodi at ut repudiandae eum dolore eos ea necessitatibus expedita saepe veniam velit laboriosam aliquam nulla alias vitae.',
-    tags: ['ルアー', 'ミノー', 'トラウト'],
-    imageUrls: ['https://placehold.jp/400x300.png'],
-    commentCount: 5,
-    likeCount: 6,
-    viewCount: 0,
-    createdAt: firestore.Timestamp.now(),
-    updateAt: firestore.Timestamp.now(),
-  };
 
-  uid: string = this.userService.uid;
-  //TODO データ準備 https://github.com/camp-team/lure-advance/issues/68
-  //this.thingService.getThingsByDesignerID(this.uid)
-  posts: Thing[] = new Array(50).fill(this.def);
+  posts$: Observable<Thing[]> = this.route.parent.paramMap.pipe(
+    switchMap((map) => {
+      const uid = map.get('uid');
+      return this.thingService.getThingsByDesignerID(uid);
+    })
+  );
 }

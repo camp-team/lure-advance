@@ -1,14 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
 import { Comment, CommentWithUser } from '@interfaces/comment';
 import { Thing } from '@interfaces/thing';
 import { User } from '@interfaces/user';
 import { Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 import { CommentService } from 'src/app/services/comment.service';
-import { ThingService } from 'src/app/services/thing.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -19,43 +16,39 @@ import { UserService } from 'src/app/services/user.service';
 export class ComonCommentComponent implements OnInit {
   @Input() rootCommentId: string;
   @Input() comment: CommentWithUser;
-  @Input() thingId: string;
+  @Input() thing: Thing;
   @Input() isRootComment: boolean;
   @Input() isReplyComment: boolean;
 
+  MAX_COMMENT_LENGTH: number = 150;
+
   inputComment = new FormControl('', [
     Validators.required,
-    Validators.maxLength(400),
+    Validators.maxLength(this.MAX_COMMENT_LENGTH),
   ]);
   replyCommentForm = new FormControl('', [
     Validators.required,
     ,
-    Validators.maxLength(400),
+    Validators.maxLength(this.MAX_COMMENT_LENGTH),
   ]);
 
   isEditing: boolean;
   isReplying: boolean;
+  isLoadingReplies: boolean;
 
-  isShowReplies: boolean;
+  isOpen: boolean;
 
   isProcessing: boolean;
   replyComments$: Observable<Comment[]>;
 
-  user$: Observable<User> = this.userService.user$;
+  staticCommentCount: number;
 
-  thing$: Observable<Thing> = this.route.parent.paramMap.pipe(
-    switchMap((map) => {
-      const thingId = map.get('thing');
-      return this.thingService.getThingByID(thingId);
-    })
-  );
+  user$: Observable<User> = this.userService.user$;
 
   constructor(
     private snackBar: MatSnackBar,
     private commentService: CommentService,
-    private userService: UserService,
-    private route: ActivatedRoute,
-    private thingService: ThingService
+    private userService: UserService
   ) {}
 
   alterEditMode(): void {
@@ -71,8 +64,8 @@ export class ComonCommentComponent implements OnInit {
       this.isProcessing = false;
       return;
     }
-    const replyComment: Omit<Comment, 'id' | 'updateAt'> = {
-      thingId: this.thingId,
+    const replyComment: Omit<Comment, 'id' | 'updateAt' | 'createdAt'> = {
+      thingId: this.thing.id,
       designerId: thing.designerId,
       fromUid: user.uid,
       toUid: this.comment.fromUid,
@@ -81,36 +74,37 @@ export class ComonCommentComponent implements OnInit {
     };
     this.commentService
       .replyComment(this.rootCommentId, replyComment)
-      .then(() => this.snackBar.open('コメントに返信しました。'))
+      .then(() => this.snackBar.open('You Replied Comment.'))
       .then(() => (this.isProcessing = false))
+      .then(() => this.staticCommentCount++)
       .finally(() => this.replyCommentForm.setValue(''));
   }
 
   loadReplyComments(): void {
     this.replyComments$ = this.commentService.getRepliesByCommentId(
-      this.thingId,
+      this.thing.id,
       this.rootCommentId
     );
-    this.isShowReplies = true;
+    this.isOpen = true;
   }
 
   saveComment(): void {
     this.isEditing = true;
     const newValue: Comment = {
       ...this.comment,
-      thingId: this.thingId,
+      thingId: this.thing.id,
       body: this.inputComment.value,
     };
     //コメント
     if (this.rootCommentId === this.comment.id) {
       this.commentService
         .updateComment(newValue)
-        .then(() => this.snackBar.open('コメントを編集しました。'));
+        .then(() => this.snackBar.open('Save your comment.'));
       //返信
     } else {
       this.commentService
         .updateReply(this.rootCommentId, newValue)
-        .then(() => this.snackBar.open('コメントを編集しました。'));
+        .then(() => this.snackBar.open('Save your comment.'));
     }
   }
 
@@ -122,13 +116,16 @@ export class ComonCommentComponent implements OnInit {
     if (this.rootCommentId === this.comment.id) {
       this.commentService
         .deleteComment(this.comment)
-        .then(() => this.snackBar.open('コメントを削除しました。'));
+        .then(() => this.snackBar.open('Deleting Comment is Successful.'));
     } else {
       this.commentService
         .deleteReply(this.rootCommentId, this.comment)
-        .then(() => this.snackBar.open('コメントを削除しました。'));
+        .then(() => this.staticCommentCount--)
+        .then(() => this.snackBar.open('Deleting Comment is Successful.'));
     }
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.staticCommentCount = this.comment.replyCount;
+  }
 }

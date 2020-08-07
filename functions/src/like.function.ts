@@ -21,7 +21,7 @@ export const likeThing = functions
           admin.firestore.FieldValue.increment(1)
         );
       } else {
-        console.log(`Thing ${thingId} does not exsit.`);
+        functions.logger.info(`Thing ${thingId} does not exsit.`);
       }
 
       const value = snap.data();
@@ -38,13 +38,14 @@ export const likeThing = functions
           'likeCount',
           admin.firestore.FieldValue.increment(1)
         );
+        functions.logger.info('Increment LikeCount.');
       } else {
-        console.log(`User:${targetUid} does not exsit.`);
+        functions.logger.info(`User:${targetUid} does not exsit.`);
       }
 
       if (targetUid === likerUid) {
-        console.log(`User:${likerUid} like my thing.`);
-        console.log(`Function is completed.`);
+        functions.logger.info(`User:${likerUid} like my thing.`);
+        functions.logger.info(`Function is completed.`);
         return;
       }
 
@@ -69,8 +70,11 @@ export const likeThing = functions
           'notificationCount',
           admin.firestore.FieldValue.increment(1)
         );
+        functions.logger.info('Decrement NotificationCount.');
       } else {
-        console.log(`User:${targetUid}'s notification does not exsit.`);
+        functions.logger.info(
+          `User:${targetUid}'s notification does not exsit.`
+        );
       }
 
       return markEventTried(eventId);
@@ -100,8 +104,9 @@ export const unLikeThing = functions
         await db
           .doc(`users/${targetUid}`)
           .update('likeCount', admin.firestore.FieldValue.increment(-1));
+        functions.logger.info('Decrement LikeCount.');
       } else {
-        console.log(`User:${targetUid} does not exist.`);
+        functions.logger.info(`User:${targetUid} does not exist.`);
       }
 
       return markEventTried(eventId);
