@@ -1,6 +1,6 @@
 .post {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 240px 240px;
   padding: 0;
   max-width: 480px;
   height: 180px;
@@ -11,11 +11,9 @@
     margin: 0;
   }
   &__thumbnail {
-    width: 240px;
     background: center/cover;
   }
   &__body {
-    max-width: calc(480px / 2);
     box-sizing: border-box;
     padding: 8px;
   }
