@@ -28,6 +28,7 @@ export class StlViewerComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.container = document.getElementById(this.containerClassName);
     this.start(this.stlUrl);
+    console.log(this.stlUrl);
   }
 
   ngAfterViewInit(): void {
@@ -121,5 +122,9 @@ export class StlViewerComponent implements OnInit, AfterViewInit {
       animate();
       render();
     });
+  }
+
+  clear() {
+    this.scene.dispose();
   }
 }

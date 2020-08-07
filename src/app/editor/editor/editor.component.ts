@@ -30,12 +30,14 @@ import { StlViewerComponent } from 'src/app/stl-viewer/stl-viewer/stl-viewer.com
   styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent implements OnInit, AfterViewInit {
-  @ViewChild(StlViewerComponent) stlviewer: StlViewerComponent;
+  @ViewChild(StlViewerComponent) stlViewr: StlViewerComponent;
 
   MAX_DESCRIPTION_LENGTH: number = 300;
   MAX_TITLE_LENGTH: number = 80;
   MAX_IMAGE_FILE_LENGTH: number = 4;
   MAX_STL_FILE_LENGTH: number = 1;
+  MAX_TAGS_TEXT_LENGTH: number = 20;
+  MAX_TAGS_NUM_LENGTH: number = 5;
 
   thing: Thing;
   private thing$: Observable<Thing> = this.route.parent.paramMap.pipe(
@@ -46,20 +48,20 @@ export class EditorComponent implements OnInit, AfterViewInit {
     tap((thing) => (this.thing = thing))
   );
 
-  private thingRef: ThingReference;
+  thingRef: ThingReference;
   private thingRef$: Observable<
     ThingReference
   > = this.route.parent.paramMap.pipe(
     switchMap((map) => {
       const thingId = map.get('thing');
       return this.thingRefService.getThingRefById(thingId);
-    }),
-    tap((ref) => (this.thingRef = ref))
+    })
   );
 
   images: any[] = [];
   imageFiles: (File | string)[] = [];
   defaultImageLength: number;
+  isVewing: boolean;
 
   stl: string | ArrayBuffer;
   stlFile: File;
@@ -70,7 +72,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
       [Validators.required, Validators.maxLength(this.MAX_TITLE_LENGTH)],
     ],
     description: ['', [Validators.maxLength(this.MAX_DESCRIPTION_LENGTH)]],
-    tags: [],
+    tags: [''],
   });
 
   isCompleted: boolean;
@@ -82,6 +84,9 @@ export class EditorComponent implements OnInit, AfterViewInit {
   get descriptionControl(): FormControl {
     return this.form.get('description') as FormControl;
   }
+  get tagsContorol(): FormControl {
+    return this.form.get('tags') as FormControl;
+  }
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   tags: string[] = [];
@@ -92,27 +97,51 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
   selectFiles(event) {
     const files: File[] = Object.values(event.target.files);
-    this.seletFileValidator(files);
+    const hasEroor: boolean = this.selectFileValidator(files);
+    if (hasEroor) {
+      return;
+    }
     files.forEach((file) => this.readFile(file));
   }
 
-  private seletFileValidator(files: File[]) {
+  selectStlFile(event) {
+    const file: File = event.target.files[0];
+    const fr = new FileReader();
+    fr.onload = (e) => {
+      this.stl = e.target.result as string;
+      const stlUrl = e.target.result as string;
+      this.stlFile = file;
+      this.stlViewr.start(stlUrl);
+    };
+    fr.readAsDataURL(file);
+    this.isVewing = true;
+  }
+
+  cancelFile() {
+    this.isVewing = false;
+    this.stl = null;
+    this.stlViewr.clear();
+  }
+
+  private selectFileValidator(files: File[]): boolean {
     const stlFileLength: number = files.filter((file) => this.isStl(file))
       .length;
+    const imageFilesLength = files.filter((file) => !this.isStl(file)).length;
 
     if (stlFileLength > this.MAX_STL_FILE_LENGTH) {
       this.snackBar.open(
         `You can't attach more than ${this.MAX_STL_FILE_LENGTH} stls.`
       );
-      return;
+      return true;
     }
 
-    if (files.length + this.images.length > this.MAX_IMAGE_FILE_LENGTH) {
+    if (imageFilesLength + this.images.length > this.MAX_IMAGE_FILE_LENGTH) {
       this.snackBar.open(
         `You can't attach more than ${this.MAX_IMAGE_FILE_LENGTH} images.`
       );
-      return;
+      return true;
     }
+    return false;
   }
 
   add(event: MatChipInputEvent): void {
@@ -135,7 +164,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
         this.stl = e.target.result as string;
         const stlUrl = e.target.result as string;
         this.stlFile = file;
-        this.stlviewer.start(stlUrl);
+        this.stlViewr.start(stlUrl);
       } else {
         this.images.push(e.target.result);
         this.imageFiles.push(file);
@@ -157,6 +186,23 @@ export class EditorComponent implements OnInit, AfterViewInit {
     }
   }
 
+  get tagTextLength(): number {
+    const length: number = this.tags
+      .map((tag) => tag.length)
+      .reduce((accum, current) => accum + current, 0);
+    const isOver: boolean = length > this.MAX_TAGS_TEXT_LENGTH;
+    //TODO:issue エラー内容が上書きされる
+    // this.tagsContorol.setErrors(isOver ? { maxTextLength: isOver } : null);
+    return length;
+  }
+
+  get tagElementLength(): number {
+    const error = this.tagsContorol.getError('maxTextLength');
+    const isOver = this.tags.length > this.MAX_TAGS_NUM_LENGTH;
+    // this.tagsContorol.setErrors(isOver ? { maxElementLength: isOver } : null);
+    return this.tags.length;
+  }
+
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -166,7 +212,13 @@ export class EditorComponent implements OnInit, AfterViewInit {
     private db: AngularFirestore,
     private userService: UserService,
     private thingRefService: ThingReferenceService
-  ) {}
+  ) {
+    this.thingRef$.pipe(take(1)).subscribe((ref) => {
+      this.stl = ref?.downloadUrl;
+      this.thingRef = ref;
+      this.isVewing = Boolean(ref?.downloadUrl);
+    });
+  }
   ngAfterViewInit(): void {}
 
   ngOnInit(): void {
@@ -187,9 +239,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
       this.imageFiles.push(...thing.imageUrls);
       this.defaultImageLength = thing.imageUrls.length;
     });
-    this.thingRef$.pipe(take(1)).subscribe((ref) => {
-      this.stl = ref?.downloadUrl;
-    });
   }
 
   cancel() {
@@ -201,7 +250,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
     const thingId: string = this.thing ? this.thing.id : this.db.createId();
 
     const result = await this.thingRefService.saveOnStorage(
-      this.thingRef,
       thingId,
       this.stlFile
     );
@@ -221,22 +269,30 @@ export class EditorComponent implements OnInit, AfterViewInit {
       tags: this.tags,
     };
 
-    const newRef: ThingReference = {
-      ...this.thingRef,
-      downloadUrl: result?.downloadUrl || this.thingRef.downloadUrl,
-      fileName: result?.fileName || this.thingRef.fileName,
-      fileSize: result?.fileSize || this.thingRef.fileSize,
-    };
     if (this.thing) {
-      await this.thingRefService.updateThingRef(thingId, newRef);
+      if (result) {
+        const id: string = this.thingRef?.id
+          ? this.thingRef.id
+          : this.db.createId();
+        const ref: Omit<ThingReference, 'updatedAt'> = {
+          id: id,
+          thingId: thingId,
+          downloadCount: 0,
+          downloadUrl: result.downloadUrl,
+          fileName: result.fileName,
+          fileSize: result.fileSize,
+          createdAt: this.thing.createdAt,
+        };
+        await this.thingRefService.updateThingRef(thingId, ref);
+      }
       this.thingService.updateThing(newValue).then(() => {
-        this.snackBar.open('更新しました');
+        this.snackBar.open('Updated.');
         this.isCompleted = true;
         this.router.navigateByUrl(`/${this.thing.id}`);
       });
     } else {
       const uid = this.userService.uid;
-      await this.thingRefService.createThingRef(thingId, newRef);
+      await this.thingRefService.createThingRef(thingId, result);
       const thing: Omit<Thing, 'updateAt' | 'createdAt'> = {
         id: thingId,
         title: newValue.title,
@@ -250,7 +306,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
       };
 
       this.thingService.createThing(thing).then(() => {
-        this.snackBar.open('アップロードに成功しました');
+        this.snackBar.open('Uploading is Successful');
         this.isCompleted = true;
         this.router.navigateByUrl(`/${thingId}`);
       });

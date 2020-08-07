@@ -29,9 +29,13 @@ export class ThingReferenceService {
     thingId: string,
     ref: Omit<ThingReference, 'id' | 'createdAt' | 'updatedAt'>
   ): Promise<void> {
+    if (ref === null) {
+      return;
+    }
     if (ref === undefined) {
       return;
     }
+
     const id: string = this.db.createId();
     const newValue: ThingReference = {
       ...ref,
@@ -42,7 +46,13 @@ export class ThingReferenceService {
     return this.db.doc(`things/${thingId}/stls/${id}`).set(newValue);
   }
 
-  updateThingRef(thingId: string, ref: ThingReference): Promise<void> {
+  updateThingRef(
+    thingId: string,
+    ref: Omit<ThingReference, 'updatedAt'>
+  ): Promise<void> {
+    if (ref === null) {
+      return;
+    }
     if (ref === undefined) {
       return;
     }
@@ -54,7 +64,6 @@ export class ThingReferenceService {
   }
 
   async saveOnStorage(
-    ref: ThingReference,
     thingId: string,
     file: File
   ): Promise<Omit<ThingReference, 'createdAt' | 'updatedAt'>> {
